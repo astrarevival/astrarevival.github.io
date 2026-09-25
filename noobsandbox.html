@@ -1,1 +1,4489 @@
-its the guy from forsaken omg
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Astra</title>
+<link rel="icon" href="images/astraicontransparent.ico">
+
+<style>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#080510;
+  font-family:Arial,Helvetica,sans-serif;
+  color:white;
+}
+
+body{
+  touch-action:none;
+}
+
+canvas{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
+  touch-action:none;
+}
+
+#topbar{
+  position:fixed;
+  top:14px;
+  left:14px;
+  right:14px;
+  height:58px;
+  z-index:20;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:8px 12px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:20px;
+
+  background:rgba(20,12,35,.72);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+
+  box-shadow:
+    0 12px 40px rgba(0,0,0,.35),
+    inset 0 1px rgba(255,255,255,.08);
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+}
+
+.brand img{
+  width:38px;
+  height:38px;
+  object-fit:contain;
+}
+
+.brandText{
+  font-size:16px;
+  font-weight:800;
+  white-space:nowrap;
+}
+
+.status{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:9px 13px;
+  border-radius:999px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.09);
+  font-size:12px;
+  color:#ddd;
+}
+
+.statusDot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#a970ff;
+  box-shadow:0 0 12px #a970ff;
+}
+
+#astraButton{
+  position:fixed;
+  left:16px;
+  bottom:16px;
+  width:58px;
+  height:58px;
+  z-index:30;
+
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:50%;
+
+  background:rgba(25,14,42,.82);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+
+  box-shadow:0 12px 35px rgba(0,0,0,.4);
+}
+
+#astraButton img{
+  width:38px;
+  height:38px;
+  object-fit:contain;
+}
+
+#plusButton{
+  position:fixed;
+  right:16px;
+  bottom:16px;
+  width:58px;
+  height:58px;
+  z-index:30;
+
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:50%;
+
+  background:rgba(25,14,42,.82);
+  color:white;
+
+  font-size:31px;
+  line-height:1;
+
+  cursor:pointer;
+
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+
+  box-shadow:0 12px 35px rgba(0,0,0,.4);
+}
+
+button{
+  font:inherit;
+}
+
+button:active{
+  transform:scale(.97);
+}
+
+.panel{
+  position:fixed;
+  z-index:40;
+
+  background:rgba(20,12,34,.9);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:24px;
+
+  backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px);
+
+  box-shadow:
+    0 25px 80px rgba(0,0,0,.55),
+    inset 0 1px rgba(255,255,255,.07);
+
+  overflow:hidden;
+}
+
+#astraMenu{
+  left:14px;
+  bottom:86px;
+  width:min(360px,calc(100vw - 28px));
+  max-height:calc(100vh - 110px);
+
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(12px) scale(.97);
+  transition:.18s ease;
+
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  touch-action:pan-y;
+}
+
+#astraMenu.open{
+  opacity:1;
+  pointer-events:auto;
+  transform:none;
+}
+
+.menuHeader{
+  padding:17px 18px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  position:sticky;
+  top:0;
+  background:rgba(20,12,34,.92);
+  backdrop-filter:blur(20px);
+  z-index:2;
+}
+
+.menuHeader strong{
+  font-size:17px;
+}
+
+.menuHeader span{
+  display:block;
+  margin-top:4px;
+  color:#999;
+  font-size:12px;
+}
+
+.section{
+  padding:14px 15px;
+}
+
+.sectionTitle{
+  color:#a970ff;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  margin:0 0 9px 3px;
+}
+
+.row{
+  display:flex;
+  gap:8px;
+  margin-bottom:8px;
+}
+
+.menuButton{
+  flex:1;
+  min-height:44px;
+
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;
+
+  background:rgba(255,255,255,.055);
+  color:white;
+
+  cursor:pointer;
+  padding:10px 12px;
+}
+
+.menuButton:hover{
+  background:rgba(169,112,255,.13);
+  border-color:rgba(169,112,255,.25);
+}
+
+.menuButton.danger{
+  color:#ff9e9e;
+}
+
+.statusBox{
+  padding:12px 13px;
+  border-radius:14px;
+  background:rgba(255,255,255,.045);
+  color:#aaa;
+  font-size:13px;
+}
+
+.colorGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.colorItem{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+
+  padding:10px 12px;
+  border-radius:14px;
+  background:rgba(255,255,255,.045);
+  font-size:12px;
+  color:#ddd;
+}
+
+.colorItem input{
+  width:34px;
+  height:28px;
+  padding:0;
+  border:0;
+  background:none;
+}
+
+.toggle{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  width:100%;
+  min-height:42px;
+  padding:10px 12px;
+  margin-bottom:7px;
+
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:14px;
+
+  background:rgba(255,255,255,.045);
+  color:#ddd;
+}
+
+.toggle input{
+  width:18px;
+  height:18px;
+  accent-color:#a970ff;
+}
+
+#spawnMenu{
+  right:16px;
+  bottom:86px;
+  width:min(310px,calc(100vw - 32px));
+
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(12px) scale(.97);
+  transition:.18s ease;
+}
+
+#spawnMenu.open{
+  opacity:1;
+  pointer-events:auto;
+  transform:none;
+}
+
+.spawnHeader{
+  cursor:grab;
+  user-select:none;
+  touch-action:none;
+
+  padding:16px 17px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.spawnHeader:active{
+  cursor:grabbing;
+}
+
+.spawnHeader span{
+  color:#999;
+  font-size:12px;
+}
+
+.spawnContent{
+  padding:13px;
+}
+
+.spawnButton{
+  width:100%;
+  min-height:48px;
+  margin-bottom:8px;
+
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:15px;
+
+  background:rgba(255,255,255,.055);
+  color:white;
+
+  cursor:pointer;
+  text-align:left;
+  padding:11px 13px;
+}
+
+.spawnButton:hover{
+  background:rgba(169,112,255,.13);
+}
+
+#toast{
+  position:fixed;
+  left:50%;
+  bottom:88px;
+  z-index:100;
+
+  transform:translate(-50%,10px);
+  opacity:0;
+  pointer-events:none;
+
+  padding:11px 16px;
+  border-radius:999px;
+
+  background:rgba(20,12,34,.92);
+  border:1px solid rgba(255,255,255,.12);
+
+  backdrop-filter:blur(15px);
+  color:#eee;
+  font-size:13px;
+
+  transition:.2s ease;
+}
+
+#toast.show{
+  opacity:1;
+  transform:translate(-50%,0);
+}
+
+.vignette{
+  position:fixed;
+  inset:0;
+  z-index:10;
+  pointer-events:none;
+
+  box-shadow:inset 0 0 150px rgba(0,0,0,.7);
+}
+
+.scanlines{
+  position:fixed;
+  inset:0;
+  z-index:11;
+  pointer-events:none;
+
+  background:repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 3px,
+    rgba(255,255,255,.018) 4px
+  );
+}
+
+.hidden{
+  display:none!important;
+}
+
+@media(max-width:600px){
+  #topbar{
+    top:9px;
+    left:9px;
+    right:9px;
+  }
+
+  .status{
+    padding:8px 10px;
+  }
+
+  #astraButton,
+  #plusButton{
+    bottom:12px;
+  }
+
+  #astraButton{
+    left:12px;
+  }
+
+  #plusButton{
+    right:12px;
+  }
+
+  #astraMenu{
+    left:9px;
+    bottom:78px;
+    width:calc(100vw - 18px);
+    max-height:calc(100vh - 95px);
+  }
+
+  #spawnMenu{
+    right:9px;
+    bottom:78px;
+    width:calc(100vw - 18px);
+  }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="game"></canvas>
+
+<div id="topbar">
+  <div class="brand">
+    <img src="images/astraicontransparent.ico" alt="Astra">
+    <div class="brandText">Noob Sandbox</div>
+  </div>
+
+  <div class="status">
+    <span class="statusDot"></span>
+    <span id="population">1 noob</span>
+  </div>
+</div>
+
+<button id="astraButton" aria-label="Astra menu">
+  <img src="images/astraicontransparent.ico" alt="">
+</button>
+
+<button id="plusButton" aria-label="Spawn menu">+</button>
+
+<div id="astraMenu" class="panel">
+  <div class="menuHeader">
+    <strong>Astra Menu</strong>
+    <span>Sandbox controls</span>
+  </div>
+
+  <div class="section">
+    <div class="sectionTitle">Character</div>
+
+    <div class="row">
+      <button class="menuButton" id="spawnMe">Spawn Me</button>
+      <button class="menuButton" id="resetCharacter">Reset</button>
+    </div>
+
+    <button class="menuButton danger" id="deleteCharacter" style="width:100%;margin-bottom:8px">
+      Delete Character
+    </button>
+
+    <div class="statusBox">
+      Status: <span id="characterStatus">No character found</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sectionTitle">Sandbox</div>
+
+    <div class="row">
+      <button class="menuButton" id="resetNoobs">Reset Noobs</button>
+      <button class="menuButton" id="clearNoobs">Clear Noobs</button>
+    </div>
+
+    <div class="row">
+      <button class="menuButton" id="clearObjects">Clear Objects</button>
+      <button class="menuButton" id="resetSandbox">Reset Sandbox</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sectionTitle">Character Colors</div>
+
+    <div class="colorGrid">
+      <label class="colorItem">Head <input type="color" id="headColor" value="#F5CD30"></label>
+      <label class="colorItem">Torso <input type="color" id="torsoColor" value="#0D69AC"></label>
+      <label class="colorItem">Left Arm <input type="color" id="leftArmColor" value="#F5CD30"></label>
+      <label class="colorItem">Right Arm <input type="color" id="rightArmColor" value="#F5CD30"></label>
+      <label class="colorItem">Left Leg <input type="color" id="leftLegColor" value="#A4BD47"></label>
+      <label class="colorItem">Right Leg <input type="color" id="rightLegColor" value="#A4BD47"></label>
+    </div>
+
+    <button class="menuButton" id="resetColors" style="width:100%;margin-top:8px">
+      Reset Colors
+    </button>
+  </div>
+
+  <div class="section">
+    <div class="sectionTitle">Visuals</div>
+
+    <label class="toggle">
+      Vignette
+      <input type="checkbox" id="vignetteToggle" checked>
+    </label>
+
+    <label class="toggle">
+      Scanlines
+      <input type="checkbox" id="scanlinesToggle">
+    </label>
+
+    <label class="toggle">
+      Glow
+      <input type="checkbox" id="glowToggle" checked>
+    </label>
+
+    <label class="toggle">
+      Particles
+      <input type="checkbox" id="particlesToggle" checked>
+    </label>
+  </div>
+
+  <div class="section">
+    <div class="sectionTitle">Controls</div>
+
+    <div class="statusBox">
+      <b>Move:</b> WASD / Arrow Keys<br>
+      <b>Jump:</b> W / Up / Space<br>
+      <b>Grab:</b> Hold mouse/finger<br>
+      <b>Throw:</b> Release while moving<br>
+      <b>Spawn:</b> + button
+    </div>
+  </div>
+
+  <div class="section">
+    <button class="menuButton" id="backButton" style="width:100%">
+      Back to Astra
+    </button>
+  </div>
+</div>
+
+<div id="spawnMenu" class="panel">
+  <div class="spawnHeader" id="spawnHeader">
+    <strong>Spawn</strong>
+    <span>drag header</span>
+  </div>
+
+  <div class="spawnContent">
+    <button class="spawnButton" data-spawn="noob">🟨 Noob</button>
+    <button class="spawnButton" data-spawn="player">🧍 My Character</button>
+    <button class="spawnButton" data-spawn="crate">📦 Crate</button>
+    <button class="spawnButton" data-spawn="ball">⚪ Ball</button>
+    <button class="spawnButton" data-spawn="bomb">💣 Bomb</button>
+    <button class="spawnButton" data-spawn="explosion">💥 Explosion</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<div class="vignette" id="vignette"></div>
+<div class="scanlines hidden" id="scanlines"></div>
+
+<script>
+"use strict";
+
+/* =========================================================
+   CANVAS
+========================================================= */
+
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+let W = 0;
+let H = 0;
+let dpr = 1;
+
+function resize(){
+  W = window.innerWidth;
+  H = window.innerHeight;
+
+  dpr = Math.min(window.devicePixelRatio || 1,2);
+
+  canvas.width = Math.floor(W*dpr);
+  canvas.height = Math.floor(H*dpr);
+
+  canvas.style.width = W+"px";
+  canvas.style.height = H+"px";
+
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+
+  /*
+    Keep everything inside the new screen after resize.
+  */
+  constrainEverything();
+}
+
+window.addEventListener("resize",resize);
+
+
+/* =========================================================
+   WORLD PHYSICS
+========================================================= */
+
+const WORLD = {
+
+  gravity:1850,
+
+  floorHeight:38,
+
+  characterAcceleration:2600,
+  characterMaxSpeed:620,
+
+  characterGroundFriction:22,
+  characterAirFriction:1.4,
+
+  objectGroundFriction:22,
+  objectAirFriction:0.15,
+
+  objectBounce:.32,
+  wallBounce:.38,
+
+  collisionBounce:.18,
+
+  noobCollisionBounce:.18
+};
+
+
+/* =========================================================
+   COLORS
+========================================================= */
+
+const DEFAULT_COLORS = {
+  head:"#F5CD30",
+  torso:"#0D69AC",
+  leftArm:"#F5CD30",
+  rightArm:"#F5CD30",
+  leftLeg:"#A4BD47",
+  rightLeg:"#A4BD47"
+};
+
+const playerColors = {
+  ...DEFAULT_COLORS
+};
+
+
+/* =========================================================
+   GAME STATE
+========================================================= */
+
+let player = null;
+
+let noobs = [];
+
+let objects = [];
+
+let particles = [];
+
+let grabbed = null;
+
+
+/* =========================================================
+   VISUAL SETTINGS
+========================================================= */
+
+let vignetteEnabled = true;
+let scanlinesEnabled = false;
+let glowEnabled = true;
+let particlesEnabled = true;
+
+
+/* =========================================================
+   THROW SYSTEM
+========================================================= */
+
+let dragHistory = [];
+
+const MAX_HISTORY = 12;
+
+const THROW_MULTIPLIER = 1.8;
+
+const MAX_THROW_SPEED = 2200;
+
+
+/* =========================================================
+   TIMING
+========================================================= */
+
+let lastTime = performance.now();
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function clamp(v,a,b){
+  return Math.max(a,Math.min(b,v));
+}
+
+function damp(value,amount,dt){
+  return value*Math.exp(-amount*dt);
+}
+
+function dist(ax,ay,bx,by){
+  return Math.hypot(ax-bx,ay-by);
+}
+
+function random(min,max){
+  return min+Math.random()*(max-min);
+}
+
+function floorY(){
+  return H-WORLD.floorHeight;
+}
+
+function toast(message){
+
+  const el=document.getElementById("toast");
+
+  el.textContent=message;
+
+  el.classList.add("show");
+
+  clearTimeout(toast.timer);
+
+  toast.timer=setTimeout(()=>{
+    el.classList.remove("show");
+  },1400);
+}
+
+
+/* =========================================================
+   CHARACTER CREATION
+========================================================= */
+
+function makeNoob(
+  x=W/2,
+  y=floorY()-70
+){
+
+  return {
+
+    type:"noob",
+
+    x,
+    y,
+
+    vx:0,
+    vy:0,
+
+    w:42,
+    h:82,
+
+    grounded:false,
+    grabbed:false,
+
+    dead:false,
+    deathTimer:0,
+
+    rotation:0,
+
+    color:{
+      head:"#F5CD30",
+      torso:"#0D69AC",
+      arms:"#F5CD30",
+      legs:"#A4BD47"
+    }
+  };
+}
+
+
+function makePlayer(
+  x=W/2,
+  y=floorY()-70
+){
+
+  return {
+
+    type:"player",
+
+    x,
+    y,
+
+    vx:0,
+    vy:0,
+
+    w:42,
+    h:82,
+
+    grounded:false,
+    grabbed:false,
+
+    rotation:0,
+
+    color:{
+      ...playerColors
+    }
+  };
+}
+
+
+/* =========================================================
+   OBJECT CREATION
+========================================================= */
+
+function makeObject(
+  type,
+  x=W/2,
+  y=200
+){
+
+  const base={
+    type,
+
+    x,
+    y,
+
+    vx:0,
+    vy:0,
+
+    rotation:0,
+    vr:0,
+
+    grabbed:false,
+
+    dead:false
+  };
+
+
+  if(type==="crate"){
+
+    return {
+      ...base,
+
+      w:54,
+      h:54,
+
+      mass:1.4
+    };
+  }
+
+
+  if(type==="ball"){
+
+    return {
+      ...base,
+
+      radius:25,
+
+      mass:.8
+    };
+  }
+
+
+  if(type==="bomb"){
+
+    return {
+      ...base,
+
+      radius:23,
+
+      mass:1.1,
+
+      fuse:3,
+
+      fuseActive:false
+    };
+  }
+
+
+  return base;
+}
+
+
+/* =========================================================
+   INITIAL WORLD
+========================================================= */
+
+noobs.push(
+  makeNoob(
+    W/2,
+    floorY()-70
+  )
+);
+
+
+/* =========================================================
+   POINTER
+========================================================= */
+
+function getPointerPosition(e){
+
+  return {
+    x:e.clientX,
+    y:e.clientY
+  };
+}
+
+
+/* =========================================================
+   THROW HISTORY
+========================================================= */
+
+function recordDragSample(x,y){
+
+  const now=performance.now();
+
+  dragHistory.push({
+    x,
+    y,
+    t:now
+  });
+
+
+  while(dragHistory.length>MAX_HISTORY){
+    dragHistory.shift();
+  }
+
+
+  /*
+    Keep roughly the last 160ms.
+  */
+
+  while(
+    dragHistory.length>2 &&
+    now-dragHistory[0].t>160
+  ){
+    dragHistory.shift();
+  }
+}
+
+
+function calculateThrowVelocity(){
+
+  if(dragHistory.length<2){
+    return {
+      x:0,
+      y:0
+    };
+  }
+
+
+  const newest=
+    dragHistory[dragHistory.length-1];
+
+
+  let oldest=null;
+
+
+  /*
+    Find a sample approximately
+    35–160ms behind the release.
+  */
+
+  for(
+    let i=dragHistory.length-2;
+    i>=0;
+    i--
+  ){
+
+    const sample=dragHistory[i];
+
+    const age=
+      newest.t-sample.t;
+
+    if(age>=35){
+
+      oldest=sample;
+
+      break;
+    }
+  }
+
+
+  /*
+    Fallback to the oldest sample.
+  */
+
+  if(!oldest){
+    oldest=dragHistory[0];
+  }
+
+
+  const elapsed=
+    Math.max(
+      (newest.t-oldest.t)/1000,
+      .001
+    );
+
+
+  let vx=
+    (newest.x-oldest.x)/elapsed;
+
+  let vy=
+    (newest.y-oldest.y)/elapsed;
+
+
+  vx*=THROW_MULTIPLIER;
+  vy*=THROW_MULTIPLIER;
+
+
+  const speed=
+    Math.hypot(vx,vy);
+
+
+  if(speed>MAX_THROW_SPEED){
+
+    const scale=
+      MAX_THROW_SPEED/speed;
+
+    vx*=scale;
+    vy*=scale;
+  }
+
+
+  return {
+    x:vx,
+    y:vy
+  };
+}
+
+
+/* =========================================================
+   HIT TESTING
+========================================================= */
+
+function getObjectHit(obj,x,y){
+
+  if(
+    obj.type==="ball" ||
+    obj.type==="bomb"
+  ){
+
+    return (
+      dist(
+        x,
+        y,
+        obj.x,
+        obj.y
+      )
+      <=obj.radius+14
+    );
+  }
+
+
+  return (
+    x>=obj.x-obj.w/2-10 &&
+    x<=obj.x+obj.w/2+10 &&
+    y>=obj.y-obj.h/2-10 &&
+    y<=obj.y+obj.h/2+10
+  );
+}
+
+
+function getCharacterHit(c,x,y){
+
+  return (
+    x>=c.x-c.w/2-14 &&
+    x<=c.x+c.w/2+14 &&
+    y>=c.y-c.h/2-14 &&
+    y<=c.y+c.h/2+14
+  );
+}
+
+
+function findGrabTarget(x,y){
+
+  /*
+    Objects first.
+  */
+
+  for(
+    let i=objects.length-1;
+    i>=0;
+    i--
+  ){
+
+    const obj=objects[i];
+
+    if(
+      !obj.dead &&
+      getObjectHit(obj,x,y)
+    ){
+
+      return {
+        kind:"object",
+        item:obj
+      };
+    }
+  }
+
+
+  /*
+    Player.
+  */
+
+  if(
+    player &&
+    !player.dead &&
+    getCharacterHit(player,x,y)
+  ){
+
+    return {
+      kind:"player",
+      item:player
+    };
+  }
+
+
+  /*
+    Noobs.
+  */
+
+  for(
+    let i=noobs.length-1;
+    i>=0;
+    i--
+  ){
+
+    const n=noobs[i];
+
+    if(
+      !n.dead &&
+      getCharacterHit(n,x,y)
+    ){
+
+      return {
+        kind:"noob",
+        item:n
+      };
+    }
+  }
+
+
+  return null;
+}
+
+
+/* =========================================================
+   GRABBING
+========================================================= */
+
+function beginGrab(x,y){
+
+  const target=
+    findGrabTarget(x,y);
+
+
+  if(!target){
+    return;
+  }
+
+
+  grabbed={
+
+    kind:target.kind,
+
+    item:target.item,
+
+    offsetX:
+      target.item.x-x,
+
+    offsetY:
+      target.item.y-y
+  };
+
+
+  target.item.grabbed=true;
+
+  target.item.vx=0;
+  target.item.vy=0;
+
+
+  /*
+    A grabbed character is no longer
+    considered grounded.
+  */
+
+  if(
+    target.kind==="player" ||
+    target.kind==="noob"
+  ){
+
+    target.item.grounded=false;
+  }
+
+
+  dragHistory=[];
+
+  recordDragSample(x,y);
+}
+
+
+function moveGrab(x,y){
+
+  if(!grabbed){
+    return;
+  }
+
+
+  const item=grabbed.item;
+
+
+  item.x=
+    x+grabbed.offsetX;
+
+  item.y=
+    y+grabbed.offsetY;
+
+
+  /*
+    Keep grabbed objects inside
+    the visible world.
+  */
+
+  constrainGrabbedItem(item);
+
+
+  item.vx=0;
+  item.vy=0;
+
+
+  recordDragSample(x,y);
+}
+
+
+function releaseGrab(x,y){
+
+  if(!grabbed){
+    return;
+  }
+
+
+  recordDragSample(x,y);
+
+
+  const velocity=
+    calculateThrowVelocity();
+
+
+  const item=
+    grabbed.item;
+
+
+  /*
+    Transfer the pointer velocity
+    directly into the physics body.
+  */
+
+  item.vx=velocity.x;
+  item.vy=velocity.y;
+
+
+  /*
+    Give physical objects spin.
+  */
+
+  if(
+    item.type==="crate" ||
+    item.type==="ball" ||
+    item.type==="bomb"
+  ){
+
+    item.vr=
+      clamp(
+        velocity.x*.012,
+        -25,
+        25
+      );
+  }
+
+
+  item.grabbed=false;
+
+
+  /*
+    Important:
+    if the item was being held, it must
+    remain dynamic after release.
+  */
+
+  if(
+    item.type==="player" ||
+    item.type==="noob"
+  ){
+
+    item.grounded=false;
+  }
+
+
+  grabbed=null;
+
+  dragHistory=[];
+}
+
+
+/* =========================================================
+   CANVAS POINTER EVENTS
+========================================================= */
+
+canvas.addEventListener(
+  "pointerdown",
+  e=>{
+
+    if(
+      e.button!==undefined &&
+      e.button!==0
+    ){
+      return;
+    }
+
+    e.preventDefault();
+
+    const p=
+      getPointerPosition(e);
+
+
+    try{
+      canvas.setPointerCapture(
+        e.pointerId
+      );
+    }
+    catch(_){}
+
+
+    beginGrab(
+      p.x,
+      p.y
+    );
+  },
+  {passive:false}
+);
+
+
+canvas.addEventListener(
+  "pointermove",
+  e=>{
+
+    if(!grabbed){
+      return;
+    }
+
+    e.preventDefault();
+
+    const p=
+      getPointerPosition(e);
+
+
+    /*
+      Use coalesced pointer events when
+      the browser provides them. This makes
+      fast mouse/touch throws much smoother.
+    */
+
+    if(
+      typeof e.getCoalescedEvents==="function"
+    ){
+
+      const events=
+        e.getCoalescedEvents();
+
+
+      if(events.length){
+
+        for(const event of events){
+
+          moveGrab(
+            event.clientX,
+            event.clientY
+          );
+        }
+
+        return;
+      }
+    }
+
+
+    moveGrab(
+      p.x,
+      p.y
+    );
+  },
+  {passive:false}
+);
+
+
+canvas.addEventListener(
+  "pointerup",
+  e=>{
+
+    if(!grabbed){
+      return;
+    }
+
+    e.preventDefault();
+
+    const p=
+      getPointerPosition(e);
+
+
+    releaseGrab(
+      p.x,
+      p.y
+    );
+
+
+    try{
+      canvas.releasePointerCapture(
+        e.pointerId
+      );
+    }
+    catch(_){}
+  },
+  {passive:false}
+);
+
+
+canvas.addEventListener(
+  "pointercancel",
+  e=>{
+
+    if(!grabbed){
+      return;
+    }
+
+    const p=
+      getPointerPosition(e);
+
+
+    releaseGrab(
+      p.x,
+      p.y
+    );
+  }
+);
+
+
+/* =========================================================
+   NOOB DEATH
+========================================================= */
+
+function killNoob(n){
+
+  if(n.dead){
+    return;
+  }
+
+
+  n.dead=true;
+
+  n.deathTimer=2;
+
+  n.vx=0;
+  n.vy=0;
+
+
+  if(particlesEnabled){
+
+    for(let i=0;i<10;i++){
+
+      particles.push({
+
+        x:
+          n.x+random(-18,18),
+
+        y:
+          n.y+random(-35,35),
+
+        vx:
+          random(-180,180),
+
+        vy:
+          random(-300,-60),
+
+        life:
+          random(.25,.6),
+
+        maxLife:.6,
+
+        size:
+          random(2,5)
+      });
+    }
+  }
+}
+
+
+function respawnNoob(n){
+
+  n.x=
+    random(
+      80,
+      Math.max(80,W-80)
+    );
+
+  n.y=
+    floorY()-70;
+
+  n.vx=0;
+  n.vy=0;
+
+  n.rotation=0;
+
+  n.dead=false;
+  n.deathTimer=0;
+}
+
+
+/* =========================================================
+   CHARACTER PHYSICS
+========================================================= */
+
+function updateCharacter(c,dt){
+
+  if(c.dead){
+
+    c.deathTimer-=dt;
+
+
+    if(c.deathTimer<=0){
+
+      respawnNoob(c);
+    }
+
+    return;
+  }
+
+
+  if(c.grabbed){
+    return;
+  }
+
+
+  /*
+    Gravity.
+  */
+
+  c.vy+=WORLD.gravity*dt;
+
+
+  /*
+    Movement.
+  */
+
+  c.x+=c.vx*dt;
+  c.y+=c.vy*dt;
+
+
+  /*
+    Wall collision.
+  */
+
+  if(c.x-c.w/2<0){
+
+    c.x=c.w/2;
+
+    c.vx=
+      Math.abs(c.vx)*
+      WORLD.wallBounce;
+  }
+
+
+  if(c.x+c.w/2>W){
+
+    c.x=
+      W-c.w/2;
+
+    c.vx=
+      -Math.abs(c.vx)*
+      WORLD.wallBounce;
+  }
+
+
+  /*
+    Floor collision.
+  */
+
+  const ground=
+    floorY()-c.h/2;
+
+
+  if(c.y>=ground){
+
+    c.y=ground;
+
+
+    if(Math.abs(c.vy)>35){
+
+      c.vy=
+        -Math.abs(c.vy)*
+        WORLD.objectBounce;
+    }
+    else{
+
+      c.vy=0;
+    }
+
+
+    c.grounded=true;
+  }
+  else{
+
+    c.grounded=false;
+  }
+
+
+  /*
+    HARD GROUND FRICTION.
+
+    This is intentionally strong.
+    A thrown noob should eventually
+    STOP rather than slide forever.
+  */
+
+  const friction=
+    c.grounded
+      ? WORLD.characterGroundFriction
+      : WORLD.characterAirFriction;
+
+
+  c.vx=
+    damp(
+      c.vx,
+      friction,
+      dt
+    );
+
+
+  /*
+    Kill microscopic movement.
+  */
+
+  if(
+    c.grounded &&
+    Math.abs(c.vx)<8
+  ){
+
+    c.vx=0;
+  }
+}
+
+
+/* =========================================================
+   KEYBOARD
+========================================================= */
+
+const keys=new Set();
+
+
+window.addEventListener(
+  "keydown",
+  e=>{
+
+    keys.add(
+      e.key.toLowerCase()
+    );
+  }
+);
+
+
+window.addEventListener(
+  "keyup",
+  e=>{
+
+    keys.delete(
+      e.key.toLowerCase()
+    );
+  }
+);
+
+
+/* =========================================================
+   PLAYER INPUT
+========================================================= */
+
+function updatePlayer(dt){
+
+  if(
+    !player ||
+    player.grabbed
+  ){
+    return;
+  }
+
+
+  let direction=0;
+
+
+  if(
+    keys.has("a") ||
+    keys.has("arrowleft")
+  ){
+
+    direction--;
+  }
+
+
+  if(
+    keys.has("d") ||
+    keys.has("arrowright")
+  ){
+
+    direction++;
+  }
+
+
+  if(direction!==0){
+
+    player.vx+=
+      direction*
+      WORLD.characterAcceleration*
+      dt;
+
+
+    player.vx=
+      clamp(
+        player.vx,
+        -WORLD.characterMaxSpeed,
+        WORLD.characterMaxSpeed
+      );
+  }
+
+
+  /*
+    Jump.
+  */
+
+  if(
+    (
+      keys.has("w") ||
+      keys.has("arrowup") ||
+      keys.has(" ")
+    ) &&
+    player.grounded
+  ){
+
+    player.vy=-760;
+
+    player.grounded=false;
+  }
+
+
+  updateCharacter(
+    player,
+    dt
+  );
+}
+
+
+/* =========================================================
+   NOOB UPDATE
+========================================================= */
+
+function updateNoobs(dt){
+
+  for(const n of noobs){
+
+    updateCharacter(
+      n,
+      dt
+    );
+  }
+}
+
+
+/* =========================================================
+   OBJECT PHYSICS
+========================================================= */
+
+function updateObject(obj,dt){
+
+  if(obj.grabbed){
+    return;
+  }
+
+
+  /*
+    Gravity.
+  */
+
+  obj.vy+=WORLD.gravity*dt;
+
+
+  /*
+    Movement.
+  */
+
+  obj.x+=obj.vx*dt;
+  obj.y+=obj.vy*dt;
+
+
+  /*
+    Rotation.
+  */
+
+  obj.rotation+=obj.vr*dt;
+
+
+  let onGround=false;
+
+
+  /*
+    BALL / BOMB
+  */
+
+  if(
+    obj.type==="ball" ||
+    obj.type==="bomb"
+  ){
+
+    const r=obj.radius;
+
+
+    /*
+      Walls.
+    */
+
+    if(obj.x-r<0){
+
+      obj.x=r;
+
+      obj.vx=
+        Math.abs(obj.vx)*
+        WORLD.wallBounce;
+    }
+
+
+    if(obj.x+r>W){
+
+      obj.x=
+        W-r;
+
+      obj.vx=
+        -Math.abs(obj.vx)*
+        WORLD.wallBounce;
+    }
+
+
+    /*
+      Floor.
+    */
+
+    if(obj.y+r>=floorY()){
+
+      obj.y=
+        floorY()-r;
+
+
+      if(Math.abs(obj.vy)>35){
+
+        obj.vy=
+          -Math.abs(obj.vy)*
+          WORLD.objectBounce;
+      }
+      else{
+
+        obj.vy=0;
+      }
+
+
+      onGround=true;
+    }
+  }
+
+
+  /*
+    CRATE
+  */
+
+  else{
+
+    const hw=obj.w/2;
+    const hh=obj.h/2;
+
+
+    /*
+      Walls.
+    */
+
+    if(obj.x-hw<0){
+
+      obj.x=hw;
+
+      obj.vx=
+        Math.abs(obj.vx)*
+        WORLD.wallBounce;
+    }
+
+
+    if(obj.x+hw>W){
+
+      obj.x=
+        W-hw;
+
+      obj.vx=
+        -Math.abs(obj.vx)*
+        WORLD.wallBounce;
+    }
+
+
+    /*
+      Floor.
+    */
+
+    if(obj.y+hh>=floorY()){
+
+      obj.y=
+        floorY()-hh;
+
+
+      if(Math.abs(obj.vy)>35){
+
+        obj.vy=
+          -Math.abs(obj.vy)*
+          WORLD.objectBounce;
+      }
+      else{
+
+        obj.vy=0;
+      }
+
+
+      onGround=true;
+    }
+  }
+
+
+  /*
+    GROUND FRICTION
+
+    This is deliberately applied AFTER
+    floor collision detection.
+  */
+
+  if(onGround){
+
+    obj.vx=
+      damp(
+        obj.vx,
+        WORLD.objectGroundFriction,
+        dt
+      );
+
+
+    obj.vr=
+      damp(
+        obj.vr,
+        16,
+        dt
+      );
+
+
+    /*
+      Remove tiny residual sliding.
+    */
+
+    if(Math.abs(obj.vx)<8){
+      obj.vx=0;
+    }
+
+
+    if(Math.abs(obj.vr)<.15){
+      obj.vr=0;
+    }
+  }
+
+  /*
+    Air movement.
+  */
+
+  else{
+
+    obj.vx=
+      damp(
+        obj.vx,
+        WORLD.objectAirFriction,
+        dt
+      );
+
+
+    obj.vr=
+      damp(
+        obj.vr,
+        4,
+        dt
+      );
+  }
+
+
+  /*
+    Bomb.
+  */
+
+  if(obj.type==="bomb"){
+
+    if(obj.fuseActive){
+
+      obj.fuse-=dt;
+
+
+      if(obj.fuse<=0){
+
+        explode(
+          obj.x,
+          obj.y,
+          180
+        );
+
+        obj.fuseActive=false;
+
+        obj.dead=true;
+      }
+    }
+
+
+    if(
+      !obj.fuseActive &&
+      Math.hypot(
+        obj.vx,
+        obj.vy
+      )>500
+    ){
+
+      obj.fuseActive=true;
+    }
+  }
+}
+
+
+/* =========================================================
+   OBJECT SIZE
+========================================================= */
+
+function objectRadius(obj){
+
+  if(
+    obj.type==="ball" ||
+    obj.type==="bomb"
+  ){
+
+    return obj.radius;
+  }
+
+
+  return Math.max(
+    obj.w,
+    obj.h
+  )/2;
+}
+
+
+/* =========================================================
+   OBJECT-OBJECT COLLISION
+========================================================= */
+
+function pushApart(a,b){
+
+  if(
+    a.grabbed ||
+    b.grabbed ||
+    a.dead ||
+    b.dead
+  ){
+    return;
+  }
+
+
+  const dx=b.x-a.x;
+  const dy=b.y-a.y;
+
+
+  let distance=
+    Math.hypot(
+      dx,
+      dy
+    );
+
+
+  /*
+    Prevent zero-distance division.
+  */
+
+  if(distance===0){
+
+    distance=.001;
+  }
+
+
+  const minDistance=
+    objectRadius(a)+
+    objectRadius(b);
+
+
+  if(distance>=minDistance){
+    return;
+  }
+
+
+  const nx=
+    dx/distance;
+
+  const ny=
+    dy/distance;
+
+
+  const overlap=
+    minDistance-distance;
+
+
+  /*
+    Separate them.
+  */
+
+  a.x-=nx*overlap*.5;
+  a.y-=ny*overlap*.5;
+
+  b.x+=nx*overlap*.5;
+  b.y+=ny*overlap*.5;
+
+
+  /*
+    Relative velocity.
+  */
+
+  const rvx=
+    b.vx-a.vx;
+
+  const rvy=
+    b.vy-a.vy;
+
+
+  const relative=
+    rvx*nx+
+    rvy*ny;
+
+
+  if(relative>0){
+    return;
+  }
+
+
+  const impulse=
+    -relative*
+    WORLD.collisionBounce;
+
+
+  a.vx-=nx*impulse;
+  a.vy-=ny*impulse;
+
+  b.vx+=nx*impulse;
+  b.vy+=ny*impulse;
+}
+
+
+/* =========================================================
+   OBJECT-CHARACTER COLLISION
+========================================================= */
+
+function collideObjectCharacter(obj,c){
+
+  if(
+    obj.grabbed ||
+    c.grabbed ||
+    c.dead ||
+    obj.dead
+  ){
+    return;
+  }
+
+
+  const dx=
+    c.x-obj.x;
+
+  const dy=
+    c.y-obj.y;
+
+
+  let distance=
+    Math.hypot(
+      dx,
+      dy
+    );
+
+
+  if(distance===0){
+    distance=.001;
+  }
+
+
+  const minDistance=
+    objectRadius(obj)+
+    Math.max(
+      c.w,
+      c.h
+    )/2;
+
+
+  if(distance>=minDistance){
+    return;
+  }
+
+
+  const nx=
+    dx/distance;
+
+  const ny=
+    dy/distance;
+
+
+  const overlap=
+    minDistance-distance;
+
+
+  /*
+    Separate both bodies.
+  */
+
+  c.x+=nx*overlap*.6;
+  c.y+=ny*overlap*.6;
+
+  obj.x-=nx*overlap*.4;
+  obj.y-=ny*overlap*.4;
+
+
+  /*
+    Collision impulse.
+  */
+
+  const relative=
+    (c.vx-obj.vx)*nx+
+    (c.vy-obj.vy)*ny;
+
+
+  if(relative<0){
+
+    const impulse=
+      -relative*.3;
+
+
+    c.vx+=
+      nx*impulse;
+
+    c.vy+=
+      ny*impulse;
+
+    obj.vx-=
+      nx*impulse;
+
+    obj.vy-=
+      ny*impulse;
+  }
+}
+
+
+/* =========================================================
+   CHARACTER-CHARACTER COLLISION
+========================================================= */
+
+function collideCharacters(){
+
+  /*
+    Player against noobs.
+  */
+
+  if(player && !player.grabbed){
+
+    for(const n of noobs){
+
+      if(
+        n.dead ||
+        n.grabbed
+      ){
+        continue;
+      }
+
+
+      const dx=
+        n.x-player.x;
+
+      const dy=
+        n.y-player.y;
+
+
+      let d=
+        Math.hypot(
+          dx,
+          dy
+        );
+
+
+      if(d===0){
+        d=.001;
+      }
+
+
+      const min=42;
+
+
+      if(d<min){
+
+        const nx=dx/d;
+        const ny=dy/d;
+
+        const overlap=min-d;
+
+
+        player.x-=
+          nx*overlap*.5;
+
+        player.y-=
+          ny*overlap*.5;
+
+        n.x+=
+          nx*overlap*.5;
+
+        n.y+=
+          ny*overlap*.5;
+
+
+        const relative=
+          (n.vx-player.vx)*nx+
+          (n.vy-player.vy)*ny;
+
+
+        if(relative<0){
+
+          const impulse=
+            -relative*
+            WORLD.noobCollisionBounce;
+
+
+          player.vx-=
+            nx*impulse;
+
+          player.vy-=
+            ny*impulse;
+
+          n.vx+=
+            nx*impulse;
+
+          n.vy+=
+            ny*impulse;
+        }
+      }
+    }
+  }
+
+
+  /*
+    Noob against noob.
+  */
+
+  for(
+    let i=0;
+    i<noobs.length;
+    i++
+  ){
+
+    const a=noobs[i];
+
+
+    if(a.dead || a.grabbed){
+      continue;
+    }
+
+
+    for(
+      let j=i+1;
+      j<noobs.length;
+      j++
+    ){
+
+      const b=noobs[j];
+
+
+      if(
+        b.dead ||
+        b.grabbed
+      ){
+        continue;
+      }
+
+
+      const dx=b.x-a.x;
+      const dy=b.y-a.y;
+
+
+      let d=
+        Math.hypot(
+          dx,
+          dy
+        );
+
+
+      if(d===0){
+        d=.001;
+      }
+
+
+      const min=42;
+
+
+      if(d<min){
+
+        const nx=dx/d;
+        const ny=dy/d;
+
+        const overlap=min-d;
+
+
+        a.x-=
+          nx*overlap*.5;
+
+        a.y-=
+          ny*overlap*.5;
+
+        b.x+=
+          nx*overlap*.5;
+
+        b.y+=
+          ny*overlap*.5;
+
+
+        const relative=
+          (b.vx-a.vx)*nx+
+          (b.vy-a.vy)*ny;
+
+
+        if(relative<0){
+
+          const impulse=
+            -relative*
+            WORLD.noobCollisionBounce;
+
+
+          a.vx-=
+            nx*impulse;
+
+          a.vy-=
+            ny*impulse;
+
+          b.vx+=
+            nx*impulse;
+
+          b.vy+=
+            ny*impulse;
+        }
+      }
+    }
+  }
+}
+
+
+/* =========================================================
+   EXPLOSIONS
+========================================================= */
+
+function explode(x,y,power){
+
+  /*
+    Visual particles only.
+    No audio.
+  */
+
+  if(particlesEnabled){
+
+    for(let i=0;i<35;i++){
+
+      const angle=
+        random(
+          0,
+          Math.PI*2
+        );
+
+      const speed=
+        random(
+          100,
+          650
+        );
+
+
+      particles.push({
+
+        x,
+        y,
+
+        vx:
+          Math.cos(angle)*
+          speed,
+
+        vy:
+          Math.sin(angle)*
+          speed,
+
+        life:
+          random(.3,.8),
+
+        maxLife:.8,
+
+        size:
+          random(2,6)
+      });
+    }
+  }
+
+
+  const affect=
+    (item,mult=1)=>{
+
+      if(
+        item.grabbed ||
+        item.dead
+      ){
+        return;
+      }
+
+
+      const dx=
+        item.x-x;
+
+      const dy=
+        item.y-y;
+
+
+      const d=
+        Math.max(
+          Math.hypot(
+            dx,
+            dy
+          ),
+          1
+        );
+
+
+      if(d>power){
+        return;
+      }
+
+
+      const strength=
+        (1-d/power)*
+        1100*
+        mult;
+
+
+      item.vx+=
+        (dx/d)*
+        strength;
+
+      item.vy+=
+        (dy/d)*
+        strength;
+    };
+
+
+  if(player){
+    affect(player,1.2);
+  }
+
+
+  for(const n of noobs){
+    affect(n,1);
+  }
+
+
+  for(const obj of objects){
+    affect(obj,1);
+  }
+}
+
+
+/* =========================================================
+   OBJECT CLEANUP
+========================================================= */
+
+function cleanupObjects(){
+
+  objects=
+    objects.filter(
+      obj=>!obj.dead
+    );
+}
+
+
+/* =========================================================
+   PARTICLES
+========================================================= */
+
+function updateParticles(dt){
+
+  for(const p of particles){
+
+    p.x+=p.vx*dt;
+    p.y+=p.vy*dt;
+
+    p.vy+=
+      WORLD.gravity*
+      .35*
+      dt;
+
+    p.life-=dt;
+  }
+
+
+  particles=
+    particles.filter(
+      p=>p.life>0
+    );
+}
+
+
+/* =========================================================
+   WORLD CONSTRAINTS
+========================================================= */
+
+function constrainCharacter(c){
+
+  if(!c){
+    return;
+  }
+
+
+  const halfW=c.w/2;
+  const halfH=c.h/2;
+
+
+  c.x=
+    clamp(
+      c.x,
+      halfW,
+      Math.max(
+        halfW,
+        W-halfW
+      )
+    );
+
+
+  const ground=
+    floorY()-halfH;
+
+
+  if(c.y>ground){
+
+    c.y=ground;
+
+    if(c.vy>0){
+      c.vy=0;
+    }
+
+    c.grounded=true;
+  }
+}
+
+
+function constrainObject(obj){
+
+  if(
+    !obj ||
+    obj.dead
+  ){
+    return;
+  }
+
+
+  if(
+    obj.type==="ball" ||
+    obj.type==="bomb"
+  ){
+
+    const r=obj.radius;
+
+
+    if(obj.x-r<0){
+      obj.x=r;
+    }
+
+    if(obj.x+r>W){
+      obj.x=W-r;
+    }
+
+
+    if(obj.y+r>floorY()){
+
+      obj.y=
+        floorY()-r;
+
+      if(obj.vy>0){
+        obj.vy=0;
+      }
+    }
+
+    return;
+  }
+
+
+  const hw=obj.w/2;
+  const hh=obj.h/2;
+
+
+  if(obj.x-hw<0){
+    obj.x=hw;
+  }
+
+  if(obj.x+hw>W){
+    obj.x=W-hw;
+  }
+
+
+  if(obj.y+hh>floorY()){
+
+    obj.y=
+      floorY()-hh;
+
+    if(obj.vy>0){
+      obj.vy=0;
+    }
+  }
+}
+
+
+function constrainGrabbedItem(item){
+
+  if(
+    item.type==="ball" ||
+    item.type==="bomb"
+  ){
+
+    const r=item.radius;
+
+
+    item.x=
+      clamp(
+        item.x,
+        r,
+        Math.max(
+          r,
+          W-r
+        )
+      );
+
+
+    item.y=
+      clamp(
+        item.y,
+        70+r,
+        Math.max(
+          70+r,
+          floorY()-r
+        )
+      );
+
+    return;
+  }
+
+
+  const hw=item.w/2;
+  const hh=item.h/2;
+
+
+  item.x=
+    clamp(
+      item.x,
+      hw,
+      Math.max(
+        hw,
+        W-hw
+      )
+    );
+
+
+  item.y=
+    clamp(
+      item.y,
+      70+hh,
+      Math.max(
+        70+hh,
+        floorY()-hh
+      )
+    );
+}
+
+
+function constrainEverything(){
+
+  if(player){
+    constrainCharacter(player);
+  }
+
+
+  for(const n of noobs){
+    constrainCharacter(n);
+  }
+
+
+  for(const obj of objects){
+    constrainObject(obj);
+  }
+}
+
+
+/* =========================================================
+   ALL COLLISIONS
+========================================================= */
+
+function collideEverything(){
+
+  /*
+    Object vs object.
+  */
+
+  for(
+    let i=0;
+    i<objects.length;
+    i++
+  ){
+
+    for(
+      let j=i+1;
+      j<objects.length;
+      j++
+    ){
+
+      pushApart(
+        objects[i],
+        objects[j]
+      );
+    }
+  }
+
+
+  /*
+    Object vs player/noobs.
+  */
+
+  for(const obj of objects){
+
+    if(player){
+
+      collideObjectCharacter(
+        obj,
+        player
+      );
+    }
+
+
+    for(const n of noobs){
+
+      collideObjectCharacter(
+        obj,
+        n
+      );
+    }
+  }
+
+
+  /*
+    Character vs character.
+  */
+
+  collideCharacters();
+
+
+  /*
+    Fix anything that collisions pushed
+    slightly through the floor/walls.
+  */
+
+  constrainEverything();
+}
+
+
+/* =========================================================
+   BACKGROUND
+========================================================= */
+
+function drawBackground(){
+
+  const gradient=
+    ctx.createLinearGradient(
+      0,
+      0,
+      W,
+      H
+    );
+
+
+  gradient.addColorStop(
+    0,
+    "#090512"
+  );
+
+  gradient.addColorStop(
+    .5,
+    "#12081e"
+  );
+
+  gradient.addColorStop(
+    1,
+    "#07040d"
+  );
+
+
+  ctx.fillStyle=gradient;
+
+  ctx.fillRect(
+    0,
+    0,
+    W,
+    H
+  );
+
+
+  if(glowEnabled){
+
+    const glow=
+      ctx.createRadialGradient(
+        W*.5,
+        H*.45,
+        10,
+        W*.5,
+        H*.45,
+        Math.max(W,H)*.65
+      );
+
+
+    glow.addColorStop(
+      0,
+      "rgba(140,70,255,.13)"
+    );
+
+    glow.addColorStop(
+      1,
+      "rgba(0,0,0,0)"
+    );
+
+
+    ctx.fillStyle=glow;
+
+    ctx.fillRect(
+      0,
+      0,
+      W,
+      H
+    );
+  }
+
+
+  /*
+    Ground strip.
+  */
+
+  ctx.fillStyle=
+    "rgba(255,255,255,.035)";
+
+  ctx.fillRect(
+    0,
+    floorY(),
+    W,
+    WORLD.floorHeight
+  );
+}
+
+
+/* =========================================================
+   CHARACTER DRAWING
+========================================================= */
+
+function drawCharacter(c){
+
+  if(c.dead){
+
+    drawDeadNoob(c);
+
+    return;
+  }
+
+
+  const x=c.x;
+  const y=c.y;
+
+
+  const headColor=
+    c.color.head;
+
+  const torsoColor=
+    c.color.torso;
+
+
+  const leftArm=
+    c.type==="player"
+      ? c.color.leftArm
+      : c.color.arms;
+
+
+  const rightArm=
+    c.type==="player"
+      ? c.color.rightArm
+      : c.color.arms;
+
+
+  const leftLeg=
+    c.type==="player"
+      ? c.color.leftLeg
+      : c.color.legs;
+
+
+  const rightLeg=
+    c.type==="player"
+      ? c.color.rightLeg
+      : c.color.legs;
+
+
+  ctx.save();
+
+
+  ctx.translate(
+    x,
+    y
+  );
+
+
+  ctx.rotate(
+    c.rotation||0
+  );
+
+
+  if(glowEnabled){
+
+    ctx.shadowBlur=18;
+
+    ctx.shadowColor=
+      "rgba(169,112,255,.3)";
+  }
+
+
+  /*
+    Head
+  */
+
+  ctx.fillStyle=headColor;
+
+  ctx.fillRect(
+    -14,
+    -39,
+    28,
+    28
+  );
+
+
+  /*
+    Face
+  */
+
+  ctx.shadowBlur=0;
+
+  ctx.fillStyle="#111";
+
+
+  ctx.fillRect(
+    -7,
+    -29,
+    3,
+    3
+  );
+
+  ctx.fillRect(
+    4,
+    -29,
+    3,
+    3
+  );
+
+
+  ctx.strokeStyle="#111";
+
+  ctx.lineWidth=2;
+
+
+  ctx.beginPath();
+
+  ctx.arc(
+    0,
+    -24,
+    7,
+    0,
+    Math.PI
+  );
+
+  ctx.stroke();
+
+
+  /*
+    Torso
+  */
+
+  ctx.fillStyle=torsoColor;
+
+  ctx.fillRect(
+    -18,
+    -8,
+    36,
+    32
+  );
+
+
+  /*
+    Arms
+  */
+
+  ctx.fillStyle=leftArm;
+
+  ctx.fillRect(
+    -29,
+    -7,
+    11,
+    31
+  );
+
+
+  ctx.fillStyle=rightArm;
+
+  ctx.fillRect(
+    18,
+    -7,
+    11,
+    31
+  );
+
+
+  /*
+    Legs
+  */
+
+  ctx.fillStyle=leftLeg;
+
+  ctx.fillRect(
+    -17,
+    24,
+    15,
+    31
+  );
+
+
+  ctx.fillStyle=rightLeg;
+
+  ctx.fillRect(
+    2,
+    24,
+    15,
+    31
+  );
+
+
+  ctx.restore();
+}
+
+
+/* =========================================================
+   DEAD NOOB
+========================================================= */
+
+function drawDeadNoob(n){
+
+  ctx.save();
+
+
+  ctx.translate(
+    n.x,
+    n.y
+  );
+
+
+  ctx.globalAlpha=.8;
+
+
+  ctx.fillStyle=n.color.head;
+
+  ctx.fillRect(
+    -13,
+    -42,
+    26,
+    26
+  );
+
+
+  ctx.fillStyle=n.color.torso;
+
+  ctx.fillRect(
+    -17,
+    -11,
+    34,
+    28
+  );
+
+
+  ctx.fillStyle=n.color.arms;
+
+  ctx.fillRect(
+    -28,
+    -10,
+    10,
+    29
+  );
+
+  ctx.fillRect(
+    18,
+    -10,
+    10,
+    29
+  );
+
+
+  ctx.fillStyle=n.color.legs;
+
+  ctx.fillRect(
+    -16,
+    17,
+    14,
+    29
+  );
+
+  ctx.fillRect(
+    2,
+    17,
+    14,
+    29
+  );
+
+
+  ctx.restore();
+}
+
+
+/* =========================================================
+   OBJECT DRAWING
+========================================================= */
+
+function drawObject(obj){
+
+  ctx.save();
+
+
+  ctx.translate(
+    obj.x,
+    obj.y
+  );
+
+
+  ctx.rotate(
+    obj.rotation||0
+  );
+
+
+  if(glowEnabled){
+
+    ctx.shadowBlur=18;
+
+    ctx.shadowColor=
+      "rgba(169,112,255,.28)";
+  }
+
+
+  /*
+    CRATE
+  */
+
+  if(obj.type==="crate"){
+
+    ctx.fillStyle="#a87543";
+
+    ctx.fillRect(
+      -obj.w/2,
+      -obj.h/2,
+      obj.w,
+      obj.h
+    );
+
+
+    ctx.strokeStyle="#d29a5f";
+
+    ctx.lineWidth=3;
+
+
+    ctx.strokeRect(
+      -obj.w/2,
+      -obj.h/2,
+      obj.w,
+      obj.h
+    );
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+      -obj.w/2,
+      -obj.h/2
+    );
+
+    ctx.lineTo(
+      obj.w/2,
+      obj.h/2
+    );
+
+
+    ctx.moveTo(
+      obj.w/2,
+      -obj.h/2
+    );
+
+    ctx.lineTo(
+      -obj.w/2,
+      obj.h/2
+    );
+
+    ctx.stroke();
+  }
+
+
+  /*
+    BALL
+  */
+
+  if(obj.type==="ball"){
+
+    ctx.fillStyle="#eee";
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+      0,
+      0,
+      obj.radius,
+      0,
+      Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    ctx.strokeStyle=
+      "rgba(0,0,0,.2)";
+
+    ctx.lineWidth=2;
+
+    ctx.stroke();
+  }
+
+
+  /*
+    BOMB
+  */
+
+  if(obj.type==="bomb"){
+
+    ctx.fillStyle="#202025";
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+      0,
+      0,
+      obj.radius,
+      0,
+      Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    ctx.fillStyle="#111";
+
+    ctx.fillRect(
+      -4,
+      -obj.radius-7,
+      8,
+      9
+    );
+
+
+    if(obj.fuseActive){
+
+      ctx.fillStyle="#ff9b35";
+
+
+      ctx.beginPath();
+
+      ctx.arc(
+        0,
+        -obj.radius-10,
+        4+
+          Math.sin(
+            performance.now()/60
+          )*2,
+        0,
+        Math.PI*2
+      );
+
+      ctx.fill();
+    }
+  }
+
+
+  ctx.restore();
+}
+
+
+/* =========================================================
+   PARTICLE DRAWING
+========================================================= */
+
+function drawParticles(){
+
+  if(!particlesEnabled){
+    return;
+  }
+
+
+  for(const p of particles){
+
+    ctx.globalAlpha=
+      Math.max(
+        0,
+        p.life/p.maxLife
+      );
+
+
+    ctx.fillStyle="#b981ff";
+
+
+    ctx.fillRect(
+      p.x-p.size/2,
+      p.y-p.size/2,
+      p.size,
+      p.size
+    );
+  }
+
+
+  ctx.globalAlpha=1;
+}
+
+
+/* =========================================================
+   RENDER
+========================================================= */
+
+function render(){
+
+  drawBackground();
+
+
+  /*
+    Objects first.
+  */
+
+  for(const obj of objects){
+
+    drawObject(obj);
+  }
+
+
+  /*
+    Noobs.
+  */
+
+  for(const n of noobs){
+
+    drawCharacter(n);
+  }
+
+
+  /*
+    Player.
+  */
+
+  if(player){
+
+    drawCharacter(player);
+  }
+
+
+  /*
+    Particles.
+  */
+
+  drawParticles();
+
+
+  /*
+    Grab indicator.
+  */
+
+  if(grabbed){
+
+    const item=
+      grabbed.item;
+
+
+    ctx.save();
+
+
+    ctx.strokeStyle=
+      "rgba(190,140,255,.75)";
+
+    ctx.lineWidth=2;
+
+
+    if(item.radius){
+
+      ctx.beginPath();
+
+      ctx.arc(
+        item.x,
+        item.y,
+        item.radius+7,
+        0,
+        Math.PI*2
+      );
+
+      ctx.stroke();
+    }
+
+    else{
+
+      ctx.strokeRect(
+        item.x-item.w/2-7,
+        item.y-item.h/2-7,
+        item.w+14,
+        item.h+14
+      );
+    }
+
+
+    ctx.restore();
+  }
+}
+
+
+/* =========================================================
+   UI STATUS
+========================================================= */
+
+function updatePopulation(){
+
+  const count=
+    noobs.filter(
+      n=>!n.dead
+    ).length;
+
+
+  document.getElementById(
+    "population"
+  ).textContent=
+    `${count} noob${count===1?"":"s"}`;
+
+
+  document.getElementById(
+    "characterStatus"
+  ).textContent=
+    player
+      ? "Character active"
+      : "No character found";
+}
+
+
+/* =========================================================
+   GAME LOOP
+========================================================= */
+
+function gameLoop(now){
+
+  const dt=
+    Math.min(
+      (now-lastTime)/1000,
+      .033
+    );
+
+
+  lastTime=now;
+
+
+  updatePlayer(dt);
+
+  updateNoobs(dt);
+
+
+  for(const obj of objects){
+
+    updateObject(
+      obj,
+      dt
+    );
+  }
+
+
+  collideEverything();
+
+
+  updateParticles(dt);
+
+
+  cleanupObjects();
+
+
+  updatePopulation();
+
+
+  render();
+
+
+  requestAnimationFrame(
+    gameLoop
+  );
+}
+
+
+resize();
+
+requestAnimationFrame(
+  gameLoop
+);
+
+
+/* =========================================================
+   MENU
+========================================================= */
+
+const astraMenu=
+  document.getElementById(
+    "astraMenu"
+  );
+
+const spawnMenu=
+  document.getElementById(
+    "spawnMenu"
+  );
+
+
+document.getElementById(
+  "astraButton"
+).addEventListener(
+  "click",
+  ()=>{
+
+    astraMenu.classList.toggle(
+      "open"
+    );
+  }
+);
+
+
+document.getElementById(
+  "plusButton"
+).addEventListener(
+  "click",
+  ()=>{
+
+    spawnMenu.classList.toggle(
+      "open"
+    );
+  }
+);
+
+
+/* =========================================================
+   CHARACTER MENU
+========================================================= */
+
+document.getElementById(
+  "spawnMe"
+).addEventListener(
+  "click",
+  ()=>{
+
+    if(player){
+
+      toast(
+        "Character already exists"
+      );
+
+      return;
+    }
+
+
+    player=
+      makePlayer(
+        W/2,
+        floorY()-70
+      );
+
+
+    toast(
+      "Character spawned!"
+    );
+  }
+);
+
+
+document.getElementById(
+  "resetCharacter"
+).addEventListener(
+  "click",
+  ()=>{
+
+    if(!player){
+
+      toast(
+        "No character found"
+      );
+
+      return;
+    }
+
+
+    player.x=W/2;
+
+    player.y=
+      floorY()-70;
+
+    player.vx=0;
+    player.vy=0;
+
+    player.rotation=0;
+
+    player.grounded=false;
+
+
+    toast(
+      "Character reset!"
+    );
+  }
+);
+
+
+document.getElementById(
+  "deleteCharacter"
+).addEventListener(
+  "click",
+  ()=>{
+
+    if(!player){
+
+      toast(
+        "No character found"
+      );
+
+      return;
+    }
+
+
+    if(grabbed?.item===player){
+
+      grabbed=null;
+
+      dragHistory=[];
+    }
+
+
+    player=null;
+
+
+    toast(
+      "Character deleted!"
+    );
+  }
+);
+
+
+/* =========================================================
+   SANDBOX MENU
+========================================================= */
+
+document.getElementById(
+  "resetNoobs"
+).addEventListener(
+  "click",
+  ()=>{
+
+    for(const n of noobs){
+
+      respawnNoob(n);
+    }
+
+
+    if(noobs.length===0){
+
+      noobs.push(
+        makeNoob(
+          W/2,
+          floorY()-70
+        )
+      );
+    }
+
+
+    toast(
+      "Noobs reset!"
+    );
+  }
+);
+
+
+document.getElementById(
+  "clearNoobs"
+).addEventListener(
+  "click",
+  ()=>{
+
+    if(
+      grabbed &&
+      grabbed.kind==="noob"
+    ){
+
+      grabbed=null;
+
+      dragHistory=[];
+    }
+
+
+    noobs=[];
+
+
+    toast(
+      "Noobs cleared!"
+    );
+  }
+);
+
+
+document.getElementById(
+  "clearObjects"
+).addEventListener(
+  "click",
+  ()=>{
+
+    if(
+      grabbed &&
+      grabbed.kind==="object"
+    ){
+
+      grabbed=null;
+
+      dragHistory=[];
+    }
+
+
+    objects=[];
+
+
+    toast(
+      "Objects cleared!"
+    );
+  }
+);
+
+
+document.getElementById(
+  "resetSandbox"
+).addEventListener(
+  "click",
+  ()=>{
+
+    grabbed=null;
+
+    dragHistory=[];
+
+    player=null;
+
+    noobs=[];
+
+    objects=[];
+
+    particles=[];
+
+
+    noobs.push(
+      makeNoob(
+        W/2,
+        floorY()-70
+      )
+    );
+
+
+    toast(
+      "Sandbox reset!"
+    );
+  }
+);
+
+
+/* =========================================================
+   COLORS
+========================================================= */
+
+document.getElementById(
+  "resetColors"
+).addEventListener(
+  "click",
+  ()=>{
+
+    Object.assign(
+      playerColors,
+      DEFAULT_COLORS
+    );
+
+
+    document.getElementById(
+      "headColor"
+    ).value=
+      playerColors.head;
+
+
+    document.getElementById(
+      "torsoColor"
+    ).value=
+      playerColors.torso;
+
+
+    document.getElementById(
+      "leftArmColor"
+    ).value=
+      playerColors.leftArm;
+
+
+    document.getElementById(
+      "rightArmColor"
+    ).value=
+      playerColors.rightArm;
+
+
+    document.getElementById(
+      "leftLegColor"
+    ).value=
+      playerColors.leftLeg;
+
+
+    document.getElementById(
+      "rightLegColor"
+    ).value=
+      playerColors.rightLeg;
+
+
+    if(player){
+
+      player.color={
+        ...playerColors
+      };
+    }
+
+
+    toast(
+      "Colors reset!"
+    );
+  }
+);
+
+
+[
+  ["headColor","head"],
+  ["torsoColor","torso"],
+  ["leftArmColor","leftArm"],
+  ["rightArmColor","rightArm"],
+  ["leftLegColor","leftLeg"],
+  ["rightLegColor","rightLeg"]
+].forEach(
+  ([id,key])=>{
+
+    document.getElementById(
+      id
+    ).addEventListener(
+      "input",
+      e=>{
+
+        playerColors[key]=
+          e.target.value;
+
+
+        if(player){
+
+          player.color[key]=
+            e.target.value;
+        }
+      }
+    );
+  }
+);
+
+
+/* =========================================================
+   VISUAL SETTINGS
+========================================================= */
+
+document.getElementById(
+  "vignetteToggle"
+).addEventListener(
+  "change",
+  e=>{
+
+    vignetteEnabled=
+      e.target.checked;
+
+
+    document.getElementById(
+      "vignette"
+    ).classList.toggle(
+      "hidden",
+      !vignetteEnabled
+    );
+  }
+);
+
+
+document.getElementById(
+  "scanlinesToggle"
+).addEventListener(
+  "change",
+  e=>{
+
+    scanlinesEnabled=
+      e.target.checked;
+
+
+    document.getElementById(
+      "scanlines"
+    ).classList.toggle(
+      "hidden",
+      !scanlinesEnabled
+    );
+  }
+);
+
+
+document.getElementById(
+  "glowToggle"
+).addEventListener(
+  "change",
+  e=>{
+
+    glowEnabled=
+      e.target.checked;
+  }
+);
+
+
+document.getElementById(
+  "particlesToggle"
+).addEventListener(
+  "change",
+  e=>{
+
+    particlesEnabled=
+      e.target.checked;
+  }
+);
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+document.getElementById(
+  "backButton"
+).addEventListener(
+  "click",
+  ()=>{
+
+    location.href=
+      "index.html";
+  }
+);
+
+
+/* =========================================================
+   SPAWN MENU
+========================================================= */
+
+document.querySelectorAll(
+  ".spawnButton"
+).forEach(
+  button=>{
+
+    button.addEventListener(
+      "click",
+      ()=>{
+
+        const type=
+          button.dataset.spawn;
+
+
+        /*
+          NOOB
+        */
+
+        if(type==="noob"){
+
+          noobs.push(
+            makeNoob(
+              W/2+
+                random(
+                  -120,
+                  120
+                ),
+              120
+            )
+          );
+
+
+          toast(
+            "Noob spawned!"
+          );
+        }
+
+
+        /*
+          PLAYER
+        */
+
+        if(type==="player"){
+
+          if(player){
+
+            toast(
+              "Character already exists"
+            );
+          }
+
+          else{
+
+            player=
+              makePlayer(
+                W/2,
+                floorY()-70
+              );
+
+
+            toast(
+              "Character spawned!"
+            );
+          }
+        }
+
+
+        /*
+          CRATE
+        */
+
+        if(type==="crate"){
+
+          objects.push(
+            makeObject(
+              "crate",
+              W/2+
+                random(
+                  -100,
+                  100
+                ),
+              120
+            )
+          );
+
+
+          toast(
+            "Crate spawned!"
+          );
+        }
+
+
+        /*
+          BALL
+        */
+
+        if(type==="ball"){
+
+          objects.push(
+            makeObject(
+              "ball",
+              W/2+
+                random(
+                  -100,
+                  100
+                ),
+              120
+            )
+          );
+
+
+          toast(
+            "Ball spawned!"
+          );
+        }
+
+
+        /*
+          BOMB
+        */
+
+        if(type==="bomb"){
+
+          objects.push(
+            makeObject(
+              "bomb",
+              W/2+
+                random(
+                  -100,
+                  100
+                ),
+              120
+            )
+          );
+
+
+          toast(
+            "Bomb spawned!"
+          );
+        }
+
+
+        /*
+          EXPLOSION
+        */
+
+        if(type==="explosion"){
+
+          explode(
+            W/2,
+            H/2,
+            220
+          );
+
+
+          toast(
+            "Boom!"
+          );
+        }
+      }
+    );
+  }
+);
+
+
+/* =========================================================
+   DRAGGABLE SPAWN MENU
+========================================================= */
+
+let menuDragging=false;
+
+let menuDragOffsetX=0;
+let menuDragOffsetY=0;
+
+const spawnHeader=
+  document.getElementById(
+    "spawnHeader"
+  );
+
+
+spawnHeader.addEventListener(
+  "pointerdown",
+  e=>{
+
+    menuDragging=true;
+
+
+    const rect=
+      spawnMenu.getBoundingClientRect();
+
+
+    menuDragOffsetX=
+      e.clientX-rect.left;
+
+    menuDragOffsetY=
+      e.clientY-rect.top;
+
+
+    try{
+
+      spawnHeader.setPointerCapture(
+        e.pointerId
+      );
+
+    }
+    catch(_){}
+
+
+    e.preventDefault();
+  }
+);
+
+
+spawnHeader.addEventListener(
+  "pointermove",
+  e=>{
+
+    if(!menuDragging){
+      return;
+    }
+
+
+    e.preventDefault();
+
+
+    let left=
+      e.clientX-
+      menuDragOffsetX;
+
+
+    let top=
+      e.clientY-
+      menuDragOffsetY;
+
+
+    const rect=
+      spawnMenu.getBoundingClientRect();
+
+
+    left=
+      clamp(
+        left,
+        5,
+        Math.max(
+          5,
+          window.innerWidth-
+          rect.width-
+          5
+        )
+      );
+
+
+    top=
+      clamp(
+        top,
+        70,
+        Math.max(
+          70,
+          window.innerHeight-
+          rect.height-
+          5
+        )
+      );
+
+
+    spawnMenu.style.left=
+      left+"px";
+
+    spawnMenu.style.top=
+      top+"px";
+
+    spawnMenu.style.right=
+      "auto";
+
+    spawnMenu.style.bottom=
+      "auto";
+  },
+  {passive:false}
+);
+
+
+function stopMenuDrag(e){
+
+  menuDragging=false;
+
+
+  try{
+
+    spawnHeader.releasePointerCapture(
+      e.pointerId
+    );
+
+  }
+  catch(_){}
+}
+
+
+spawnHeader.addEventListener(
+  "pointerup",
+  stopMenuDrag
+);
+
+
+spawnHeader.addEventListener(
+  "pointercancel",
+  stopMenuDrag
+);
+
+
+/* =========================================================
+   PANEL POINTER PROTECTION
+========================================================= */
+
+document.querySelectorAll(
+  ".panel"
+).forEach(
+  panel=>{
+
+    panel.addEventListener(
+      "pointerdown",
+      e=>{
+        e.stopPropagation();
+      }
+    );
+
+
+    panel.addEventListener(
+      "pointermove",
+      e=>{
+        e.stopPropagation();
+      }
+    );
+  }
+);
+
+
+/* =========================================================
+   INITIAL STATE
+========================================================= */
+
+spawnMenu.classList.remove(
+  "open"
+);
+
+astraMenu.classList.remove(
+  "open"
+);
+
+updatePopulation();
+
+</script>
+
+</body>
+</html>
