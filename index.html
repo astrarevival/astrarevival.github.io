@@ -6,7 +6,11 @@
 
     <title>Astra</title>
 
-    <link rel="icon" type="image/x-icon" href="images/astraicontransparent.ico">
+    <link
+        rel="icon"
+        type="image/x-icon"
+        href="images/astraicontransparent.ico"
+    >
 
     <style>
         * {
@@ -24,30 +28,30 @@
         body {
             font-family: Arial, Helvetica, sans-serif;
             color: white;
+            overflow: hidden;
 
             background:
                 radial-gradient(
-                    circle at 50% 35%,
-                    rgba(125, 55, 210, 0.28),
-                    transparent 45%
+                    circle at 50% 40%,
+                    rgba(126, 55, 220, 0.30),
+                    transparent 42%
                 ),
                 linear-gradient(
                     135deg,
                     #05030d 0%,
-                    #0d0618 45%,
-                    #17092a 100%
+                    #0c0617 45%,
+                    #18092b 100%
                 );
-
-            overflow: hidden;
         }
 
-        /* TOP BAR */
+        /* =========================
+           TOP BAR
+        ========================= */
 
         .topbar {
             position: fixed;
-            top: 18px;
+            top: 20px;
             left: 50%;
-
             transform: translateX(-50%);
 
             width: calc(100% - 40px);
@@ -58,51 +62,45 @@
             align-items: center;
             justify-content: space-between;
 
-            padding: 0 24px;
+            padding: 0 22px;
 
-            background: rgba(15, 10, 30, 0.65);
-
-            border: 1px solid rgba(190, 130, 255, 0.18);
+            background: rgba(12, 8, 22, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.09);
             border-radius: 18px;
 
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
 
             box-shadow:
-                0 10px 40px rgba(0, 0, 0, 0.35),
-                inset 0 0 25px rgba(160, 80, 255, 0.04);
+                0 10px 40px rgba(0, 0, 0, 0.30),
+                inset 0 1px 0 rgba(255, 255, 255, 0.04);
 
             z-index: 10;
-
-            animation: barEnter 0.8s ease;
         }
 
-        /* BRAND */
+        /* =========================
+           BRAND
+        ========================= */
 
         .brand {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 11px;
 
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
-
-            letter-spacing: 0.5px;
+            letter-spacing: -0.4px;
         }
 
         .brand img {
-            width: 38px;
-            height: 38px;
-
+            width: 36px;
+            height: 36px;
             object-fit: contain;
-
-            filter:
-                drop-shadow(
-                    0 0 10px rgba(160, 90, 255, 0.55)
-                );
         }
 
-        /* STATUS */
+        /* =========================
+           STATUS
+        ========================= */
 
         .status {
             display: flex;
@@ -111,37 +109,49 @@
 
             padding: 9px 15px;
 
+            font-size: 13px;
+            font-weight: 600;
+
+            color: #e7d9ff;
+
+            background: rgba(125, 60, 210, 0.14);
+            border: 1px solid rgba(160, 100, 240, 0.20);
             border-radius: 999px;
-
-            background: rgba(130, 70, 190, 0.12);
-
-            border: 1px solid rgba(190, 130, 255, 0.18);
-
-            color: rgba(255, 255, 255, 0.8);
-
-            font-size: 14px;
         }
 
         .status-dot {
             width: 8px;
             height: 8px;
 
+            background: #a96cff;
             border-radius: 50%;
 
-            background: #b56cff;
-
             box-shadow:
-                0 0 8px #b56cff,
-                0 0 18px rgba(181, 108, 255, 0.7);
+                0 0 10px rgba(169, 108, 255, 0.9);
 
             animation: pulse 2s infinite;
         }
 
-        /* MAIN */
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
 
-        .page {
+            50% {
+                opacity: 0.55;
+                transform: scale(0.85);
+            }
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        main {
             width: 100%;
-            height: 100%;
+            height: 100vh;
 
             display: flex;
             align-items: center;
@@ -150,220 +160,170 @@
             padding: 110px 20px 40px;
         }
 
-        .maintenance {
-            width: 100%;
-            max-width: 720px;
+        /* =========================
+           MAINTENANCE CARD
+        ========================= */
+
+        .card {
+            width: min(620px, 100%);
+            min-height: 570px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
 
             text-align: center;
 
-            padding: 60px 40px;
-
-            background: rgba(12, 8, 25, 0.62);
-
-            border: 1px solid rgba(190, 130, 255, 0.16);
-
-            border-radius: 28px;
-
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-
-            box-shadow:
-                0 25px 80px rgba(0, 0, 0, 0.45),
-                0 0 80px rgba(120, 50, 220, 0.08);
-
-            animation: cardEnter 1s ease;
-        }
-
-        /* FULL ASTRA LOGO */
-
-        .logo {
-            width: 150px;
-            height: 150px;
-
-            object-fit: contain;
-
-            margin-top: 20px;
-            margin-bottom: 25px;
-
-            filter:
-                drop-shadow(
-                    0 0 15px rgba(160, 80, 255, 0.4)
-                )
-                drop-shadow(
-                    0 0 40px rgba(160, 80, 255, 0.12)
-                );
-
-            animation: floating 4s ease-in-out infinite;
-        }
-
-        /* LABEL */
-
-        .label {
-            display: inline-block;
-
-            margin-bottom: 18px;
-
-            padding: 7px 14px;
-
-            border-radius: 999px;
-
-            background: rgba(150, 80, 230, 0.12);
-
-            border: 1px solid rgba(190, 130, 255, 0.18);
-
-            color: #d9baff;
-
-            font-size: 13px;
-            font-weight: 600;
-
-            letter-spacing: 1.5px;
-
-            text-transform: uppercase;
-        }
-
-        /* TITLE */
-
-        h1 {
-            font-size: clamp(46px, 8vw, 76px);
-
-            line-height: 1;
-
-            margin-bottom: 20px;
-
-            font-weight: 800;
-
-            letter-spacing: -2px;
+            padding: 55px 45px;
 
             background:
                 linear-gradient(
-                    135deg,
-                    #ffffff,
-                    #d9baff,
-                    #9c5cff
+                    145deg,
+                    rgba(255, 255, 255, 0.055),
+                    rgba(255, 255, 255, 0.018)
                 );
 
-            -webkit-background-clip: text;
-            background-clip: text;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            border-radius: 30px;
 
-            color: transparent;
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+
+            box-shadow:
+                0 30px 90px rgba(0, 0, 0, 0.45),
+                0 0 80px rgba(117, 52, 210, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+            animation: cardIn 0.8s ease-out;
         }
 
-        /* DESCRIPTION */
-
-        .description {
-            max-width: 540px;
-
-            margin: 0 auto 30px;
-
-            color: rgba(255, 255, 255, 0.65);
-
-            font-size: 17px;
-
-            line-height: 1.7;
-        }
-
-        /* SOON */
-
-        .soon {
-            font-size: 32px;
-
-            font-weight: 700;
-
-            color: white;
-
-            margin-bottom: 10px;
-        }
-
-        .subtext {
-            color: rgba(255, 255, 255, 0.4);
-
-            font-size: 14px;
-        }
-
-        /* FOOTER */
-
-        .footer {
-            position: fixed;
-
-            bottom: 20px;
-            left: 0;
-
-            width: 100%;
-
-            text-align: center;
-
-            color: rgba(255, 255, 255, 0.3);
-
-            font-size: 12px;
-        }
-
-        /* ANIMATIONS */
-
-        @keyframes barEnter {
+        @keyframes cardIn {
             from {
                 opacity: 0;
-
-                transform:
-                    translateX(-50%)
-                    translateY(-20px);
+                transform: translateY(20px);
             }
 
             to {
                 opacity: 1;
-
-                transform:
-                    translateX(-50%)
-                    translateY(0);
+                transform: translateY(0);
             }
         }
 
-        @keyframes cardEnter {
-            from {
-                opacity: 0;
+        /* =========================
+           LOGO
+        ========================= */
 
-                transform:
-                    translateY(25px)
-                    scale(0.98);
-            }
+        .logo {
+            width: 190px;
+            height: 190px;
 
-            to {
-                opacity: 1;
+            object-fit: contain;
 
-                transform:
-                    translateY(0)
-                    scale(1);
-            }
+            margin-bottom: 25px;
+
+            filter:
+                drop-shadow(0 0 22px rgba(142, 76, 235, 0.25));
+
+            animation: logoFloat 4s ease-in-out infinite;
         }
 
-        @keyframes floating {
+        @keyframes logoFloat {
             0%,
             100% {
                 transform: translateY(0);
             }
 
             50% {
-                transform: translateY(-8px);
+                transform: translateY(-5px);
             }
         }
 
-        @keyframes pulse {
-            0% {
-                opacity: 1;
-                transform: scale(1);
-            }
+        /* =========================
+           SMALL LABEL
+        ========================= */
 
-            50% {
-                opacity: 0.45;
-                transform: scale(0.75);
-            }
+        .label {
+            margin-bottom: 13px;
 
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
+            font-size: 13px;
+            font-weight: 700;
+
+            letter-spacing: 3px;
+            text-transform: uppercase;
+
+            color: #b58cff;
         }
 
-        /* MOBILE */
+        /* =========================
+           HEADING
+        ========================= */
+
+        h1 {
+            margin-bottom: 17px;
+
+            font-size: clamp(36px, 6vw, 52px);
+            line-height: 1.05;
+
+            letter-spacing: -2px;
+            font-weight: 800;
+        }
+
+        /* =========================
+           DESCRIPTION
+        ========================= */
+
+        .description {
+            max-width: 470px;
+
+            margin-bottom: 28px;
+
+            font-size: 16px;
+            line-height: 1.7;
+
+            color: rgba(255, 255, 255, 0.63);
+        }
+
+        /* =========================
+           SOON
+        ========================= */
+
+        .soon {
+            margin-bottom: 8px;
+
+            font-size: 19px;
+            font-weight: 700;
+
+            color: #ffffff;
+        }
+
+        .thanks {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.40);
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            position: fixed;
+
+            bottom: 18px;
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            font-size: 12px;
+
+            color: rgba(255, 255, 255, 0.28);
+
+            white-space: nowrap;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
 
         @media (max-width: 600px) {
 
@@ -373,43 +333,59 @@
                 width: calc(100% - 24px);
                 height: 62px;
 
-                padding: 0 16px;
+                padding: 0 15px;
+
+                border-radius: 15px;
             }
 
             .brand {
-                font-size: 19px;
+                font-size: 18px;
             }
 
             .brand img {
-                width: 32px;
-                height: 32px;
+                width: 31px;
+                height: 31px;
             }
 
             .status {
-                padding: 7px 11px;
-
+                padding: 8px 11px;
                 font-size: 12px;
             }
 
-            .maintenance {
-                padding: 45px 24px;
+            main {
+                padding:
+                    95px
+                    12px
+                    50px;
+            }
 
-                border-radius: 22px;
+            .card {
+                min-height: 520px;
+
+                padding: 45px 25px;
+
+                border-radius: 24px;
             }
 
             .logo {
-                width: 120px;
-                height: 120px;
+                width: 145px;
+                height: 145px;
 
-                margin-top: 15px;
+                margin-bottom: 20px;
+            }
+
+            h1 {
+                font-size: 38px;
+                letter-spacing: -1.5px;
             }
 
             .description {
-                font-size: 15px;
+                font-size: 14px;
+                line-height: 1.65;
             }
 
-            .soon {
-                font-size: 27px;
+            footer {
+                bottom: 12px;
             }
         }
     </style>
@@ -418,41 +394,34 @@
 <body>
 
     <!-- TOP BAR -->
-
     <header class="topbar">
 
         <div class="brand">
-
             <img
                 src="images/astraicontransparent.ico"
                 alt="Astra"
             >
 
             <span>Astra</span>
-
         </div>
 
         <div class="status">
-
             <span class="status-dot"></span>
-
             <span>Maintenance</span>
-
         </div>
 
     </header>
 
 
     <!-- MAIN CONTENT -->
+    <main>
 
-    <main class="page">
-
-        <section class="maintenance">
+        <section class="card">
 
             <img
                 class="logo"
                 src="images/astrafulllogo.ico"
-                alt="Astra Logo"
+                alt="Astra"
             >
 
             <div class="label">
@@ -464,15 +433,15 @@
             </h1>
 
             <p class="description">
-                Astra is currently undergoing maintenance
-                while we work on the next version of the platform.
+                Astra is currently undergoing maintenance while
+                we work on the next version of the platform.
             </p>
 
             <div class="soon">
                 Soon.
             </div>
 
-            <div class="subtext">
+            <div class="thanks">
                 Thanks for waiting.
             </div>
 
@@ -482,8 +451,7 @@
 
 
     <!-- FOOTER -->
-
-    <footer class="footer">
+    <footer>
         Astra © 2026
     </footer>
 
