@@ -6,6 +6,8 @@
 
     <title>Ragdoll Noob</title>
 
+    <link rel="icon" href="images/astraicontransparent.ico">
+
     <style>
         * {
             box-sizing: border-box;
@@ -17,7 +19,12 @@
             min-height: 100%;
             font-family: Arial, Helvetica, sans-serif;
             background:
-                radial-gradient(circle at top, #34205f 0%, #171225 45%, #08070d 100%);
+                radial-gradient(
+                    circle at top,
+                    #34205f 0%,
+                    #171225 45%,
+                    #08070d 100%
+                );
             color: white;
         }
 
@@ -118,12 +125,16 @@
             height: auto;
             aspect-ratio: 16 / 9;
             touch-action: none;
-            cursor: crosshair;
+            cursor: grab;
+        }
+
+        canvas:active {
+            cursor: grabbing;
         }
 
         .controls {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            display: flex;
+            flex-wrap: wrap;
             gap: 10px;
             margin-top: 14px;
         }
@@ -134,6 +145,7 @@
             border-radius: 12px;
             background: rgba(255, 255, 255, 0.07);
             color: white;
+            padding: 0 17px;
             font-size: 14px;
             font-weight: 700;
             cursor: pointer;
@@ -150,19 +162,90 @@
         }
 
         .primary {
-            background: linear-gradient(
-                135deg,
-                rgba(139, 92, 246, 0.8),
-                rgba(99, 55, 180, 0.8)
-            );
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(139, 92, 246, 0.8),
+                    rgba(99, 55, 180, 0.8)
+                );
         }
 
         .primary:hover {
-            background: linear-gradient(
-                135deg,
-                rgba(155, 110, 255, 0.9),
-                rgba(112, 67, 195, 0.9)
-            );
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(155, 110, 255, 0.9),
+                    rgba(112, 67, 195, 0.9)
+                );
+        }
+
+        .danger {
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(210, 65, 85, 0.65),
+                    rgba(150, 40, 70, 0.65)
+                );
+        }
+
+        /* Spawn menu */
+
+        .spawn-area {
+            position: relative;
+            display: inline-block;
+        }
+
+        .spawn-menu {
+            position: absolute;
+            left: 0;
+            bottom: calc(100% + 8px);
+            width: 230px;
+
+            display: none;
+
+            padding: 10px;
+
+            background: rgba(20, 16, 34, 0.96);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 15px;
+
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, 0.45);
+
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+
+            z-index: 20;
+        }
+
+        .spawn-menu.open {
+            display: block;
+        }
+
+        .spawn-menu-title {
+            color: #aaa3bd;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 5px 8px 9px;
+        }
+
+        .spawn-option {
+            width: 100%;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            margin: 4px 0;
+            padding: 0 12px;
+
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .spawn-option:hover {
+            background: rgba(139, 92, 246, 0.2);
         }
 
         .instructions {
@@ -185,16 +268,13 @@
         }
 
         @media (max-width: 700px) {
+
             body {
                 padding: 12px;
             }
 
             header {
                 align-items: flex-start;
-            }
-
-            .controls {
-                grid-template-columns: repeat(2, 1fr);
             }
 
             .game-card {
@@ -209,9 +289,28 @@
                 padding: 9px 12px;
                 font-size: 13px;
             }
+
+            .controls {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .controls > button,
+            .spawn-area {
+                width: 100%;
+            }
+
+            .spawn-area > button {
+                width: 100%;
+            }
+
+            .spawn-menu {
+                width: 100%;
+            }
         }
 
         @media (max-width: 430px) {
+
             header {
                 flex-direction: column;
             }
@@ -219,10 +318,6 @@
             .back-button {
                 width: 100%;
                 text-align: center;
-            }
-
-            .controls {
-                grid-template-columns: 1fr 1fr;
             }
         }
     </style>
@@ -233,7 +328,9 @@
 <div class="page">
 
     <header>
+
         <div class="brand">
+
             <img
                 class="brand-icon"
                 src="images/astraicontransparent.ico"
@@ -244,46 +341,96 @@
                 <h1>Ragdoll Noob</h1>
                 <p>An absolutely pointless physics sandbox.</p>
             </div>
+
         </div>
 
-        <a class="back-button" href="index.html">
+        <a
+            class="back-button"
+            href="index.html"
+        >
             ← Back to Astra
         </a>
+
     </header>
 
 
     <main class="game-card">
 
         <div class="game-title">
+
             <h2>RAGDOLL NOOB</h2>
-            <p>Throw him around. He doesn't care.</p>
+
+            <p>
+                Throw him around. He doesn't care.
+            </p>
+
         </div>
 
 
         <div class="game-wrapper">
+
             <canvas
                 id="gameCanvas"
                 width="960"
                 height="540"
             ></canvas>
+
         </div>
 
 
         <div class="controls">
-            <button
-                id="crateButton"
-                class="primary"
-                type="button"
-            >
-                🧱 Spawn Crate
-            </button>
 
-            <button
-                id="ballButton"
-                type="button"
-            >
-                ⚽ Spawn Ball
-            </button>
+            <div class="spawn-area">
+
+                <button
+                    id="spawnButton"
+                    class="primary"
+                    type="button"
+                >
+                    ➕ Spawn
+                </button>
+
+
+                <div
+                    id="spawnMenu"
+                    class="spawn-menu"
+                >
+
+                    <div class="spawn-menu-title">
+                        Spawn object
+                    </div>
+
+
+                    <button
+                        class="spawn-option"
+                        data-spawn="crate"
+                        type="button"
+                    >
+                        🧱 Crate
+                    </button>
+
+
+                    <button
+                        class="spawn-option"
+                        data-spawn="ball"
+                        type="button"
+                    >
+                        ⚽ Ball
+                    </button>
+
+
+                    <button
+                        class="spawn-option"
+                        data-spawn="bomb"
+                        type="button"
+                    >
+                        💣 Cartoon Bomb
+                    </button>
+
+                </div>
+
+            </div>
+
 
             <button
                 id="boomButton"
@@ -292,21 +439,33 @@
                 💥 Cartoon BOOM
             </button>
 
+
             <button
                 id="resetButton"
                 type="button"
             >
                 🔄 Reset Noob
             </button>
+
+
+            <button
+                id="clearButton"
+                class="danger"
+                type="button"
+            >
+                🗑️ Clear Objects
+            </button>
+
         </div>
 
 
         <div class="instructions">
+
             <strong>How to play:</strong>
-            Click or tap the noob to throw him around.
-            Spawn objects and cause maximum chaos.
-            There is no objective.
-            The noob is simply here.
+            Grab the Noob or any object and throw it around.
+            Use <strong>Spawn</strong> to add things.
+            The Noob has absolutely no objective.
+
         </div>
 
     </main>
@@ -322,137 +481,547 @@
 <script>
 (() => {
 
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
+    const canvas =
+        document.getElementById("gameCanvas");
+
+    const ctx =
+        canvas.getContext("2d");
+
 
     const WIDTH = canvas.width;
     const HEIGHT = canvas.height;
 
-    const GROUND_Y = HEIGHT - 45;
+    const GROUND_Y =
+        HEIGHT - 45;
 
-    let objects = [];
-    let particles = [];
 
-    let noob = null;
+    /*
+        ================================================
+        COLORS
+        ================================================
+    */
 
-    let mouse = {
-        x: 0,
-        y: 0
+    const COLORS = {
+
+        yellow: "#F5CD30",
+
+        blue: "#0D69AC",
+
+        green: "#A4BD47",
+
+        black: "#111111",
+
+        crate: "#9B6A3B",
+
+        crateLight: "#D49A5C",
+
+        crateDark: "#704522"
+
     };
 
-    let dragging = false;
 
-    let lastTime = performance.now();
+    /*
+        ================================================
+        PHYSICS
+        ================================================
+    */
+
+    const GRAVITY = 0.62;
+
+    const AIR_FRICTION = 0.995;
+
+    const GROUND_FRICTION = 0.84;
 
 
-    function resetNoob() {
+    let bodies = [];
 
-        noob = {
-            x: WIDTH / 2,
-            y: GROUND_Y - 75,
+    let joints = [];
+
+    let objects = [];
+
+    let particles = [];
+
+
+    let grabbed = null;
+
+    let grabOffsetX = 0;
+
+    let grabOffsetY = 0;
+
+    let lastPointer = null;
+
+
+    let lastTime =
+        performance.now();
+
+
+    /*
+        ================================================
+        BODY
+        ================================================
+    */
+
+    function createBody(
+        name,
+        x,
+        y,
+        width,
+        height,
+        color,
+        mass
+    ) {
+
+        return {
+
+            type: "body",
+
+            name,
+
+            x,
+
+            y,
+
+            width,
+
+            height,
+
+            color,
+
+            mass,
 
             vx: 0,
+
             vy: 0,
 
             angle: 0,
-            angularVelocity: 0,
 
-            ragdoll: false,
+            angularVelocity: 0
 
-            width: 42,
-            height: 78
         };
 
     }
 
 
+    /*
+        ================================================
+        NOOB
+        ================================================
+    */
+
+    function createNoob() {
+
+        bodies = [];
+
+        joints = [];
+
+
+        const x =
+            WIDTH / 2;
+
+
+        const torso =
+            createBody(
+                "torso",
+                x,
+                GROUND_Y - 112,
+                50,
+                58,
+                COLORS.blue,
+                2
+            );
+
+
+        const head =
+            createBody(
+                "head",
+                x,
+                GROUND_Y - 164,
+                46,
+                42,
+                COLORS.yellow,
+                1
+            );
+
+
+        const leftArm =
+            createBody(
+                "leftArm",
+                x - 40,
+                GROUND_Y - 105,
+                16,
+                58,
+                COLORS.yellow,
+                0.8
+            );
+
+
+        const rightArm =
+            createBody(
+                "rightArm",
+                x + 40,
+                GROUND_Y - 105,
+                16,
+                58,
+                COLORS.yellow,
+                0.8
+            );
+
+
+        const leftLeg =
+            createBody(
+                "leftLeg",
+                x - 14,
+                GROUND_Y - 48,
+                20,
+                56,
+                COLORS.green,
+                1
+            );
+
+
+        const rightLeg =
+            createBody(
+                "rightLeg",
+                x + 14,
+                GROUND_Y - 48,
+                20,
+                56,
+                COLORS.green,
+                1
+            );
+
+
+        bodies.push(
+            torso,
+            head,
+            leftArm,
+            rightArm,
+            leftLeg,
+            rightLeg
+        );
+
+
+        joints.push(
+
+            {
+                a: torso,
+                b: head,
+                ax: 0,
+                ay: -29,
+                bx: 0,
+                by: 21,
+                strength: 0.72
+            },
+
+            {
+                a: torso,
+                b: leftArm,
+                ax: -25,
+                ay: -20,
+                bx: 0,
+                by: -25,
+                strength: 0.42
+            },
+
+            {
+                a: torso,
+                b: rightArm,
+                ax: 25,
+                ay: -20,
+                bx: 0,
+                by: -25,
+                strength: 0.42
+            },
+
+            {
+                a: torso,
+                b: leftLeg,
+                ax: -13,
+                ay: 29,
+                bx: 0,
+                by: -28,
+                strength: 0.62
+            },
+
+            {
+                a: torso,
+                b: rightLeg,
+                ax: 13,
+                ay: 29,
+                bx: 0,
+                by: -28,
+                strength: 0.62
+            }
+
+        );
+
+    }
+
+
+    /*
+        ================================================
+        RESET
+        ================================================
+    */
+
+    function resetNoob() {
+
+        createNoob();
+
+    }
+
+
+    /*
+        ================================================
+        SPAWN CRATE
+        ================================================
+    */
+
     function spawnCrate() {
 
         objects.push({
+
             type: "crate",
 
             x: WIDTH / 2,
-            y: 80,
 
-            size: 38,
+            y: 70,
 
-            vx: (Math.random() - 0.5) * 4,
+            size: 42,
+
+            vx:
+                (Math.random() - 0.5) * 6,
+
             vy: 0,
 
-            rotation: Math.random() * Math.PI,
+            rotation:
+                Math.random() * Math.PI,
 
-            vr: (Math.random() - 0.5) * 0.1
+            vr:
+                (Math.random() - 0.5) * 0.16,
+
+            mass: 2
+
         });
 
     }
 
+
+    /*
+        ================================================
+        SPAWN BALL
+        ================================================
+    */
 
     function spawnBall() {
 
         objects.push({
+
             type: "ball",
 
             x: WIDTH / 2,
-            y: 80,
 
-            radius: 19,
+            y: 70,
 
-            vx: (Math.random() - 0.5) * 5,
+            radius: 20,
+
+            vx:
+                (Math.random() - 0.5) * 7,
+
             vy: 0,
 
-            rotation: 0
+            rotation: 0,
+
+            mass: 1
+
         });
 
     }
 
 
-    function createExplosion(x, y) {
+    /*
+        ================================================
+        SPAWN CARTOON BOMB
+        ================================================
+    */
 
-        for (let i = 0; i < 35; i++) {
+    function spawnBomb() {
+
+        objects.push({
+
+            type: "bomb",
+
+            x: WIDTH / 2,
+
+            y: 70,
+
+            radius: 19,
+
+            vx:
+                (Math.random() - 0.5) * 5,
+
+            vy: 0,
+
+            rotation: 0,
+
+            mass: 1.5,
+
+            fuse: 0,
+
+            exploded: false
+
+        });
+
+    }
+
+
+    /*
+        ================================================
+        EXPLOSION
+        ================================================
+    */
+
+    function explode(x, y) {
+
+        for (
+            let i = 0;
+            i < 48;
+            i++
+        ) {
 
             const angle =
-                Math.random() * Math.PI * 2;
+                Math.random() *
+                Math.PI *
+                2;
+
 
             const speed =
-                Math.random() * 7 + 2;
+                Math.random() * 8 + 2;
+
 
             particles.push({
-                x: x,
-                y: y,
 
-                vx: Math.cos(angle) * speed,
-                vy: Math.sin(angle) * speed,
+                x,
+
+                y,
+
+                vx:
+                    Math.cos(angle) * speed,
+
+                vy:
+                    Math.sin(angle) * speed,
 
                 life: 1,
 
-                size: Math.random() * 7 + 3
+                size:
+                    Math.random() * 7 + 3
+
             });
 
         }
 
 
-        const dx = noob.x - x;
-        const dy = noob.y - y;
+        /*
+            Push Noob
+        */
 
-        const distance =
-            Math.sqrt(dx * dx + dy * dy);
+        for (const body of bodies) {
+
+            const dx =
+                body.x - x;
+
+            const dy =
+                body.y - y;
 
 
-        if (distance < 300) {
+            const distance =
+                Math.sqrt(
+                    dx * dx +
+                    dy * dy
+                );
 
-            const strength =
-                (1 - distance / 300) * 22;
 
-            const angle =
-                Math.atan2(dy, dx);
+            if (distance < 330) {
 
-            noob.vx += Math.cos(angle) * strength;
-            noob.vy += Math.sin(angle) * strength - 8;
+                const strength =
+                    (1 - distance / 330) *
+                    26;
 
-            noob.angularVelocity +=
-                (Math.random() - 0.5) * 1.2;
 
-            noob.ragdoll = true;
+                const angle =
+                    Math.atan2(dy, dx);
+
+
+                body.vx +=
+                    Math.cos(angle) *
+                    strength /
+                    body.mass;
+
+
+                body.vy +=
+                    Math.sin(angle) *
+                    strength /
+                    body.mass -
+                    7;
+
+
+                body.angularVelocity +=
+                    (Math.random() - 0.5) *
+                    2;
+
+            }
+
+        }
+
+
+        /*
+            Push spawned objects
+        */
+
+        for (const object of objects) {
+
+            const dx =
+                object.x - x;
+
+            const dy =
+                object.y - y;
+
+
+            const distance =
+                Math.sqrt(
+                    dx * dx +
+                    dy * dy
+                );
+
+
+            if (
+                distance < 330 &&
+                distance > 0
+            ) {
+
+                const strength =
+                    (1 - distance / 330) *
+                    25;
+
+
+                const angle =
+                    Math.atan2(dy, dx);
+
+
+                object.vx +=
+                    Math.cos(angle) *
+                    strength /
+                    object.mass;
+
+
+                object.vy +=
+                    Math.sin(angle) *
+                    strength /
+                    object.mass -
+                    5;
+
+            }
+
         }
 
     }
@@ -460,176 +1029,510 @@
 
     function cartoonBoom() {
 
-        createExplosion(
-            noob.x + (Math.random() - 0.5) * 100,
-            noob.y + (Math.random() - 0.5) * 80
+        const torso =
+            bodies.find(
+                body =>
+                    body.name === "torso"
+            );
+
+
+        if (!torso) {
+            return;
+        }
+
+
+        explode(
+
+            torso.x +
+                (Math.random() - 0.5) * 100,
+
+            torso.y +
+                (Math.random() - 0.5) * 80
+
         );
 
     }
 
 
-    function update(delta) {
+    /*
+        ================================================
+        UPDATE JOINTS
+        ================================================
+    */
 
-        const dt =
-            Math.min(delta / 16.67, 2);
+    function solveJoints() {
 
+        for (const joint of joints) {
 
-        // Noob physics
+            const a =
+                joint.a;
 
-        noob.vy += 0.65 * dt;
-
-        noob.x += noob.vx * dt;
-        noob.y += noob.vy * dt;
-
-        noob.angle +=
-            noob.angularVelocity * dt;
-
-        noob.angularVelocity *= 0.995;
-
-        noob.vx *= 0.995;
+            const b =
+                joint.b;
 
 
-        if (noob.y + noob.height / 2 > GROUND_Y) {
+            const targetX =
+                a.x +
+                joint.ax;
 
-            noob.y =
-                GROUND_Y - noob.height / 2;
 
-            noob.vy *= -0.35;
+            const targetY =
+                a.y +
+                joint.ay;
 
-            noob.vx *= 0.85;
 
-            noob.angularVelocity *= 0.8;
+            const bx =
+                b.x +
+                joint.bx;
+
+
+            const by =
+                b.y +
+                joint.by;
+
+
+            const dx =
+                targetX - bx;
+
+            const dy =
+                targetY - by;
+
+
+            b.x +=
+                dx *
+                joint.strength;
+
+            b.y +=
+                dy *
+                joint.strength;
+
+
+            a.vx +=
+                dx *
+                0.008;
+
+            a.vy +=
+                dy *
+                0.008;
+
+
+            b.vx +=
+                dx *
+                0.012;
+
+            b.vy +=
+                dy *
+                0.012;
+
+        }
+
+    }
+
+
+    /*
+        ================================================
+        BODY PHYSICS
+        ================================================
+    */
+
+    function updateBodies(dt) {
+
+        for (const body of bodies) {
+
+            body.vy +=
+                GRAVITY * dt;
+
+
+            body.x +=
+                body.vx * dt;
+
+            body.y +=
+                body.vy * dt;
+
+
+            body.angle +=
+                body.angularVelocity * dt;
+
+
+            body.vx *=
+                AIR_FRICTION;
+
+            body.angularVelocity *=
+                0.992;
+
+
+            /*
+                Ground collision
+            */
+
+            const bottom =
+                body.y +
+                body.height / 2;
+
+
+            if (bottom > GROUND_Y) {
+
+                body.y =
+                    GROUND_Y -
+                    body.height / 2;
+
+
+                body.vy *=
+                    -0.32;
+
+
+                body.vx *=
+                    GROUND_FRICTION;
+
+
+                body.angularVelocity *=
+                    0.82;
+
+            }
+
+
+            /*
+                Side walls
+            */
+
+            const halfWidth =
+                body.width / 2;
+
+
+            if (
+                body.x - halfWidth <
+                0
+            ) {
+
+                body.x =
+                    halfWidth;
+
+                body.vx *=
+                    -0.6;
+
+            }
+
+
+            if (
+                body.x + halfWidth >
+                WIDTH
+            ) {
+
+                body.x =
+                    WIDTH -
+                    halfWidth;
+
+                body.vx *=
+                    -0.6;
+
+            }
 
         }
 
 
-        if (Math.abs(noob.vx) > 0.2 ||
-            Math.abs(noob.vy) > 0.2) {
+        /*
+            Solve joints several times
+            to keep the ragdoll together.
+        */
 
-            noob.ragdoll = true;
+        for (
+            let i = 0;
+            i < 3;
+            i++
+        ) {
+
+            solveJoints();
 
         }
 
-
-        // Screen boundaries
-
-        if (noob.x < 25) {
-            noob.x = 25;
-            noob.vx *= -0.65;
-        }
-
-        if (noob.x > WIDTH - 25) {
-            noob.x = WIDTH - 25;
-            noob.vx *= -0.65;
-        }
+    }
 
 
-        // Objects
+    /*
+        ================================================
+        OBJECT PHYSICS
+        ================================================
+    */
+
+    function updateObjects(dt) {
 
         for (const object of objects) {
 
-            object.vy += 0.65 * dt;
-
-            object.x += object.vx * dt;
-            object.y += object.vy * dt;
+            object.vy +=
+                GRAVITY * dt;
 
 
-            if (object.type === "crate") {
+            object.x +=
+                object.vx * dt;
+
+            object.y +=
+                object.vy * dt;
+
+
+            object.vx *=
+                AIR_FRICTION;
+
+
+            /*
+                Crate
+            */
+
+            if (
+                object.type === "crate"
+            ) {
 
                 object.rotation +=
                     object.vr * dt;
 
+
                 const half =
                     object.size / 2;
 
-                if (object.y + half > GROUND_Y) {
-
-                    object.y =
-                        GROUND_Y - half;
-
-                    object.vy *= -0.3;
-                    object.vx *= 0.92;
-                    object.vr *= 0.9;
-
-                }
-
-            }
-
-
-            if (object.type === "ball") {
 
                 if (
-                    object.y + object.radius >
+                    object.y + half >
                     GROUND_Y
                 ) {
 
                     object.y =
-                        GROUND_Y - object.radius;
+                        GROUND_Y - half;
 
-                    object.vy *= -0.65;
-                    object.vx *= 0.98;
+                    object.vy *=
+                        -0.38;
+
+                    object.vx *=
+                        GROUND_FRICTION;
+
+                    object.vr *=
+                        0.88;
 
                 }
 
             }
 
 
-            // Object / noob collision
+            /*
+                Ball
+            */
 
-            const dx =
-                noob.x - object.x;
-
-            const dy =
-                noob.y - object.y;
-
-            const distance =
-                Math.sqrt(dx * dx + dy * dy);
-
-
-            const collisionDistance =
+            if (
                 object.type === "ball"
-                    ? object.radius + 35
-                    : object.size / 2 + 38;
+            ) {
+
+                if (
+                    object.y +
+                    object.radius >
+                    GROUND_Y
+                ) {
+
+                    object.y =
+                        GROUND_Y -
+                        object.radius;
+
+                    object.vy *=
+                        -0.68;
+
+                    object.vx *=
+                        0.98;
+
+                }
+
+            }
 
 
-            if (distance < collisionDistance) {
+            /*
+                Bomb
+            */
 
-                const angle =
-                    Math.atan2(dy, dx);
+            if (
+                object.type === "bomb"
+            ) {
 
-                const force =
-                    object.type === "ball"
-                        ? 12
-                        : 9;
+                if (
+                    object.y +
+                    object.radius >
+                    GROUND_Y
+                ) {
+
+                    object.y =
+                        GROUND_Y -
+                        object.radius;
+
+                    object.vy *=
+                        -0.42;
+
+                    object.vx *=
+                        0.9;
+
+                }
+
+                /*
+                    Bombs automatically pop
+                    after being around for
+                    a while.
+                */
+
+                object.fuse +=
+                    dt;
 
 
-                noob.vx +=
-                    Math.cos(angle) * force;
+                if (
+                    object.fuse > 260 &&
+                    !object.exploded
+                ) {
 
-                noob.vy +=
-                    Math.sin(angle) * force - 4;
+                    object.exploded = true;
 
-                noob.angularVelocity +=
-                    (Math.random() - 0.5) * 0.8;
+                    explode(
+                        object.x,
+                        object.y
+                    );
 
-                noob.ragdoll = true;
+                }
+
+            }
+
+
+            /*
+                Object / Noob collision
+            */
+
+            for (const body of bodies) {
+
+                const dx =
+                    body.x -
+                    object.x;
+
+                const dy =
+                    body.y -
+                    object.y;
+
+
+                const distance =
+                    Math.sqrt(
+                        dx * dx +
+                        dy * dy
+                    );
+
+
+                let collisionDistance;
+
+
+                if (
+                    object.type === "ball" ||
+                    object.type === "bomb"
+                ) {
+
+                    collisionDistance =
+                        object.radius +
+                        Math.max(
+                            body.width,
+                            body.height
+                        ) *
+                        0.42;
+
+                } else {
+
+                    collisionDistance =
+                        object.size / 2 +
+                        Math.max(
+                            body.width,
+                            body.height
+                        ) *
+                        0.42;
+
+                }
+
+
+                if (
+                    distance <
+                    collisionDistance &&
+                    distance > 0
+                ) {
+
+                    const angle =
+                        Math.atan2(
+                            dy,
+                            dx
+                        );
+
+
+                    const force =
+                        object.type === "bomb"
+                            ? 8
+                            : 5;
+
+
+                    body.vx +=
+                        Math.cos(angle) *
+                        force /
+                        body.mass;
+
+
+                    body.vy +=
+                        Math.sin(angle) *
+                        force /
+                        body.mass -
+                        2;
+
+
+                    body.angularVelocity +=
+                        (Math.random() - 0.5) *
+                        0.9;
+
+
+                    /*
+                        Bomb touching the Noob
+                        causes a cartoon explosion.
+                    */
+
+                    if (
+                        object.type === "bomb" &&
+                        !object.exploded
+                    ) {
+
+                        object.exploded = true;
+
+                        explode(
+                            object.x,
+                            object.y
+                        );
+
+                    }
+
+                }
 
             }
 
         }
 
 
-        // Remove objects that fall away
+        /*
+            Remove exploded bombs
+        */
 
         objects =
-            objects.filter(object =>
-                object.x > -150 &&
-                object.x < WIDTH + 150 &&
-                object.y < HEIGHT + 200
+            objects.filter(
+                object =>
+                    !(
+                        object.type === "bomb" &&
+                        object.exploded
+                    ) &&
+                    object.x > -180 &&
+                    object.x < WIDTH + 180 &&
+                    object.y < HEIGHT + 250
             );
 
+    }
 
-        // Particles
+
+    /*
+        ================================================
+        PARTICLES
+        ================================================
+    */
+
+    function updateParticles(dt) {
 
         for (const particle of particles) {
 
@@ -639,8 +1542,10 @@
             particle.y +=
                 particle.vy * dt;
 
+
             particle.vy +=
-                0.3 * dt;
+                0.32 * dt;
+
 
             particle.life -=
                 0.025 * dt;
@@ -650,11 +1555,42 @@
 
         particles =
             particles.filter(
-                particle => particle.life > 0
+                particle =>
+                    particle.life > 0
             );
 
     }
 
+
+    /*
+        ================================================
+        UPDATE
+        ================================================
+    */
+
+    function update(delta) {
+
+        const dt =
+            Math.min(
+                delta / 16.67,
+                2
+            );
+
+
+        updateBodies(dt);
+
+        updateObjects(dt);
+
+        updateParticles(dt);
+
+    }
+
+
+    /*
+        ================================================
+        DRAW BACKGROUND
+        ================================================
+    */
 
     function drawBackground() {
 
@@ -666,17 +1602,22 @@
                 HEIGHT
             );
 
+
         gradient.addColorStop(
             0,
             "#151027"
         );
 
+
         gradient.addColorStop(
             1,
-            "#08080d"
+            "#08080D"
         );
 
-        ctx.fillStyle = gradient;
+
+        ctx.fillStyle =
+            gradient;
+
 
         ctx.fillRect(
             0,
@@ -686,11 +1627,17 @@
         );
 
 
-        // Decorative circles
+        /*
+            Purple decorative glow
+        */
 
-        ctx.globalAlpha = 0.08;
+        ctx.globalAlpha =
+            0.08;
 
-        ctx.fillStyle = "#9b6cff";
+
+        ctx.fillStyle =
+            "#9B6CFF";
+
 
         ctx.beginPath();
 
@@ -717,13 +1664,18 @@
 
         ctx.fill();
 
-        ctx.globalAlpha = 1;
+
+        ctx.globalAlpha =
+            1;
 
 
-        // Ground
+        /*
+            Ground
+        */
 
         ctx.fillStyle =
             "#111019";
+
 
         ctx.fillRect(
             0,
@@ -736,6 +1688,7 @@
         ctx.fillStyle =
             "#292333";
 
+
         ctx.fillRect(
             0,
             GROUND_Y,
@@ -746,104 +1699,97 @@
     }
 
 
-    function drawNoob() {
+    /*
+        ================================================
+        DRAW BODY
+        ================================================
+    */
+
+    function drawBody(body) {
 
         ctx.save();
 
+
         ctx.translate(
-            noob.x,
-            noob.y
+            body.x,
+            body.y
         );
+
 
         ctx.rotate(
-            noob.angle
+            body.angle
         );
 
-
-        // Legs
 
         ctx.fillStyle =
-            "#20242b";
+            body.color;
+
 
         ctx.fillRect(
-            -18,
-            25,
-            14,
-            38
-        );
-
-        ctx.fillRect(
-            4,
-            25,
-            14,
-            38
+            -body.width / 2,
+            -body.height / 2,
+            body.width,
+            body.height
         );
 
 
-        // Torso
+        /*
+            Head gets an original face.
+        */
 
-        ctx.fillStyle =
-            "#3f83e8";
+        if (
+            body.name === "head"
+        ) {
 
-        ctx.fillRect(
-            -21,
-            -20,
-            42,
-            50
-        );
-
-
-        // Arms
-
-        ctx.fillStyle =
-            "#e5a06c";
-
-        ctx.fillRect(
-            -34,
-            -17,
-            13,
-            45
-        );
-
-        ctx.fillRect(
-            21,
-            -17,
-            13,
-            45
-        );
+            ctx.fillStyle =
+                COLORS.black;
 
 
-        // Head
+            /*
+                Eyes
+            */
 
-        ctx.fillStyle =
-            "#f2b27b";
-
-        ctx.fillRect(
-            -23,
-            -58,
-            46,
-            38
-        );
+            ctx.fillRect(
+                -13,
+                -5,
+                6,
+                6
+            );
 
 
-        // Face
+            ctx.fillRect(
+                7,
+                -5,
+                6,
+                6
+            );
 
-        ctx.fillStyle =
-            "#111111";
 
-        ctx.fillRect(
-            -13,
-            -45,
-            6,
-            6
-        );
+            /*
+                Simple original smile
+            */
 
-        ctx.fillRect(
-            7,
-            -45,
-            6,
-            6
-        );
+            ctx.strokeStyle =
+                COLORS.black;
+
+
+            ctx.lineWidth =
+                3;
+
+
+            ctx.beginPath();
+
+            ctx.arc(
+                0,
+                5,
+                8,
+                0.2,
+                Math.PI - 0.2
+            );
+
+            ctx.stroke();
+
+        }
 
 
         ctx.restore();
@@ -851,11 +1797,18 @@
     }
 
 
+    /*
+        ================================================
+        DRAW OBJECTS
+        ================================================
+    */
+
     function drawObjects() {
 
         for (const object of objects) {
 
             ctx.save();
+
 
             ctx.translate(
                 object.x,
@@ -863,14 +1816,22 @@
             );
 
 
-            if (object.type === "crate") {
+            /*
+                CRATE
+            */
+
+            if (
+                object.type === "crate"
+            ) {
 
                 ctx.rotate(
                     object.rotation
                 );
 
+
                 ctx.fillStyle =
-                    "#9b6a3b";
+                    COLORS.crate;
+
 
                 ctx.fillRect(
                     -object.size / 2,
@@ -881,9 +1842,12 @@
 
 
                 ctx.strokeStyle =
-                    "#d49a5c";
+                    COLORS.crateLight;
 
-                ctx.lineWidth = 4;
+
+                ctx.lineWidth =
+                    4;
+
 
                 ctx.strokeRect(
                     -object.size / 2,
@@ -894,63 +1858,82 @@
 
 
                 ctx.strokeStyle =
-                    "#704522";
+                    COLORS.crateDark;
 
-                ctx.lineWidth = 3;
+
+                ctx.lineWidth =
+                    3;
+
 
                 ctx.beginPath();
 
+
                 ctx.moveTo(
                     -object.size / 2,
                     -object.size / 2
                 );
+
 
                 ctx.lineTo(
                     object.size / 2,
                     object.size / 2
                 );
 
+
                 ctx.moveTo(
                     object.size / 2,
                     -object.size / 2
                 );
 
+
                 ctx.lineTo(
                     -object.size / 2,
                     object.size / 2
                 );
+
 
                 ctx.stroke();
 
             }
 
 
-            if (object.type === "ball") {
+            /*
+                BALL
+            */
+
+            if (
+                object.type === "ball"
+            ) {
 
                 const gradient =
                     ctx.createRadialGradient(
-                        -6,
-                        -6,
+                        -7,
+                        -7,
                         2,
                         0,
                         0,
                         object.radius
                     );
 
+
                 gradient.addColorStop(
                     0,
-                    "#ffffff"
+                    "#FFFFFF"
                 );
+
 
                 gradient.addColorStop(
                     1,
-                    "#725cff"
+                    "#725CFF"
                 );
+
 
                 ctx.fillStyle =
                     gradient;
 
+
                 ctx.beginPath();
+
 
                 ctx.arc(
                     0,
@@ -959,6 +1942,118 @@
                     0,
                     Math.PI * 2
                 );
+
+
+                ctx.fill();
+
+            }
+
+
+            /*
+                CARTOON BOMB
+            */
+
+            if (
+                object.type === "bomb"
+            ) {
+
+                /*
+                    Bomb body
+                */
+
+                ctx.fillStyle =
+                    "#17171D";
+
+
+                ctx.beginPath();
+
+
+                ctx.arc(
+                    0,
+                    3,
+                    object.radius,
+                    0,
+                    Math.PI * 2
+                );
+
+
+                ctx.fill();
+
+
+                /*
+                    Highlight
+                */
+
+                ctx.fillStyle =
+                    "#363642";
+
+
+                ctx.beginPath();
+
+
+                ctx.arc(
+                    -6,
+                    -4,
+                    5,
+                    0,
+                    Math.PI * 2
+                );
+
+
+                ctx.fill();
+
+
+                /*
+                    Fuse
+                */
+
+                ctx.strokeStyle =
+                    "#B98248";
+
+
+                ctx.lineWidth =
+                    4;
+
+
+                ctx.beginPath();
+
+
+                ctx.moveTo(
+                    4,
+                    -15
+                );
+
+
+                ctx.quadraticCurveTo(
+                    8,
+                    -28,
+                    17,
+                    -25
+                );
+
+
+                ctx.stroke();
+
+
+                /*
+                    Tiny spark
+                */
+
+                ctx.fillStyle =
+                    "#FFBD4A";
+
+
+                ctx.beginPath();
+
+
+                ctx.arc(
+                    17,
+                    -25,
+                    4,
+                    0,
+                    Math.PI * 2
+                );
+
 
                 ctx.fill();
 
@@ -972,6 +2067,12 @@
     }
 
 
+    /*
+        ================================================
+        DRAW PARTICLES
+        ================================================
+    */
+
     function drawParticles() {
 
         for (const particle of particles) {
@@ -979,10 +2080,13 @@
             ctx.globalAlpha =
                 particle.life;
 
+
             ctx.fillStyle =
-                "#ffbd4a";
+                "#FFBD4A";
+
 
             ctx.beginPath();
+
 
             ctx.arc(
                 particle.x,
@@ -992,14 +2096,23 @@
                 Math.PI * 2
             );
 
+
             ctx.fill();
 
         }
 
-        ctx.globalAlpha = 1;
+
+        ctx.globalAlpha =
+            1;
 
     }
 
+
+    /*
+        ================================================
+        DRAW
+        ================================================
+    */
 
     function draw() {
 
@@ -1007,18 +2120,32 @@
 
         drawObjects();
 
-        drawNoob();
+
+        /*
+            Draw Noob
+        */
+
+        for (const body of bodies) {
+
+            drawBody(body);
+
+        }
+
 
         drawParticles();
 
 
-        // Small title
+        /*
+            Canvas title
+        */
 
         ctx.fillStyle =
             "rgba(255,255,255,0.55)";
 
+
         ctx.font =
             "bold 15px Arial";
+
 
         ctx.fillText(
             "RAGDOLL NOOB",
@@ -1029,28 +2156,20 @@
     }
 
 
-    function gameLoop(time) {
-
-        const delta =
-            time - lastTime;
-
-        lastTime = time;
-
-        update(delta);
-
-        draw();
-
-        requestAnimationFrame(gameLoop);
-
-    }
-
+    /*
+        ================================================
+        POINTER POSITION
+        ================================================
+    */
 
     function pointerPosition(event) {
 
         const rect =
             canvas.getBoundingClientRect();
 
+
         return {
+
             x:
                 (event.clientX - rect.left) *
                 (WIDTH / rect.width),
@@ -1058,10 +2177,110 @@
             y:
                 (event.clientY - rect.top) *
                 (HEIGHT / rect.height)
+
         };
 
     }
 
+
+    /*
+        ================================================
+        FIND OBJECT UNDER POINTER
+        ================================================
+    */
+
+    function findThingAt(x, y) {
+
+        /*
+            Check Noob parts first
+        */
+
+        for (
+            let i = bodies.length - 1;
+            i >= 0;
+            i--
+        ) {
+
+            const body =
+                bodies[i];
+
+
+            if (
+                x >
+                body.x -
+                body.width / 2 - 8 &&
+
+                x <
+                body.x +
+                body.width / 2 + 8 &&
+
+                y >
+                body.y -
+                body.height / 2 - 8 &&
+
+                y <
+                body.y +
+                body.height / 2 + 8
+            ) {
+
+                return body;
+
+            }
+
+        }
+
+
+        /*
+            Then spawned objects
+        */
+
+        for (
+            let i = objects.length - 1;
+            i >= 0;
+            i--
+        ) {
+
+            const object =
+                objects[i];
+
+
+            const radius =
+                object.type === "crate"
+                    ? object.size / 2
+                    : object.radius;
+
+
+            const dx =
+                x - object.x;
+
+            const dy =
+                y - object.y;
+
+
+            if (
+                Math.sqrt(
+                    dx * dx +
+                    dy * dy
+                ) < radius + 8
+            ) {
+
+                return object;
+
+            }
+
+        }
+
+
+        return null;
+
+    }
+
+
+    /*
+        ================================================
+        GRAB
+        ================================================
+    */
 
     canvas.addEventListener(
         "pointerdown",
@@ -1070,102 +2289,272 @@
             const position =
                 pointerPosition(event);
 
-            mouse.x = position.x;
-            mouse.y = position.y;
 
-
-            const dx =
-                mouse.x - noob.x;
-
-            const dy =
-                mouse.y - noob.y;
-
-
-            if (
-                Math.sqrt(
-                    dx * dx + dy * dy
-                ) < 70
-            ) {
-
-                dragging = true;
-
-                noob.ragdoll = true;
-
-                canvas.setPointerCapture(
-                    event.pointerId
+            const thing =
+                findThingAt(
+                    position.x,
+                    position.y
                 );
 
+
+            if (!thing) {
+                return;
             }
+
+
+            grabbed =
+                thing;
+
+
+            grabOffsetX =
+                position.x -
+                thing.x;
+
+
+            grabOffsetY =
+                position.y -
+                thing.y;
+
+
+            lastPointer = {
+                x: position.x,
+                y: position.y
+            };
+
+
+            canvas.setPointerCapture(
+                event.pointerId
+            );
 
         }
     );
 
+
+    /*
+        ================================================
+        DRAG
+        ================================================
+    */
 
     canvas.addEventListener(
         "pointermove",
         event => {
 
-            if (!dragging) {
+            if (!grabbed) {
                 return;
             }
+
 
             const position =
                 pointerPosition(event);
 
-            mouse.x = position.x;
-            mouse.y = position.y;
 
-            noob.vx =
-                (mouse.x - noob.x) * 0.25;
+            const velocityX =
+                position.x -
+                lastPointer.x;
 
-            noob.vy =
-                (mouse.y - noob.y) * 0.25;
 
-            noob.x = mouse.x;
-            noob.y = mouse.y;
+            const velocityY =
+                position.y -
+                lastPointer.y;
+
+
+            grabbed.x =
+                position.x -
+                grabOffsetX;
+
+
+            grabbed.y =
+                position.y -
+                grabOffsetY;
+
+
+            grabbed.vx =
+                velocityX;
+
+
+            grabbed.vy =
+                velocityY;
+
+
+            lastPointer = {
+                x: position.x,
+                y: position.y
+            };
+
+        }
+    );
+
+
+    /*
+        ================================================
+        RELEASE
+        ================================================
+    */
+
+    canvas.addEventListener(
+        "pointerup",
+        event => {
+
+            if (!grabbed) {
+                return;
+            }
+
+
+            grabbed.vx *=
+                1.8;
+
+
+            grabbed.vy *=
+                1.8;
+
+
+            grabbed =
+                null;
+
+
+            lastPointer =
+                null;
+
+
+            try {
+
+                canvas.releasePointerCapture(
+                    event.pointerId
+                );
+
+            } catch {}
 
         }
     );
 
 
     canvas.addEventListener(
-        "pointerup",
-        event => {
+        "pointercancel",
+        () => {
 
-            if (!dragging) {
-                return;
-            }
+            grabbed =
+                null;
 
-            dragging = false;
-
-            try {
-                canvas.releasePointerCapture(
-                    event.pointerId
-                );
-            } catch {}
-
-            noob.vx *= 1.8;
-            noob.vy *= 1.8;
+            lastPointer =
+                null;
 
         }
     );
 
 
-    document
-        .getElementById("crateButton")
-        .addEventListener(
-            "click",
-            spawnCrate
+    /*
+        ================================================
+        SPAWN MENU
+        ================================================
+    */
+
+    const spawnButton =
+        document.getElementById(
+            "spawnButton"
         );
 
 
-    document
-        .getElementById("ballButton")
-        .addEventListener(
-            "click",
-            spawnBall
+    const spawnMenu =
+        document.getElementById(
+            "spawnMenu"
         );
 
+
+    spawnButton.addEventListener(
+        "click",
+        event => {
+
+            event.stopPropagation();
+
+            spawnMenu.classList.toggle(
+                "open"
+            );
+
+        }
+    );
+
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            if (
+                !event.target.closest(
+                    ".spawn-area"
+                )
+            ) {
+
+                spawnMenu.classList.remove(
+                    "open"
+                );
+
+            }
+
+        }
+    );
+
+
+    /*
+        Spawn options
+    */
+
+    document.querySelectorAll(
+        ".spawn-option"
+    ).forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const type =
+                        button.dataset.spawn;
+
+
+                    if (
+                        type === "crate"
+                    ) {
+
+                        spawnCrate();
+
+                    }
+
+
+                    if (
+                        type === "ball"
+                    ) {
+
+                        spawnBall();
+
+                    }
+
+
+                    if (
+                        type === "bomb"
+                    ) {
+
+                        spawnBomb();
+
+                    }
+
+
+                    spawnMenu.classList.remove(
+                        "open"
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    /*
+        ================================================
+        BUTTONS
+        ================================================
+    */
 
     document
         .getElementById("boomButton")
@@ -1183,7 +2572,25 @@
         );
 
 
-    // Keyboard shortcuts
+    document
+        .getElementById("clearButton")
+        .addEventListener(
+            "click",
+            () => {
+
+                objects = [];
+
+                particles = [];
+
+            }
+        );
+
+
+    /*
+        ================================================
+        KEYBOARD
+        ================================================
+    */
 
     document.addEventListener(
         "keydown",
@@ -1193,22 +2600,41 @@
                 event.target.tagName === "INPUT" ||
                 event.target.tagName === "TEXTAREA"
             ) {
+
                 return;
+
             }
 
 
-            if (event.key.toLowerCase() === "r") {
+            const key =
+                event.key.toLowerCase();
+
+
+            if (key === "r") {
+
                 resetNoob();
+
             }
 
 
-            if (event.key.toLowerCase() === "c") {
+            if (key === "c") {
+
                 spawnCrate();
+
             }
 
 
-            if (event.key.toLowerCase() === "b") {
+            if (key === "b") {
+
                 spawnBall();
+
+            }
+
+
+            if (key === "x") {
+
+                spawnBomb();
+
             }
 
 
@@ -1224,9 +2650,44 @@
     );
 
 
+    /*
+        ================================================
+        GAME LOOP
+        ================================================
+    */
+
+    function gameLoop(time) {
+
+        const delta =
+            time - lastTime;
+
+
+        lastTime =
+            time;
+
+
+        update(delta);
+
+        draw();
+
+
+        requestAnimationFrame(
+            gameLoop
+        );
+
+    }
+
+
+    /*
+        START
+        ================================================
+    */
+
     resetNoob();
 
-    requestAnimationFrame(gameLoop);
+    requestAnimationFrame(
+        gameLoop
+    );
 
 })();
 </script>
