@@ -635,6 +635,17 @@ input[type="color"] {
   </div>
 
   <div class="setting">
+    <div class="setting-label">
+      <span>God Mode</span>
+      <span class="setting-value" id="godModeValue">OFF</span>
+    </div>
+
+    <button class="ui-button" id="godModeToggle">
+      God Mode: OFF
+    </button>
+  </div>
+
+  <div class="setting">
     <div class="setting-label"><span>Head Color</span></div>
     <input id="headColor" type="color" value="#F5CD30">
   </div>
@@ -700,6 +711,10 @@ input[type="color"] {
 
     <button class="spawn-option" id="spawnBomb">
       💣 Bomb
+    </button>
+
+    <button class="spawn-option" id="partRemover">
+      ✂️ Part Remover
     </button>
 
     <button class="spawn-option" id="resetSandbox">
@@ -777,6 +792,7 @@ const SETTINGS = {
   jumpPower: 720,
   runningEnabled: true,
   runSpeed: 700,
+  godMode: false,
 
   colors: {
     head: "#F5CD30",
@@ -925,6 +941,7 @@ const PLAYER_WIDTH = 42;
 const PLAYER_HEIGHT = 76;
 
 let player = null;
+let playerRespawnToken = 0;
 
 function createPlayer(x, y) {
 
@@ -940,10 +957,21 @@ function createPlayer(x, y) {
     jumpRequested: false,
     facing: 1,
     running: false,
+
     health: 100,
     maxHealth: 100,
+
     respawning: false,
     name: "You",
+
+    removedParts: {
+      head: false,
+      torso: false,
+      leftArm: false,
+      rightArm: false,
+      leftLeg: false,
+      rightLeg: false
+    },
 
     colors: {
       ...SETTINGS.colors
@@ -958,7 +986,13 @@ function spawnPlayer() {
     return;
   }
 
-  player = createPlayer(W / 2, 120);
+  playerRespawnToken++;
+
+  player =
+    createPlayer(
+      W / 2,
+      120
+    );
 
   updateStatus();
   updateLeaderboard();
@@ -972,6 +1006,8 @@ function deletePlayer() {
     showToast("No character found");
     return;
   }
+
+  playerRespawnToken++;
 
   player = null;
 
@@ -988,7 +1024,13 @@ function resetPlayer() {
     return;
   }
 
-  player = createPlayer(W / 2, 120);
+  playerRespawnToken++;
+
+  player =
+    createPlayer(
+      W / 2,
+      120
+    );
 
   updateStatus();
   updateLeaderboard();
@@ -1002,6 +1044,38 @@ function resetPlayer() {
 
 const objects = [];
 
+function createNoobObject(x, y) {
+
+  return {
+    type: "noob",
+    x,
+    y,
+    vx: 0,
+    vy: 0,
+    rotation: 0,
+    vr: 0,
+    width: 42,
+    height: 76,
+    grabbed: false,
+    name: "Noob",
+    health: 100,
+    maxHealth: 100,
+
+    removedParts: {
+      head: false,
+      torso: false,
+      leftArm: false,
+      rightArm: false,
+      leftLeg: false,
+      rightLeg: false
+    },
+
+    colors: {
+      ...SETTINGS.colors
+    }
+  };
+}
+
 function spawnObject(type, x, y) {
 
   if (objects.length >= WORLD.maxObjects) {
@@ -1010,25 +1084,9 @@ function spawnObject(type, x, y) {
 
   if (type === "noob") {
 
-    objects.push({
-      type: "noob",
-      x,
-      y,
-      vx: 0,
-      vy: 0,
-      rotation: 0,
-      vr: 0,
-      width: 42,
-      height: 76,
-      grabbed: false,
-      name: "Noob",
-      health: 100,
-      maxHealth: 100,
-
-      colors: {
-        ...SETTINGS.colors
-      }
-    });
+    objects.push(
+      createNoobObject(x, y)
+    );
 
     updateLeaderboard();
     return;
@@ -1091,8 +1149,15 @@ function spawnBomb() {
 
 function resetSandbox() {
 
+  playerRespawnToken++;
+
   player = null;
   objects.length = 0;
+
+  toolMode = null;
+
+  partRemoverButton.textContent =
+    "✂️ Part Remover";
 
   updateStatus();
   updateLeaderboard();
@@ -1101,81 +1166,374 @@ function resetSandbox() {
 }
 
 /* =========================
+   BODY PART DATA
+========================= */
+
+function getBodyParts(character) {
+
+  return [
+    {
+      name: "head",
+      color: character.colors.head,
+      x: character.x,
+      y: character.y - 40,
+      localX: -20,
+      localY: -60,
+      w: 40,
+      h: 40
+    },
+
+    {
+      name: "torso",
+      color: character.colors.torso,
+      x: character.x,
+      y: character.y,
+      localX: -22,
+      localY: -20,
+      w: 44,
+      h: 40
+    },
+
+    {
+      name: "leftArm",
+      color: character.colors.leftArm,
+      x: character.x - 32,
+      y: character.y + 2,
+      localX: -40,
+      localY: -18,
+      w: 15,
+      h: 40
+    },
+
+    {
+      name: "rightArm",
+      color: character.colors.rightArm,
+      x: character.x + 32,
+      y: character.y + 2,
+      localX: 25,
+      localY: -18,
+      w: 15,
+      h: 40
+    },
+
+    {
+      name: "leftLeg",
+      color: character.colors.leftLeg,
+      x: character.x - 12,
+      y: character.y + 38,
+      localX: -20,
+      localY: 18,
+      w: 16,
+      h: 39
+    },
+
+    {
+      name: "rightLeg",
+      color: character.colors.rightLeg,
+      x: character.x + 12,
+      y: character.y + 38,
+      localX: 4,
+      localY: 18,
+      w: 16,
+      h: 39
+    }
+  ];
+}
+
+function getNoobParts(noob) {
+  return getBodyParts(noob);
+}
+
+/* =========================
+   PART REMOVER
+========================= */
+
+let toolMode = null;
+
+const partRemoverButton =
+  document.getElementById("partRemover");
+
+function pointInsideRect(x, y, rect) {
+
+  return (
+    x >= rect.localX &&
+    x <= rect.localX + rect.w &&
+    y >= rect.localY &&
+    y <= rect.localY + rect.h
+  );
+}
+
+function findBodyPartAt(character, x, y) {
+
+  if (
+    !character ||
+    character.respawning
+  ) {
+    return null;
+  }
+
+  const localX =
+    x - character.x;
+
+  const localY =
+    y - character.y;
+
+  const parts =
+    getBodyParts(character);
+
+  const ordered = [
+    "head",
+    "leftArm",
+    "rightArm",
+    "torso",
+    "leftLeg",
+    "rightLeg"
+  ];
+
+  for (const partName of ordered) {
+
+    if (
+      character.removedParts &&
+      character.removedParts[partName]
+    ) {
+      continue;
+    }
+
+    const part =
+      parts.find(
+        p => p.name === partName
+      );
+
+    if (
+      part &&
+      pointInsideRect(
+        localX,
+        localY,
+        part
+      )
+    ) {
+      return {
+        character,
+        part
+      };
+    }
+  }
+
+  return null;
+}
+
+function findNoobPartAt(x, y) {
+
+  for (
+    let i = objects.length - 1;
+    i >= 0;
+    i--
+  ) {
+
+    const noob = objects[i];
+
+    if (
+      noob.type !== "noob" ||
+      noob.health <= 0
+    ) {
+      continue;
+    }
+
+    const result =
+      findBodyPartAt(
+        noob,
+        x,
+        y
+      );
+
+    if (result) {
+      return {
+        noob,
+        part: result.part
+      };
+    }
+  }
+
+  return null;
+}
+
+function addBrokenPart(part) {
+
+  objects.push({
+    type: "brokenPart",
+    x: part.x,
+    y: part.y,
+    vx: (Math.random() - .5) * 700,
+    vy: -220 - Math.random() * 360,
+    rotation: (Math.random() - .5) * .5,
+    vr: (Math.random() - .5) * 12,
+    width: part.w,
+    height: part.h,
+    color: part.color,
+    life: 2.2,
+    grabbed: false,
+    name: ""
+  });
+}
+
+function removeNoobPart(noob, part) {
+
+  if (
+    !noob ||
+    !part ||
+    noob.removedParts[part.name]
+  ) {
+    return;
+  }
+
+  noob.removedParts[part.name] = true;
+
+  addBrokenPart(part);
+
+  showToast(
+    `${formatPartName(part.name)} removed`
+  );
+
+  if (
+    part.name === "head" ||
+    part.name === "torso"
+  ) {
+    noob.health = 0;
+    destroyNoob(noob);
+  }
+
+  updateLeaderboard();
+}
+
+function removePlayerPart(part) {
+
+  if (
+    !player ||
+    player.respawning ||
+    !part
+  ) {
+    return;
+  }
+
+  /*
+    God Mode completely protects the player's
+    body from the Part Remover.
+  */
+
+  if (SETTINGS.godMode) {
+    showToast("God Mode protected your character");
+    return;
+  }
+
+  if (
+    player.removedParts[part.name]
+  ) {
+    return;
+  }
+
+  player.removedParts[part.name] = true;
+
+  addBrokenPart(part);
+
+  if (
+    part.name === "head" ||
+    part.name === "torso"
+  ) {
+
+    player.health = 0;
+
+    showToast(
+      `${formatPartName(part.name)} removed — you died`
+    );
+
+    respawnPlayerSilently();
+    return;
+  }
+
+  showToast(
+    `${formatPartName(part.name)} removed`
+  );
+
+  updateLeaderboard();
+}
+
+function formatPartName(name) {
+
+  if (name === "leftArm") {
+    return "Left arm";
+  }
+
+  if (name === "rightArm") {
+    return "Right arm";
+  }
+
+  if (name === "leftLeg") {
+    return "Left leg";
+  }
+
+  if (name === "rightLeg") {
+    return "Right leg";
+  }
+
+  return (
+    name.charAt(0).toUpperCase() +
+    name.slice(1)
+  );
+}
+
+function togglePartRemover() {
+
+  if (toolMode === "part-remover") {
+
+    toolMode = null;
+
+    partRemoverButton.textContent =
+      "✂️ Part Remover";
+
+    showToast("Part Remover disabled");
+
+  } else {
+
+    toolMode = "part-remover";
+
+    partRemoverButton.textContent =
+      "✂️ Part Remover: ON";
+
+    showToast(
+      "Click a body part to remove it"
+    );
+  }
+}
+
+/* =========================
    LEGO DESTRUCTION
 ========================= */
 
 function createBrokenNoobParts(c) {
 
-  const parts = [
-    {
-      color: c.colors.head,
-      x: c.x,
-      y: c.y - 40,
-      w: 40,
-      h: 40
-    },
-    {
-      color: c.colors.torso,
-      x: c.x,
-      y: c.y,
-      w: 44,
-      h: 40
-    },
-    {
-      color: c.colors.leftArm,
-      x: c.x - 32,
-      y: c.y + 2,
-      w: 15,
-      h: 40
-    },
-    {
-      color: c.colors.rightArm,
-      x: c.x + 32,
-      y: c.y + 2,
-      w: 15,
-      h: 40
-    },
-    {
-      color: c.colors.leftLeg,
-      x: c.x - 12,
-      y: c.y + 38,
-      w: 16,
-      h: 39
-    },
-    {
-      color: c.colors.rightLeg,
-      x: c.x + 12,
-      y: c.y + 38,
-      w: 16,
-      h: 39
-    }
-  ];
+  const parts =
+    getNoobParts(c);
 
   for (const part of parts) {
 
-    objects.push({
-      type: "brokenPart",
-      x: part.x,
-      y: part.y,
-      vx: (Math.random() - .5) * 850,
-      vy: -250 - Math.random() * 500,
-      rotation: (Math.random() - .5) * .5,
-      vr: (Math.random() - .5) * 14,
-      width: part.w,
-      height: part.h,
-      color: part.color,
-      life: 2.2,
-      grabbed: false,
-      name: ""
-    });
+    if (c.removedParts[part.name]) {
+      continue;
+    }
+
+    addBrokenPart(part);
   }
 }
 
 function destroyNoob(noob) {
 
+  if (!noob) {
+    return;
+  }
+
   createBrokenNoobParts(noob);
 
-  const index = objects.indexOf(noob);
+  const index =
+    objects.indexOf(noob);
 
   if (index !== -1) {
     objects.splice(index, 1);
@@ -1188,7 +1546,12 @@ function destroyNoob(noob) {
    HEALTH / BOMBS
 ========================= */
 
-function damageNoob(noob, amount, forceX = 0, forceY = 0) {
+function damageNoob(
+  noob,
+  amount,
+  forceX = 0,
+  forceY = 0
+) {
 
   if (!noob || noob.health <= 0) {
     return;
@@ -1223,16 +1586,28 @@ function explodeBomb(bomb) {
 
   if (player) {
 
-    const dx = player.x - bomb.x;
-    const dy = player.y - bomb.y;
-    const distance = Math.hypot(dx, dy);
+    const dx =
+      player.x - bomb.x;
+
+    const dy =
+      player.y - bomb.y;
+
+    const distance =
+      Math.hypot(dx, dy);
 
     if (distance < radius) {
 
-      const strength = 1 - distance / radius;
-      const damage = 18 + strength * 82;
-      const safeDistance = Math.max(distance, 1);
-      const force = strength * 1050;
+      const strength =
+        1 - distance / radius;
+
+      const damage =
+        18 + strength * 82;
+
+      const safeDistance =
+        Math.max(distance, 1);
+
+      const force =
+        strength * 1050;
 
       damagePlayer(
         damage,
@@ -1252,14 +1627,25 @@ function explodeBomb(bomb) {
       continue;
     }
 
-    const dx = obj.x - bomb.x;
-    const dy = obj.y - bomb.y;
-    const distance = Math.hypot(dx, dy);
+    const dx =
+      obj.x - bomb.x;
 
-    if (distance < radius && distance > 0) {
+    const dy =
+      obj.y - bomb.y;
 
-      const strength = 1 - distance / radius;
-      const force = strength * 1250;
+    const distance =
+      Math.hypot(dx, dy);
+
+    if (
+      distance < radius &&
+      distance > 0
+    ) {
+
+      const strength =
+        1 - distance / radius;
+
+      const force =
+        strength * 1250;
 
       if (obj.type === "noob") {
 
@@ -1267,14 +1653,21 @@ function explodeBomb(bomb) {
           obj,
           18 + strength * 82,
           dx / distance * force,
-          dy / distance * force - strength * 300
+          dy / distance * force -
+            strength * 300
         );
 
       } else {
 
-        obj.vx += dx / distance * force;
-        obj.vy += dy / distance * force - strength * 300;
-        obj.vr += (Math.random() - .5) * 22;
+        obj.vx +=
+          dx / distance * force;
+
+        obj.vy +=
+          dy / distance * force -
+          strength * 300;
+
+        obj.vr +=
+          (Math.random() - .5) * 22;
       }
     }
   }
@@ -1294,9 +1687,27 @@ function updateBomb(bomb, dt) {
   }
 }
 
-function damagePlayer(amount, forceX = 0, forceY = 0) {
+function damagePlayer(
+  amount,
+  forceX = 0,
+  forceY = 0
+) {
 
-  if (!player || player.respawning) {
+  if (
+    !player ||
+    player.respawning
+  ) {
+    return;
+  }
+
+  /*
+    God Mode means the player's health,
+    death state, and damage are protected.
+    The force is also ignored so explosions
+    cannot launch the player around.
+  */
+
+  if (SETTINGS.godMode) {
     return;
   }
 
@@ -1309,6 +1720,8 @@ function damagePlayer(amount, forceX = 0, forceY = 0) {
   player.vx += forceX;
   player.vy += forceY;
 
+  updateLeaderboard();
+
   if (player.health <= 0) {
     respawnPlayerSilently();
   }
@@ -1316,15 +1729,50 @@ function damagePlayer(amount, forceX = 0, forceY = 0) {
 
 function respawnPlayerSilently() {
 
-  if (!player || player.respawning) {
+  if (
+    !player ||
+    player.respawning
+  ) {
+    return;
+  }
+
+  if (SETTINGS.godMode) {
+    player.health =
+      player.maxHealth;
+
+    updateLeaderboard();
+
     return;
   }
 
   player.respawning = true;
 
+  const token =
+    ++playerRespawnToken;
+
+  const oldPlayer =
+    player;
+
   setTimeout(() => {
 
-    player = createPlayer(W / 2, 120);
+    /*
+      Prevent an old respawn timer from
+      recreating a character after the user
+      deleted/reset the current one.
+    */
+
+    if (
+      token !== playerRespawnToken ||
+      player !== oldPlayer
+    ) {
+      return;
+    }
+
+    player =
+      createPlayer(
+        W / 2,
+        120
+      );
 
     updateStatus();
     updateLeaderboard();
@@ -1340,6 +1788,17 @@ function updatePlayer(dt) {
 
   if (!player || player.respawning) {
     return;
+  }
+
+  /*
+    Keep God Mode health fully restored.
+    This also protects against accidental
+    health changes from future systems.
+  */
+
+  if (SETTINGS.godMode) {
+    player.health =
+      player.maxHealth;
   }
 
   let direction = 0;
@@ -1406,43 +1865,57 @@ function updatePlayer(dt) {
     player.grounded
   ) {
 
-    player.vy = -SETTINGS.jumpPower;
+    player.vy =
+      -SETTINGS.jumpPower;
+
     player.grounded = false;
   }
 
   player.jumpRequested = false;
 
-  player.vy += WORLD.gravity * dt;
+  player.vy +=
+    WORLD.gravity * dt;
 
-  player.x += player.vx * dt;
-  player.y += player.vy * dt;
+  player.x +=
+    player.vx * dt;
 
-  const halfW = player.width / 2;
-  const halfH = player.height / 2;
+  player.y +=
+    player.vy * dt;
+
+  const halfW =
+    player.width / 2;
+
+  const halfH =
+    player.height / 2;
 
   if (player.x - halfW < 0) {
 
     player.x = halfW;
 
     if (player.vx < 0) {
-      player.vx *= -WORLD.wallBounce;
+      player.vx *=
+        -WORLD.wallBounce;
     }
   }
 
   if (player.x + halfW > W) {
 
-    player.x = W - halfW;
+    player.x =
+      W - halfW;
 
     if (player.vx > 0) {
-      player.vx *= -WORLD.wallBounce;
+      player.vx *=
+        -WORLD.wallBounce;
     }
   }
 
-  const floor = H - WORLD.floorHeight;
+  const floor =
+    H - WORLD.floorHeight;
 
   if (player.y + halfH >= floor) {
 
-    player.y = floor - halfH;
+    player.y =
+      floor - halfH;
 
     if (player.vy > 0) {
       player.vy *= -.18;
@@ -1471,7 +1944,9 @@ function updateObject(obj, dt) {
   }
 
   if (obj.type === "brokenPart") {
-    obj.life -= dt;
+    if (obj.life !== Infinity) {
+      obj.life -= dt;
+    }
   }
 
   if (obj.grabbed) {
@@ -1485,45 +1960,59 @@ function updateObject(obj, dt) {
     return;
   }
 
-  obj.vy += WORLD.gravity * dt;
+  obj.vy +=
+    WORLD.gravity * dt;
 
-  obj.x += obj.vx * dt;
-  obj.y += obj.vy * dt;
+  obj.x +=
+    obj.vx * dt;
 
-  obj.rotation += obj.vr * dt;
+  obj.y +=
+    obj.vy * dt;
 
-  const halfW = obj.width / 2;
-  const halfH = obj.height / 2;
+  obj.rotation +=
+    obj.vr * dt;
+
+  const halfW =
+    obj.width / 2;
+
+  const halfH =
+    obj.height / 2;
 
   if (obj.x - halfW < 0) {
 
     obj.x = halfW;
 
     if (obj.vx < 0) {
-      obj.vx *= -WORLD.wallBounce;
+      obj.vx *=
+        -WORLD.wallBounce;
     }
   }
 
   if (obj.x + halfW > W) {
 
-    obj.x = W - halfW;
+    obj.x =
+      W - halfW;
 
     if (obj.vx > 0) {
-      obj.vx *= -WORLD.wallBounce;
+      obj.vx *=
+        -WORLD.wallBounce;
     }
   }
 
-  const floor = H - WORLD.floorHeight;
+  const floor =
+    H - WORLD.floorHeight;
 
   const onGround =
     obj.y + halfH >= floor;
 
   if (onGround) {
 
-    obj.y = floor - halfH;
+    obj.y =
+      floor - halfH;
 
     if (obj.vy > 0) {
-      obj.vy *= -WORLD.objectBounce;
+      obj.vy *=
+        -WORLD.objectBounce;
     }
 
     if (Math.abs(obj.vy) < 35) {
@@ -1595,8 +2084,11 @@ function collidePlayerObject(p, o) {
     return;
   }
 
-  const dx = p.x - o.x;
-  const dy = p.y - o.y;
+  const dx =
+    p.x - o.x;
+
+  const dy =
+    p.y - o.y;
 
   const ox =
     (p.width + o.width) / 2 -
@@ -1612,10 +2104,14 @@ function collidePlayerObject(p, o) {
 
   if (ox < oy) {
 
-    const dir = dx >= 0 ? 1 : -1;
+    const dir =
+      dx >= 0 ? 1 : -1;
 
-    p.x += dir * ox * .5;
-    o.x -= dir * ox * .5;
+    p.x +=
+      dir * ox * .5;
+
+    o.x -=
+      dir * ox * .5;
 
     const average =
       (p.vx + o.vx) / 2;
@@ -1623,21 +2119,29 @@ function collidePlayerObject(p, o) {
     p.vx =
       average +
       dir *
-      Math.abs(p.vx - average) *
+      Math.abs(
+        p.vx - average
+      ) *
       WORLD.collisionBounce;
 
     o.vx =
       average -
       dir *
-      Math.abs(o.vx - average) *
+      Math.abs(
+        o.vx - average
+      ) *
       WORLD.collisionBounce;
 
   } else {
 
-    const dir = dy >= 0 ? 1 : -1;
+    const dir =
+      dy >= 0 ? 1 : -1;
 
-    p.y += dir * oy * .5;
-    o.y -= dir * oy * .5;
+    p.y +=
+      dir * oy * .5;
+
+    o.y -=
+      dir * oy * .5;
 
     const average =
       (p.vy + o.vy) / 2;
@@ -1645,13 +2149,17 @@ function collidePlayerObject(p, o) {
     p.vy =
       average +
       dir *
-      Math.abs(p.vy - average) *
+      Math.abs(
+        p.vy - average
+      ) *
       WORLD.collisionBounce;
 
     o.vy =
       average -
       dir *
-      Math.abs(o.vy - average) *
+      Math.abs(
+        o.vy - average
+      ) *
       WORLD.collisionBounce;
   }
 }
@@ -1670,8 +2178,11 @@ function collideObjects(a, b) {
     return;
   }
 
-  const dx = a.x - b.x;
-  const dy = a.y - b.y;
+  const dx =
+    a.x - b.x;
+
+  const dy =
+    a.y - b.y;
 
   const ox =
     (a.width + b.width) / 2 -
@@ -1687,10 +2198,14 @@ function collideObjects(a, b) {
 
   if (ox < oy) {
 
-    const dir = dx >= 0 ? 1 : -1;
+    const dir =
+      dx >= 0 ? 1 : -1;
 
-    a.x += dir * ox * .5;
-    b.x -= dir * ox * .5;
+    a.x +=
+      dir * ox * .5;
+
+    b.x -=
+      dir * ox * .5;
 
     const average =
       (a.vx + b.vx) / 2;
@@ -1698,21 +2213,29 @@ function collideObjects(a, b) {
     a.vx =
       average +
       dir *
-      Math.abs(a.vx - average) *
+      Math.abs(
+        a.vx - average
+      ) *
       WORLD.collisionBounce;
 
     b.vx =
       average -
       dir *
-      Math.abs(b.vx - average) *
+      Math.abs(
+        b.vx - average
+      ) *
       WORLD.collisionBounce;
 
   } else {
 
-    const dir = dy >= 0 ? 1 : -1;
+    const dir =
+      dy >= 0 ? 1 : -1;
 
-    a.y += dir * oy * .5;
-    b.y -= dir * oy * .5;
+    a.y +=
+      dir * oy * .5;
+
+    b.y -=
+      dir * oy * .5;
 
     const average =
       (a.vy + b.vy) / 2;
@@ -1720,13 +2243,17 @@ function collideObjects(a, b) {
     a.vy =
       average +
       dir *
-      Math.abs(a.vy - average) *
+      Math.abs(
+        a.vy - average
+      ) *
       WORLD.collisionBounce;
 
     b.vy =
       average -
       dir *
-      Math.abs(b.vy - average) *
+      Math.abs(
+        b.vy - average
+      ) *
       WORLD.collisionBounce;
   }
 }
@@ -1736,13 +2263,24 @@ function solveCollisions() {
   if (player) {
 
     for (const obj of objects) {
-      collidePlayerObject(player, obj);
+      collidePlayerObject(
+        player,
+        obj
+      );
     }
   }
 
-  for (let i = 0; i < objects.length; i++) {
+  for (
+    let i = 0;
+    i < objects.length;
+    i++
+  ) {
 
-    for (let j = i + 1; j < objects.length; j++) {
+    for (
+      let j = i + 1;
+      j < objects.length;
+      j++
+    ) {
 
       collideObjects(
         objects[i],
@@ -1756,14 +2294,27 @@ function solveCollisions() {
    DRAWING
 ========================= */
 
-function roundedRect(x, y, w, h, r) {
+function roundedRect(
+  x,
+  y,
+  w,
+  h,
+  r
+) {
 
   const radius =
-    Math.min(r, w / 2, h / 2);
+    Math.min(
+      r,
+      w / 2,
+      h / 2
+    );
 
   ctx.beginPath();
 
-  ctx.moveTo(x + radius, y);
+  ctx.moveTo(
+    x + radius,
+    y
+  );
 
   ctx.arcTo(
     x + w,
@@ -1931,23 +2482,45 @@ function drawName(
   x,
   y,
   health = null,
-  maxHealth = null
+  maxHealth = null,
+  godMode = false
 ) {
 
   if (!name) return;
 
+  /*
+    This function intentionally receives
+    screen-space coordinates and is always
+    called outside the player's horizontal
+    flip transform.
+
+    That means the text never mirrors when
+    the character faces left.
+  */
+
   ctx.save();
 
-  ctx.font = "bold 11px Arial";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
+  ctx.font =
+    "bold 11px Arial";
+
+  ctx.textAlign =
+    "center";
+
+  ctx.textBaseline =
+    "middle";
 
   const textWidth =
     ctx.measureText(name).width;
 
   const padding = 7;
-  const boxWidth = textWidth + padding * 2;
-  const boxHeight = 19;
+
+  const boxWidth =
+    textWidth + padding * 2;
+
+  const boxHeight =
+    health !== null
+      ? 24
+      : 19;
 
   ctx.fillStyle =
     "rgba(8,6,14,.78)";
@@ -1975,7 +2548,7 @@ function drawName(
   ctx.fillText(
     name,
     x,
-    y + .5
+    y - (health !== null ? 2 : 0)
   );
 
   if (
@@ -1986,7 +2559,10 @@ function drawName(
     const barWidth =
       Math.max(
         32,
-        Math.min(70, boxWidth)
+        Math.min(
+          70,
+          boxWidth
+        )
       );
 
     const percent =
@@ -2001,7 +2577,7 @@ function drawName(
 
     roundedRect(
       x - barWidth / 2,
-      y - 16,
+      y + 7,
       barWidth,
       3,
       2
@@ -2010,15 +2586,17 @@ function drawName(
     ctx.fill();
 
     ctx.fillStyle =
-      percent > .5
-        ? "#65d66f"
-        : percent > .25
-          ? "#f5c542"
-          : "#ef5350";
+      godMode
+        ? "#a855f7"
+        : percent > .5
+          ? "#65d66f"
+          : percent > .25
+            ? "#f5c542"
+            : "#ef5350";
 
     roundedRect(
       x - barWidth / 2,
-      y - 16,
+      y + 7,
       barWidth * percent,
       3,
       2
@@ -2036,7 +2614,8 @@ function drawName(
 
 function drawFace() {
 
-  ctx.fillStyle = "#161219";
+  ctx.fillStyle =
+    "#161219";
 
   ctx.beginPath();
 
@@ -2062,7 +2641,9 @@ function drawFace() {
 
   ctx.fill();
 
-  ctx.strokeStyle = "#161219";
+  ctx.strokeStyle =
+    "#161219";
+
   ctx.lineWidth = 2;
   ctx.lineCap = "round";
 
@@ -2081,23 +2662,28 @@ function drawFace() {
   ctx.lineCap = "butt";
 }
 
-function drawNoob(c, isPlayer = false) {
+function drawNoob(
+  c,
+  isPlayer = false
+) {
 
-  ctx.save();
+  /*
+    IMPORTANT:
+    The label is drawn BEFORE the player
+    is flipped horizontally. This keeps the
+    name and health bar facing the camera.
+  */
 
-  ctx.translate(
+  drawName(
+    c.name,
     c.x,
-    c.y
-  );
-
-  ctx.scale(
-    c.facing === -1 ? -1 : 1,
-    1
+    c.y - 82,
+    c.health,
+    c.maxHealth,
+    isPlayer && SETTINGS.godMode
   );
 
   if (isPlayer) {
-
-    ctx.restore();
 
     ctx.save();
 
@@ -2119,85 +2705,98 @@ function drawNoob(c, isPlayer = false) {
     ctx.fill();
 
     ctx.restore();
+  }
 
-    ctx.save();
+  ctx.save();
 
-    ctx.translate(
-      c.x,
-      c.y
-    );
+  ctx.translate(
+    c.x,
+    c.y
+  );
 
-    ctx.scale(
-      c.facing === -1 ? -1 : 1,
-      1
+  ctx.scale(
+    c.facing === -1
+      ? -1
+      : 1,
+    1
+  );
+
+  const removed =
+    c.removedParts || {};
+
+  if (!removed.leftLeg) {
+
+    drawTexturedBlock(
+      -20,
+      18,
+      16,
+      39,
+      c.colors.leftLeg,
+      3
     );
   }
 
-  drawName(
-    c.name,
-    0,
-    -78,
-    isPlayer ? null : c.health,
-    isPlayer ? null : c.maxHealth
-  );
+  if (!removed.rightLeg) {
 
-  drawTexturedBlock(
-    -20,
-    18,
-    16,
-    39,
-    c.colors.leftLeg,
-    3
-  );
+    drawTexturedBlock(
+      4,
+      18,
+      16,
+      39,
+      c.colors.rightLeg,
+      3
+    );
+  }
 
-  drawTexturedBlock(
-    4,
-    18,
-    16,
-    39,
-    c.colors.rightLeg,
-    3
-  );
+  if (!removed.torso) {
 
-  drawTexturedBlock(
-    -22,
-    -20,
-    44,
-    40,
-    c.colors.torso,
-    3
-  );
+    drawTexturedBlock(
+      -22,
+      -20,
+      44,
+      40,
+      c.colors.torso,
+      3
+    );
+  }
 
-  drawTexturedBlock(
-    -40,
-    -18,
-    15,
-    40,
-    c.colors.leftArm,
-    3
-  );
+  if (!removed.leftArm) {
 
-  drawTexturedBlock(
-    25,
-    -18,
-    15,
-    40,
-    c.colors.rightArm,
-    3
-  );
+    drawTexturedBlock(
+      -40,
+      -18,
+      15,
+      40,
+      c.colors.leftArm,
+      3
+    );
+  }
 
-  /* SQUARE HEAD */
+  if (!removed.rightArm) {
 
-  drawTexturedBlock(
-    -20,
-    -60,
-    40,
-    40,
-    c.colors.head,
-    0
-  );
+    drawTexturedBlock(
+      25,
+      -18,
+      15,
+      40,
+      c.colors.rightArm,
+      3
+    );
+  }
 
-  drawFace();
+  if (!removed.head) {
+
+    drawTexturedBlock(
+      -20,
+      -60,
+      40,
+      40,
+      c.colors.head,
+      0
+    );
+
+    drawFace();
+  }
 
   if (
     isPlayer &&
@@ -2357,7 +2956,8 @@ function drawBomb(bomb) {
       20 +
       (1 - progress) * 125;
 
-    ctx.globalAlpha = progress;
+    ctx.globalAlpha =
+      progress;
 
     ctx.fillStyle =
       "rgba(255,180,50,.28)";
@@ -2465,7 +3065,8 @@ function drawBomb(bomb) {
 
   if (spark) {
 
-    ctx.fillStyle = "#ffb52e";
+    ctx.fillStyle =
+      "#ffb52e";
 
     ctx.beginPath();
 
@@ -2479,7 +3080,8 @@ function drawBomb(bomb) {
 
     ctx.fill();
 
-    ctx.fillStyle = "#fff0a0";
+    ctx.fillStyle =
+      "#fff0a0";
 
     ctx.beginPath();
 
@@ -2494,16 +3096,23 @@ function drawBomb(bomb) {
     ctx.fill();
   }
 
-  ctx.fillStyle = "white";
+  ctx.fillStyle =
+    "white";
 
   ctx.font =
     "bold 9px Arial";
 
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
+  ctx.textAlign =
+    "center";
+
+  ctx.textBaseline =
+    "middle";
 
   ctx.fillText(
-    Math.max(0, bomb.fuse).toFixed(1),
+    Math.max(
+      0,
+      bomb.fuse
+    ).toFixed(1),
     0,
     5
   );
@@ -2540,7 +3149,8 @@ function drawBackground() {
     "#08050f"
   );
 
-  ctx.fillStyle = gradient;
+  ctx.fillStyle =
+    gradient;
 
   ctx.fillRect(
     0,
@@ -2569,7 +3179,8 @@ function drawBackground() {
     "rgba(130,70,255,0)"
   );
 
-  ctx.fillStyle = glow;
+  ctx.fillStyle =
+    glow;
 
   ctx.fillRect(
     0,
@@ -2628,13 +3239,20 @@ function draw() {
 
     if (obj.type === "noob") {
 
-      drawNoob(obj, false);
+      drawNoob(
+        obj,
+        false
+      );
 
-    } else if (obj.type === "bomb") {
+    } else if (
+      obj.type === "bomb"
+    ) {
 
       drawBomb(obj);
 
-    } else if (obj.type === "brokenPart") {
+    } else if (
+      obj.type === "brokenPart"
+    ) {
 
       drawBrokenPart(obj);
 
@@ -2645,7 +3263,10 @@ function draw() {
   }
 
   if (player) {
-    drawNoob(player, true);
+    drawNoob(
+      player,
+      true
+    );
   }
 }
 
@@ -2654,7 +3275,9 @@ function draw() {
 ========================= */
 
 const leaderboard =
-  document.querySelector(".leaderboard");
+  document.querySelector(
+    ".leaderboard"
+  );
 
 const leaderboardList =
   document.getElementById(
@@ -2724,7 +3347,8 @@ leaderboardList.addEventListener(
       return;
     }
 
-    person.name = cleaned;
+    person.name =
+      cleaned;
 
     updateLeaderboard();
   }
@@ -2761,34 +3385,45 @@ function updateLeaderboard() {
     (person, index) => {
 
       const row =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
 
       row.className =
         "leader-row";
 
       const main =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
 
       main.className =
         "leader-main";
 
       const nameLine =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
 
       nameLine.className =
         "leader-name-line";
 
       const name =
-        document.createElement("span");
+        document.createElement(
+          "span"
+        );
 
       name.className =
         "leader-name";
 
       name.textContent =
-        person.name || "Unnamed";
+        person.name ||
+        "Unnamed";
 
       const type =
-        document.createElement("span");
+        document.createElement(
+          "span"
+        );
 
       type.className =
         "leader-type";
@@ -2802,13 +3437,17 @@ function updateLeaderboard() {
       nameLine.appendChild(type);
 
       const track =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
 
       track.className =
         "leader-health-track";
 
       const bar =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
 
       bar.className =
         "leader-health-bar";
@@ -2821,7 +3460,8 @@ function updateLeaderboard() {
 
       const health =
         clamp(
-          person.health ?? maxHealth,
+          person.health ??
+            maxHealth,
           0,
           maxHealth
         );
@@ -2833,35 +3473,58 @@ function updateLeaderboard() {
         `${percent * 100}%`;
 
       bar.style.background =
-        percent > .5
-          ? "#65d66f"
-          : percent > .25
-            ? "#f5c542"
-            : "#ef5350";
+        person.type === "player" &&
+        SETTINGS.godMode
+          ? "#a855f7"
+          : percent > .5
+            ? "#65d66f"
+            : percent > .25
+              ? "#f5c542"
+              : "#ef5350";
 
       track.appendChild(bar);
 
       const healthText =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
 
       healthText.className =
         "leader-health-text";
 
       healthText.textContent =
-        `${Math.ceil(health)} / ${maxHealth}`;
+        `${Math.ceil(
+          health
+        )} / ${maxHealth}${
+          person.type === "player" &&
+          SETTINGS.godMode
+            ? " • GOD"
+            : ""
+        }`;
 
       main.appendChild(nameLine);
       main.appendChild(track);
       main.appendChild(healthText);
 
       const rename =
-        document.createElement("button");
+        document.createElement(
+          "button"
+        );
 
-      rename.type = "button";
-      rename.className = "rename-button";
-      rename.textContent = "✎";
-      rename.title = "Rename";
-      rename.dataset.index = index;
+      rename.type =
+        "button";
+
+      rename.className =
+        "rename-button";
+
+      rename.textContent =
+        "✎";
+
+      rename.title =
+        "Rename";
+
+      rename.dataset.index =
+        index;
 
       row.appendChild(main);
       row.appendChild(rename);
@@ -2883,29 +3546,54 @@ let grabOffsetY = 0;
 
 const dragHistory = [];
 
-function inside(x, y, body) {
+function inside(
+  x,
+  y,
+  body
+) {
 
   return (
-    x >= body.x - body.width / 2 &&
-    x <= body.x + body.width / 2 &&
-    y >= body.y - body.height / 2 &&
-    y <= body.y + body.height / 2
+    x >=
+      body.x -
+      body.width / 2 &&
+    x <=
+      body.x +
+      body.width / 2 &&
+    y >=
+      body.y -
+      body.height / 2 &&
+    y <=
+      body.y +
+      body.height / 2
   );
 }
 
-function findTarget(x, y) {
+function findTarget(
+  x,
+  y
+) {
 
   for (
-    let i = objects.length - 1;
+    let i =
+      objects.length - 1;
     i >= 0;
     i--
   ) {
 
-    if (objects[i].type === "brokenPart") {
+    if (
+      objects[i].type ===
+      "brokenPart"
+    ) {
       continue;
     }
 
-    if (inside(x, y, objects[i])) {
+    if (
+      inside(
+        x,
+        y,
+        objects[i]
+      )
+    ) {
       return objects[i];
     }
   }
@@ -2913,7 +3601,11 @@ function findTarget(x, y) {
   if (
     player &&
     !player.respawning &&
-    inside(x, y, player)
+    inside(
+      x,
+      y,
+      player
+    )
   ) {
     return player;
   }
@@ -2921,9 +3613,13 @@ function findTarget(x, y) {
   return null;
 }
 
-function recordDrag(x, y) {
+function recordDrag(
+  x,
+  y
+) {
 
-  const now = performance.now();
+  const now =
+    performance.now();
 
   dragHistory.push({
     x,
@@ -2933,16 +3629,24 @@ function recordDrag(x, y) {
 
   while (
     dragHistory.length > 14 ||
-    now - dragHistory[0].time > 180
+    now -
+      dragHistory[0].time >
+      180
   ) {
+
     dragHistory.shift();
   }
 }
 
 function throwVelocity() {
 
-  if (dragHistory.length < 2) {
-    return { vx: 0, vy: 0 };
+  if (
+    dragHistory.length < 2
+  ) {
+    return {
+      vx: 0,
+      vy: 0
+    };
   }
 
   const latest =
@@ -2954,17 +3658,21 @@ function throwVelocity() {
     dragHistory[0];
 
   for (
-    let i = dragHistory.length - 1;
+    let i =
+      dragHistory.length - 1;
     i >= 0;
     i--
   ) {
 
     if (
       latest.time -
-      dragHistory[i].time >= 35
+        dragHistory[i].time >=
+      35
     ) {
 
-      old = dragHistory[i];
+      old =
+        dragHistory[i];
+
       break;
     }
   }
@@ -2972,20 +3680,32 @@ function throwVelocity() {
   const dt =
     Math.max(
       .016,
-      (latest.time - old.time) / 1000
+      (
+        latest.time -
+        old.time
+      ) / 1000
     );
 
   let vx =
-    (latest.x - old.x) / dt;
+    (
+      latest.x -
+      old.x
+    ) / dt;
 
   let vy =
-    (latest.y - old.y) / dt;
+    (
+      latest.y -
+      old.y
+    ) / dt;
 
   vx *= 1.8;
   vy *= 1.8;
 
   const speed =
-    Math.hypot(vx, vy);
+    Math.hypot(
+      vx,
+      vy
+    );
 
   if (
     speed >
@@ -2993,7 +3713,8 @@ function throwVelocity() {
   ) {
 
     const scale =
-      WORLD.maxObjectSpeed / speed;
+      WORLD.maxObjectSpeed /
+      speed;
 
     vx *= scale;
     vy *= scale;
@@ -3011,13 +3732,73 @@ function pointerDown(e) {
     canvas.getBoundingClientRect();
 
   const x =
-    e.clientX - rect.left;
+    e.clientX -
+    rect.left;
 
   const y =
-    e.clientY - rect.top;
+    e.clientY -
+    rect.top;
+
+  /*
+    Part Remover gets priority over
+    normal grabbing.
+  */
+
+  if (
+    toolMode ===
+    "part-remover"
+  ) {
+
+    /*
+      Player gets checked first so the
+      player cannot accidentally have a
+      nearby Noob's overlapping part removed.
+    */
+
+    if (
+      player &&
+      !player.respawning
+    ) {
+
+      const playerTarget =
+        findBodyPartAt(
+          player,
+          x,
+          y
+        );
+
+      if (playerTarget) {
+
+        removePlayerPart(
+          playerTarget.part
+        );
+
+        return;
+      }
+    }
+
+    const target =
+      findNoobPartAt(
+        x,
+        y
+      );
+
+    if (target) {
+
+      removeNoobPart(
+        target.noob,
+        target.part
+      );
+    }
+
+    return;
+  }
 
   const target =
-    findTarget(x, y);
+    findTarget(
+      x,
+      y
+    );
 
   if (!target) {
     return;
@@ -3030,8 +3811,11 @@ function pointerDown(e) {
     return;
   }
 
-  grabbed = target;
-  grabPointer = e.pointerId;
+  grabbed =
+    target;
+
+  grabPointer =
+    e.pointerId;
 
   grabOffsetX =
     target.x - x;
@@ -3043,13 +3827,19 @@ function pointerDown(e) {
   target.vy = 0;
   target.vr = 0;
 
-  if (target === player) {
-    player.grounded = false;
+  if (
+    target === player
+  ) {
+    player.grounded =
+      false;
   }
 
   dragHistory.length = 0;
 
-  recordDrag(x, y);
+  recordDrag(
+    x,
+    y
+  );
 
   canvas.setPointerCapture(
     e.pointerId
@@ -3060,7 +3850,8 @@ function pointerMove(e) {
 
   if (
     !grabbed ||
-    e.pointerId !== grabPointer
+    e.pointerId !==
+      grabPointer
   ) {
     return;
   }
@@ -3069,12 +3860,17 @@ function pointerMove(e) {
     canvas.getBoundingClientRect();
 
   const x =
-    e.clientX - rect.left;
+    e.clientX -
+    rect.left;
 
   const y =
-    e.clientY - rect.top;
+    e.clientY -
+    rect.top;
 
-  recordDrag(x, y);
+  recordDrag(
+    x,
+    y
+  );
 
   grabbed.x =
     x + grabOffsetX;
@@ -3103,7 +3899,9 @@ function pointerMove(e) {
     clamp(
       grabbed.y,
       halfH,
-      H - WORLD.floorHeight - halfH
+      H -
+        WORLD.floorHeight -
+        halfH
     );
 }
 
@@ -3111,7 +3909,8 @@ function pointerUp(e) {
 
   if (
     !grabbed ||
-    e.pointerId !== grabPointer
+    e.pointerId !==
+      grabPointer
   ) {
     return;
   }
@@ -3125,13 +3924,21 @@ function pointerUp(e) {
   grabbed.vy =
     velocity.vy;
 
-  if (grabbed !== player) {
+  if (
+    grabbed !== player
+  ) {
+
     grabbed.vr =
-      velocity.vx * .008;
+      velocity.vx *
+      .008;
   }
 
-  if (grabbed === player) {
-    player.grounded = false;
+  if (
+    grabbed === player
+  ) {
+
+    player.grounded =
+      false;
   }
 
   grabbed = null;
@@ -3203,7 +4010,7 @@ astraButton.addEventListener(
 );
 
 /* =========================
-   FIXED SPAWN MENU / LEADERBOARD
+   SPAWN MENU / LEADERBOARD
 ========================= */
 
 spawnButton.addEventListener(
@@ -3211,7 +4018,9 @@ spawnButton.addEventListener(
   () => {
 
     const opening =
-      !spawnMenu.classList.contains("open");
+      !spawnMenu.classList.contains(
+        "open"
+      );
 
     spawnMenu.classList.toggle(
       "open"
@@ -3280,12 +4089,24 @@ const runningValue =
     "runningValue"
   );
 
+const godModeToggle =
+  document.getElementById(
+    "godModeToggle"
+  );
+
+const godModeValue =
+  document.getElementById(
+    "godModeValue"
+  );
+
 walkSpeed.addEventListener(
   "input",
   () => {
 
     SETTINGS.walkSpeed =
-      Number(walkSpeed.value);
+      Number(
+        walkSpeed.value
+      );
 
     walkSpeedValue.textContent =
       SETTINGS.walkSpeed;
@@ -3297,7 +4118,9 @@ jumpPower.addEventListener(
   () => {
 
     SETTINGS.jumpPower =
-      Number(jumpPower.value);
+      Number(
+        jumpPower.value
+      );
 
     jumpPowerValue.textContent =
       SETTINGS.jumpPower;
@@ -3309,7 +4132,9 @@ runSpeed.addEventListener(
   () => {
 
     SETTINGS.runSpeed =
-      Number(runSpeed.value);
+      Number(
+        runSpeed.value
+      );
 
     runSpeedValue.textContent =
       SETTINGS.runSpeed;
@@ -3327,7 +4152,11 @@ runningToggle.addEventListener(
       SETTINGS.runningEnabled;
 
     runningToggle.textContent =
-      `Running: ${enabled ? "ON" : "OFF"}`;
+      `Running: ${
+        enabled
+          ? "ON"
+          : "OFF"
+      }`;
 
     runningToggle.classList.toggle(
       "primary",
@@ -3335,7 +4164,54 @@ runningToggle.addEventListener(
     );
 
     runningValue.textContent =
-      enabled ? "ON" : "OFF";
+      enabled
+        ? "ON"
+        : "OFF";
+  }
+);
+
+godModeToggle.addEventListener(
+  "click",
+  () => {
+
+    SETTINGS.godMode =
+      !SETTINGS.godMode;
+
+    const enabled =
+      SETTINGS.godMode;
+
+    godModeToggle.textContent =
+      `God Mode: ${
+        enabled
+          ? "ON"
+          : "OFF"
+      }`;
+
+    godModeToggle.classList.toggle(
+      "primary",
+      enabled
+    );
+
+    godModeValue.textContent =
+      enabled
+        ? "ON"
+        : "OFF";
+
+    if (
+      enabled &&
+      player
+    ) {
+      player.health =
+        player.maxHealth;
+    }
+
+    updateLeaderboard();
+
+    showToast(
+      enabled
+        ? "God Mode enabled"
+        : "God Mode disabled"
+    );
   }
 );
 
@@ -3346,25 +4222,39 @@ runningToggle.addEventListener(
 const colorInputs = {
 
   head:
-    document.getElementById("headColor"),
+    document.getElementById(
+      "headColor"
+    ),
 
   torso:
-    document.getElementById("torsoColor"),
+    document.getElementById(
+      "torsoColor"
+    ),
 
   leftArm:
-    document.getElementById("leftArmColor"),
+    document.getElementById(
+      "leftArmColor"
+    ),
 
   rightArm:
-    document.getElementById("rightArmColor"),
+    document.getElementById(
+      "rightArmColor"
+    ),
 
   leftLeg:
-    document.getElementById("leftLegColor"),
+    document.getElementById(
+      "leftLegColor"
+    ),
 
   rightLeg:
-    document.getElementById("rightLegColor")
+    document.getElementById(
+      "rightLegColor"
+    )
 };
 
-for (const key in colorInputs) {
+for (
+  const key in colorInputs
+) {
 
   colorInputs[key].addEventListener(
     "input",
@@ -3374,13 +4264,18 @@ for (const key in colorInputs) {
         colorInputs[key].value;
 
       if (player) {
+
         player.colors[key] =
           colorInputs[key].value;
       }
 
-      for (const obj of objects) {
+      for (
+        const obj of objects
+      ) {
 
-        if (obj.type === "noob") {
+        if (
+          obj.type === "noob"
+        ) {
 
           obj.colors[key] =
             colorInputs[key].value;
@@ -3395,56 +4290,77 @@ for (const key in colorInputs) {
 ========================= */
 
 document
-  .getElementById("resetCharacter")
+  .getElementById(
+    "resetCharacter"
+  )
   .addEventListener(
     "click",
     resetPlayer
   );
 
 document
-  .getElementById("deleteCharacter")
+  .getElementById(
+    "deleteCharacter"
+  )
   .addEventListener(
     "click",
     deletePlayer
   );
 
 document
-  .getElementById("spawnMe")
+  .getElementById(
+    "spawnMe"
+  )
   .addEventListener(
     "click",
     spawnPlayer
   );
 
 document
-  .getElementById("spawnNoob")
+  .getElementById(
+    "spawnNoob"
+  )
   .addEventListener(
     "click",
     spawnNoob
   );
 
 document
-  .getElementById("spawnCrate")
+  .getElementById(
+    "spawnCrate"
+  )
   .addEventListener(
     "click",
     spawnCrate
   );
 
 document
-  .getElementById("spawnBomb")
+  .getElementById(
+    "spawnBomb"
+  )
   .addEventListener(
     "click",
     spawnBomb
   );
 
+partRemoverButton.addEventListener(
+  "click",
+  togglePartRemover
+);
+
 document
-  .getElementById("resetSandbox")
+  .getElementById(
+    "resetSandbox"
+  )
   .addEventListener(
     "click",
     resetSandbox
   );
 
 document
-  .getElementById("mobileJump")
+  .getElementById(
+    "mobileJump"
+  )
   .addEventListener(
     "pointerdown",
     e => {
@@ -3452,7 +4368,8 @@ document
       e.preventDefault();
 
       if (player) {
-        player.jumpRequested = true;
+        player.jumpRequested =
+          true;
       }
     }
   );
@@ -3466,7 +4383,8 @@ const spawnHeader =
     "spawnHeader"
   );
 
-let draggingMenu = false;
+let draggingMenu =
+  false;
 
 let dragStartX = 0;
 let dragStartY = 0;
@@ -3478,7 +4396,8 @@ spawnHeader.addEventListener(
   "pointerdown",
   e => {
 
-    draggingMenu = true;
+    draggingMenu =
+      true;
 
     const rect =
       spawnMenu.getBoundingClientRect();
@@ -3512,19 +4431,23 @@ spawnHeader.addEventListener(
     }
 
     const dx =
-      e.clientX - dragStartX;
+      e.clientX -
+      dragStartX;
 
     const dy =
-      e.clientY - dragStartY;
+      e.clientY -
+      dragStartY;
 
     const rect =
       spawnMenu.getBoundingClientRect();
 
     let right =
-      originalRight - dx;
+      originalRight -
+      dx;
 
     let bottom =
-      originalBottom - dy;
+      originalBottom -
+      dy;
 
     right =
       clamp(
@@ -3556,7 +4479,8 @@ spawnHeader.addEventListener(
 );
 
 function stopMenuDrag() {
-  draggingMenu = false;
+  draggingMenu =
+    false;
 }
 
 spawnHeader.addEventListener(
@@ -3619,7 +4543,9 @@ function updateStatus() {
 
   characterStatus.textContent =
     player
-      ? "Character active"
+      ? SETTINGS.godMode
+        ? "Character active • God Mode"
+        : "Character active"
       : "No character found";
 }
 
@@ -3633,7 +4559,8 @@ let lastTime =
 function gameLoop(now) {
 
   let dt =
-    (now - lastTime) / 1000;
+    (now - lastTime) /
+    1000;
 
   lastTime =
     now;
@@ -3646,7 +4573,9 @@ function gameLoop(now) {
 
   updatePlayer(dt);
 
-  for (const obj of objects) {
+  for (
+    const obj of objects
+  ) {
 
     updateObject(
       obj,
@@ -3655,7 +4584,8 @@ function gameLoop(now) {
   }
 
   for (
-    let i = objects.length - 1;
+    let i =
+      objects.length - 1;
     i >= 0;
     i--
   ) {
