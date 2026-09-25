@@ -1,2695 +1,1883 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ragdoll Noob</title>
+<link rel="icon" href="images/astraicontransparent.ico">
 
-    <title>Ragdoll Noob</title>
+<style>
+* {
+    box-sizing: border-box;
+}
 
-    <link rel="icon" href="images/astraicontransparent.ico">
+html,
+body {
+    margin: 0;
+    width: 100%;
+    min-height: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(circle at 20% 10%, rgba(139, 92, 246, 0.28), transparent 35%),
+        radial-gradient(circle at 80% 90%, rgba(99, 102, 241, 0.20), transparent 35%),
+        linear-gradient(135deg, #090612, #160c2b 50%, #090612);
+    color: white;
+}
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+body {
+    min-height: 100vh;
+    padding: 18px;
+    overflow-x: hidden;
+}
 
-        html,
-        body {
-            margin: 0;
-            min-height: 100%;
-            font-family: Arial, Helvetica, sans-serif;
-            background:
-                radial-gradient(
-                    circle at top,
-                    #34205f 0%,
-                    #171225 45%,
-                    #08070d 100%
-                );
-            color: white;
-        }
+.topbar {
+    width: min(1200px, 100%);
+    margin: 0 auto 18px;
+    padding: 13px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 18px;
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 15px 45px rgba(0,0,0,0.25);
+}
 
-        body {
-            display: flex;
-            justify-content: center;
-            padding: 24px;
-        }
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 19px;
+}
 
-        .page {
-            width: min(1100px, 100%);
-        }
+.brand img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
 
-        header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            margin-bottom: 18px;
-        }
+.back {
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.07);
+    color: white;
+    padding: 9px 14px;
+    border-radius: 11px;
+    cursor: pointer;
+    font-weight: 700;
+}
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+.back:hover {
+    background: rgba(255,255,255,0.12);
+}
 
-        .brand-icon {
-            width: 46px;
-            height: 46px;
-            object-fit: contain;
-        }
+.wrapper {
+    width: min(1200px, 100%);
+    margin: auto;
+}
 
-        .brand-text h1 {
-            margin: 0;
-            font-size: 24px;
-        }
+.game-card {
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 24px;
+    background: rgba(255,255,255,0.055);
+    backdrop-filter: blur(20px);
+    padding: 20px;
+    box-shadow: 0 25px 70px rgba(0,0,0,0.30);
+}
 
-        .brand-text p {
-            margin: 3px 0 0;
-            color: #aaa3bd;
-            font-size: 13px;
-        }
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 16px;
+}
 
-        .back-button {
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            background: rgba(255, 255, 255, 0.07);
-            color: white;
-            padding: 11px 16px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 700;
-            transition: 0.2s ease;
-        }
+.title-area h1 {
+    margin: 0;
+    font-size: clamp(25px, 4vw, 38px);
+}
 
-        .back-button:hover {
-            background: rgba(255, 255, 255, 0.13);
-            transform: translateY(-1px);
-        }
+.title-area p {
+    margin: 5px 0 0;
+    color: rgba(255,255,255,0.55);
+    font-size: 14px;
+}
 
-        .game-card {
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            background: rgba(16, 13, 28, 0.78);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border-radius: 22px;
-            padding: 18px;
-            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
-        }
+.status {
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(139,92,246,0.14);
+    border: 1px solid rgba(139,92,246,0.28);
+    color: #c4b5fd;
+    font-size: 13px;
+    white-space: nowrap;
+}
 
-        .game-title {
-            text-align: center;
-            margin-bottom: 15px;
-        }
+.canvas-wrap {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.10);
+    background: #08080c;
+}
 
-        .game-title h2 {
-            margin: 0;
-            font-size: clamp(28px, 5vw, 46px);
-        }
+canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    cursor: grab;
+    touch-action: none;
+}
 
-        .game-title p {
-            margin: 6px 0 0;
-            color: #aaa3bd;
-        }
+canvas.grabbing {
+    cursor: grabbing;
+}
 
-        .game-wrapper {
-            position: relative;
-            width: 100%;
-            overflow: hidden;
-            border-radius: 16px;
-            background: #0b0a10;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 15px;
+}
 
-        canvas {
-            display: block;
-            width: 100%;
-            height: auto;
-            aspect-ratio: 16 / 9;
-            touch-action: none;
-            cursor: grab;
-        }
+button {
+    font: inherit;
+}
 
-        canvas:active {
-            cursor: grabbing;
-        }
+.control-btn {
+    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(255,255,255,0.065);
+    color: white;
+    padding: 11px 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: 0.15s ease;
+}
 
-        .controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 14px;
-        }
+.control-btn:hover {
+    transform: translateY(-1px);
+    background: rgba(255,255,255,0.11);
+}
 
-        button {
-            min-height: 48px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.07);
-            color: white;
-            padding: 0 17px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.18s ease;
-        }
+.control-btn:active {
+    transform: translateY(1px);
+}
 
-        button:hover {
-            background: rgba(255, 255, 255, 0.13);
-            transform: translateY(-1px);
-        }
+.spawn-menu {
+    display: none;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 14px;
+    background: rgba(0,0,0,0.20);
+    border: 1px solid rgba(255,255,255,0.08);
+}
 
-        button:active {
-            transform: translateY(1px);
-        }
+.spawn-menu.open {
+    display: flex;
+}
 
-        .primary {
-            background:
-                linear-gradient(
-                    135deg,
-                    rgba(139, 92, 246, 0.8),
-                    rgba(99, 55, 180, 0.8)
-                );
-        }
+.instructions {
+    margin-top: 15px;
+    padding: 13px 15px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.035);
+    border: 1px solid rgba(255,255,255,0.07);
+    color: rgba(255,255,255,0.62);
+    font-size: 13px;
+    line-height: 1.6;
+}
 
-        .primary:hover {
-            background:
-                linear-gradient(
-                    135deg,
-                    rgba(155, 110, 255, 0.9),
-                    rgba(112, 67, 195, 0.9)
-                );
-        }
+.footer {
+    text-align: center;
+    color: rgba(255,255,255,0.38);
+    font-size: 12px;
+    margin-top: 18px;
+}
 
-        .danger {
-            background:
-                linear-gradient(
-                    135deg,
-                    rgba(210, 65, 85, 0.65),
-                    rgba(150, 40, 70, 0.65)
-                );
-        }
+@media (max-width: 650px) {
+    body {
+        padding: 10px;
+    }
 
-        /* Spawn menu */
+    .game-card {
+        padding: 12px;
+        border-radius: 18px;
+    }
 
-        .spawn-area {
-            position: relative;
-            display: inline-block;
-        }
+    .header {
+        align-items: flex-start;
+    }
 
-        .spawn-menu {
-            position: absolute;
-            left: 0;
-            bottom: calc(100% + 8px);
-            width: 230px;
+    .status {
+        font-size: 11px;
+    }
 
-            display: none;
-
-            padding: 10px;
-
-            background: rgba(20, 16, 34, 0.96);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 15px;
-
-            box-shadow:
-                0 20px 50px rgba(0, 0, 0, 0.45);
-
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-
-            z-index: 20;
-        }
-
-        .spawn-menu.open {
-            display: block;
-        }
-
-        .spawn-menu-title {
-            color: #aaa3bd;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            padding: 5px 8px 9px;
-        }
-
-        .spawn-option {
-            width: 100%;
-            min-height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 10px;
-            margin: 4px 0;
-            padding: 0 12px;
-
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .spawn-option:hover {
-            background: rgba(139, 92, 246, 0.2);
-        }
-
-        .instructions {
-            margin-top: 14px;
-            padding: 14px 16px;
-            border-radius: 14px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.07);
-            color: #b8b2c6;
-            font-size: 14px;
-            line-height: 1.5;
-            text-align: center;
-        }
-
-        footer {
-            text-align: center;
-            color: #777183;
-            font-size: 12px;
-            margin-top: 18px;
-        }
-
-        @media (max-width: 700px) {
-
-            body {
-                padding: 12px;
-            }
-
-            header {
-                align-items: flex-start;
-            }
-
-            .game-card {
-                padding: 12px;
-            }
-
-            .brand-text h1 {
-                font-size: 20px;
-            }
-
-            .back-button {
-                padding: 9px 12px;
-                font-size: 13px;
-            }
-
-            .controls {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .controls > button,
-            .spawn-area {
-                width: 100%;
-            }
-
-            .spawn-area > button {
-                width: 100%;
-            }
-
-            .spawn-menu {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 430px) {
-
-            header {
-                flex-direction: column;
-            }
-
-            .back-button {
-                width: 100%;
-                text-align: center;
-            }
-        }
-    </style>
+    .control-btn {
+        flex: 1 1 calc(50% - 8px);
+    }
+}
+</style>
 </head>
 
 <body>
 
-<div class="page">
+<div class="topbar">
+    <div class="brand">
+        <img src="images/astraicontransparent.ico" alt="Astra">
+        <span>Astra</span>
+    </div>
 
-    <header>
+    <button class="back" onclick="location.href='index.html'">
+        ← Back
+    </button>
+</div>
 
-        <div class="brand">
+<main class="wrapper">
+    <section class="game-card">
 
-            <img
-                class="brand-icon"
-                src="images/astraicontransparent.ico"
-                alt="Astra"
-            >
-
-            <div class="brand-text">
+        <div class="header">
+            <div class="title-area">
                 <h1>Ragdoll Noob</h1>
-                <p>An absolutely pointless physics sandbox.</p>
+                <p>Throw him around. There is absolutely no objective.</p>
             </div>
 
+            <div class="status">
+                Physics Sandbox
+            </div>
         </div>
 
-        <a
-            class="back-button"
-            href="index.html"
-        >
-            ← Back to Astra
-        </a>
-
-    </header>
-
-
-    <main class="game-card">
-
-        <div class="game-title">
-
-            <h2>RAGDOLL NOOB</h2>
-
-            <p>
-                Throw him around. He doesn't care.
-            </p>
-
+        <div class="canvas-wrap">
+            <canvas id="gameCanvas" width="960" height="540"></canvas>
         </div>
-
-
-        <div class="game-wrapper">
-
-            <canvas
-                id="gameCanvas"
-                width="960"
-                height="540"
-            ></canvas>
-
-        </div>
-
 
         <div class="controls">
+            <button class="control-btn" id="spawnButton">
+                ➕ Spawn
+            </button>
 
-            <div class="spawn-area">
-
-                <button
-                    id="spawnButton"
-                    class="primary"
-                    type="button"
-                >
-                    ➕ Spawn
-                </button>
-
-
-                <div
-                    id="spawnMenu"
-                    class="spawn-menu"
-                >
-
-                    <div class="spawn-menu-title">
-                        Spawn object
-                    </div>
-
-
-                    <button
-                        class="spawn-option"
-                        data-spawn="crate"
-                        type="button"
-                    >
-                        🧱 Crate
-                    </button>
-
-
-                    <button
-                        class="spawn-option"
-                        data-spawn="ball"
-                        type="button"
-                    >
-                        ⚽ Ball
-                    </button>
-
-
-                    <button
-                        class="spawn-option"
-                        data-spawn="bomb"
-                        type="button"
-                    >
-                        💣 Cartoon Bomb
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <button
-                id="boomButton"
-                type="button"
-            >
+            <button class="control-btn" id="boomButton">
                 💥 Cartoon BOOM
             </button>
 
-
-            <button
-                id="resetButton"
-                type="button"
-            >
+            <button class="control-btn" id="resetButton">
                 🔄 Reset Noob
             </button>
 
-
-            <button
-                id="clearButton"
-                class="danger"
-                type="button"
-            >
+            <button class="control-btn" id="clearButton">
                 🗑️ Clear Objects
             </button>
-
         </div>
 
+        <div class="spawn-menu" id="spawnMenu">
+            <button class="control-btn" id="crateButton">
+                🧱 Crate
+            </button>
+
+            <button class="control-btn" id="ballButton">
+                ⚽ Ball
+            </button>
+
+            <button class="control-btn" id="bombButton">
+                💣 Cartoon Bomb
+            </button>
+        </div>
 
         <div class="instructions">
-
-            <strong>How to play:</strong>
-            Grab the Noob or any object and throw it around.
-            Use <strong>Spawn</strong> to add things.
-            The Noob has absolutely no objective.
-
+            <strong>Controls:</strong>
+            Grab the Noob or objects and throw them around.
+            Use <strong>R</strong> to reset,
+            <strong>C</strong> for a crate,
+            <strong>B</strong> for a ball,
+            <strong>X</strong> for a cartoon bomb,
+            and <strong>Space</strong> for BOOM.
         </div>
 
-    </main>
+    </section>
 
-
-    <footer>
+    <div class="footer">
         Ragdoll Noob · An Astra game
-    </footer>
-
-</div>
-
+    </div>
+</main>
 
 <script>
-(() => {
+/* =========================================================
+   RAGDOLL NOOB
+   Completely silent physics sandbox
+   ========================================================= */
 
-    const canvas =
-        document.getElementById("gameCanvas");
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
 
-    const ctx =
-        canvas.getContext("2d");
+const WIDTH = canvas.width;
+const HEIGHT = canvas.height;
 
+/* ---------------------------------------------------------
+   PHYSICS
+   IMPORTANT:
+   Canvas Y goes DOWN.
+   Therefore gravity MUST be positive.
+   --------------------------------------------------------- */
 
-    const WIDTH = canvas.width;
-    const HEIGHT = canvas.height;
+const GRAVITY = 0.42;
+const AIR_DRAG = 0.995;
+const FLOOR_FRICTION = 0.82;
+const BOUNCE = 0.18;
 
-    const GROUND_Y =
-        HEIGHT - 45;
+const FLOOR_Y = HEIGHT - 35;
 
+/* ---------------------------------------------------------
+   Utility
+   --------------------------------------------------------- */
+
+function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+}
+
+function distance(a, b) {
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    return Math.sqrt(dx * dx + dy * dy);
+}
+
+function random(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+/* ---------------------------------------------------------
+   Physics body
+   --------------------------------------------------------- */
+
+class Body {
+    constructor(x, y, radius, options = {}) {
+        this.x = x;
+        this.y = y;
+
+        this.vx = options.vx || 0;
+        this.vy = options.vy || 0;
+
+        this.radius = radius;
+
+        this.mass = options.mass || 1;
+
+        this.restitution =
+            options.restitution !== undefined
+                ? options.restitution
+                : BOUNCE;
+
+        this.friction =
+            options.friction !== undefined
+                ? options.friction
+                : FLOOR_FRICTION;
+
+        this.static = options.static || false;
+
+        this.type = options.type || "body";
+
+        this.width = options.width || radius * 2;
+        this.height = options.height || radius * 2;
+
+        this.angle = options.angle || 0;
+        this.angularVelocity = options.angularVelocity || 0;
+
+        this.grabbed = false;
+    }
+
+    integrate() {
+        if (this.static) return;
+
+        /*
+         * DOWNWARD GRAVITY.
+         * This is the important fix.
+         */
+        this.vy += GRAVITY;
+
+        this.vx *= AIR_DRAG;
+        this.vy *= AIR_DRAG;
+
+        this.x += this.vx;
+        this.y += this.vy;
+
+        this.angle += this.angularVelocity;
+        this.angularVelocity *= 0.995;
+    }
+
+    floorCollision() {
+        if (this.static) return;
+
+        const bottom = this.y + this.height / 2;
+
+        if (bottom > FLOOR_Y) {
+            this.y = FLOOR_Y - this.height / 2;
+
+            if (this.vy > 0) {
+                this.vy *= -this.restitution;
+            }
+
+            this.vx *= this.friction;
+
+            if (Math.abs(this.vy) < 0.25) {
+                this.vy = 0;
+            }
+
+            if (Math.abs(this.vx) < 0.02) {
+                this.vx = 0;
+            }
+        }
+
+        const left = this.x - this.width / 2;
+        const right = this.x + this.width / 2;
+
+        if (left < 0) {
+            this.x = this.width / 2;
+
+            if (this.vx < 0) {
+                this.vx *= -this.restitution;
+            }
+        }
+
+        if (right > WIDTH) {
+            this.x = WIDTH - this.width / 2;
+
+            if (this.vx > 0) {
+                this.vx *= -this.restitution;
+            }
+        }
+    }
+}
+
+/* ---------------------------------------------------------
+   Ragdoll parts
+   --------------------------------------------------------- */
+
+let ragdoll = {
+    head: null,
+    torso: null,
+    leftArm: null,
+    rightArm: null,
+    leftLeg: null,
+    rightLeg: null
+};
+
+function createRagdoll() {
+
+    ragdoll.head = new Body(
+        480,
+        150,
+        25,
+        {
+            width: 50,
+            height: 50,
+            mass: 1,
+            type: "head",
+            restitution: 0.12
+        }
+    );
+
+    ragdoll.torso = new Body(
+        480,
+        215,
+        26,
+        {
+            width: 52,
+            height: 65,
+            mass: 2,
+            type: "torso",
+            restitution: 0.10
+        }
+    );
+
+    ragdoll.leftArm = new Body(
+        438,
+        215,
+        15,
+        {
+            width: 30,
+            height: 65,
+            mass: 0.8,
+            type: "arm",
+            restitution: 0.12,
+            angle: -0.1
+        }
+    );
+
+    ragdoll.rightArm = new Body(
+        522,
+        215,
+        15,
+        {
+            width: 30,
+            height: 65,
+            mass: 0.8,
+            type: "arm",
+            restitution: 0.12,
+            angle: 0.1
+        }
+    );
+
+    ragdoll.leftLeg = new Body(
+        465,
+        290,
+        16,
+        {
+            width: 32,
+            height: 70,
+            mass: 1,
+            type: "leg",
+            restitution: 0.12
+        }
+    );
+
+    ragdoll.rightLeg = new Body(
+        495,
+        290,
+        16,
+        {
+            width: 32,
+            height: 70,
+            mass: 1,
+            type: "leg",
+            restitution: 0.12
+        }
+    );
+}
+
+createRagdoll();
+
+/* ---------------------------------------------------------
+   Get ragdoll parts
+   --------------------------------------------------------- */
+
+function getParts() {
+    return [
+        ragdoll.head,
+        ragdoll.torso,
+        ragdoll.leftArm,
+        ragdoll.rightArm,
+        ragdoll.leftLeg,
+        ragdoll.rightLeg
+    ];
+}
+
+/* ---------------------------------------------------------
+   Ragdoll joints
+   --------------------------------------------------------- */
+
+const joints = [
+    {
+        a: "head",
+        b: "torso",
+        length: 43,
+        strength: 0.38
+    },
+
+    {
+        a: "leftArm",
+        b: "torso",
+        length: 39,
+        strength: 0.25
+    },
+
+    {
+        a: "rightArm",
+        b: "torso",
+        length: 39,
+        strength: 0.25
+    },
+
+    {
+        a: "leftLeg",
+        b: "torso",
+        length: 42,
+        strength: 0.30
+    },
+
+    {
+        a: "rightLeg",
+        b: "torso",
+        length: 42,
+        strength: 0.30
+    }
+];
+
+function solveJoint(joint) {
+
+    const a = ragdoll[joint.a];
+    const b = ragdoll[joint.b];
+
+    if (!a || !b) return;
+
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+
+    const dist = Math.sqrt(dx * dx + dy * dy);
+
+    if (dist < 0.0001) return;
+
+    const difference =
+        (dist - joint.length) / dist;
+
+    const correctionX =
+        dx * difference * joint.strength;
+
+    const correctionY =
+        dy * difference * joint.strength;
+
+    if (!a.static && !a.grabbed) {
+        a.x += correctionX * 0.5;
+        a.y += correctionY * 0.5;
+    }
+
+    if (!b.static && !b.grabbed) {
+        b.x -= correctionX * 0.5;
+        b.y -= correctionY * 0.5;
+    }
 
     /*
-        ================================================
-        COLORS
-        ================================================
-    */
+     * Damp relative velocity so the joints
+     * don't explode into space.
+     */
 
-    const COLORS = {
+    const relativeVX = b.vx - a.vx;
+    const relativeVY = b.vy - a.vy;
 
-        yellow: "#F5CD30",
+    const damping = 0.04;
 
-        blue: "#0D69AC",
+    if (!a.grabbed) {
+        a.vx += relativeVX * damping;
+        a.vy += relativeVY * damping;
+    }
 
-        green: "#A4BD47",
+    if (!b.grabbed) {
+        b.vx -= relativeVX * damping;
+        b.vy -= relativeVY * damping;
+    }
+}
 
-        black: "#111111",
+/* ---------------------------------------------------------
+   Objects
+   --------------------------------------------------------- */
 
-        crate: "#9B6A3B",
+let objects = [];
+let particles = [];
 
-        crateLight: "#D49A5C",
+/* ---------------------------------------------------------
+   Crate
+   --------------------------------------------------------- */
 
-        crateDark: "#704522"
+function spawnCrate(x = random(100, WIDTH - 100), y = 100) {
 
-    };
-
-
-    /*
-        ================================================
-        PHYSICS
-        ================================================
-    */
-
-    const GRAVITY = 0.62;
-
-    const AIR_FRICTION = 0.995;
-
-    const GROUND_FRICTION = 0.84;
-
-
-    let bodies = [];
-
-    let joints = [];
-
-    let objects = [];
-
-    let particles = [];
-
-
-    let grabbed = null;
-
-    let grabOffsetX = 0;
-
-    let grabOffsetY = 0;
-
-    let lastPointer = null;
-
-
-    let lastTime =
-        performance.now();
-
-
-    /*
-        ================================================
-        BODY
-        ================================================
-    */
-
-    function createBody(
-        name,
+    const crate = new Body(
         x,
         y,
-        width,
-        height,
-        color,
-        mass
-    ) {
-
-        return {
-
-            type: "body",
-
-            name,
-
-            x,
-
-            y,
-
-            width,
-
-            height,
-
-            color,
-
-            mass,
-
-            vx: 0,
-
-            vy: 0,
-
-            angle: 0,
-
-            angularVelocity: 0
-
-        };
-
-    }
-
-
-    /*
-        ================================================
-        NOOB
-        ================================================
-    */
-
-    function createNoob() {
-
-        bodies = [];
-
-        joints = [];
-
-
-        const x =
-            WIDTH / 2;
-
-
-        const torso =
-            createBody(
-                "torso",
-                x,
-                GROUND_Y - 112,
-                50,
-                58,
-                COLORS.blue,
-                2
-            );
-
-
-        const head =
-            createBody(
-                "head",
-                x,
-                GROUND_Y - 164,
-                46,
-                42,
-                COLORS.yellow,
-                1
-            );
-
-
-        const leftArm =
-            createBody(
-                "leftArm",
-                x - 40,
-                GROUND_Y - 105,
-                16,
-                58,
-                COLORS.yellow,
-                0.8
-            );
-
-
-        const rightArm =
-            createBody(
-                "rightArm",
-                x + 40,
-                GROUND_Y - 105,
-                16,
-                58,
-                COLORS.yellow,
-                0.8
-            );
-
-
-        const leftLeg =
-            createBody(
-                "leftLeg",
-                x - 14,
-                GROUND_Y - 48,
-                20,
-                56,
-                COLORS.green,
-                1
-            );
-
-
-        const rightLeg =
-            createBody(
-                "rightLeg",
-                x + 14,
-                GROUND_Y - 48,
-                20,
-                56,
-                COLORS.green,
-                1
-            );
-
-
-        bodies.push(
-            torso,
-            head,
-            leftArm,
-            rightArm,
-            leftLeg,
-            rightLeg
-        );
-
-
-        joints.push(
-
-            {
-                a: torso,
-                b: head,
-                ax: 0,
-                ay: -29,
-                bx: 0,
-                by: 21,
-                strength: 0.72
-            },
-
-            {
-                a: torso,
-                b: leftArm,
-                ax: -25,
-                ay: -20,
-                bx: 0,
-                by: -25,
-                strength: 0.42
-            },
-
-            {
-                a: torso,
-                b: rightArm,
-                ax: 25,
-                ay: -20,
-                bx: 0,
-                by: -25,
-                strength: 0.42
-            },
-
-            {
-                a: torso,
-                b: leftLeg,
-                ax: -13,
-                ay: 29,
-                bx: 0,
-                by: -28,
-                strength: 0.62
-            },
-
-            {
-                a: torso,
-                b: rightLeg,
-                ax: 13,
-                ay: 29,
-                bx: 0,
-                by: -28,
-                strength: 0.62
-            }
-
-        );
-
-    }
-
-
-    /*
-        ================================================
-        RESET
-        ================================================
-    */
-
-    function resetNoob() {
-
-        createNoob();
-
-    }
-
-
-    /*
-        ================================================
-        SPAWN CRATE
-        ================================================
-    */
-
-    function spawnCrate() {
-
-        objects.push({
-
+        22,
+        {
+            width: 44,
+            height: 44,
+            mass: 2,
             type: "crate",
+            restitution: 0.25,
+            friction: 0.78
+        }
+    );
 
-            x: WIDTH / 2,
+    crate.vx = random(-2, 2);
+    crate.vy = random(-2, 1);
 
-            y: 70,
+    objects.push(crate);
+}
 
-            size: 42,
+/* ---------------------------------------------------------
+   Ball
+   --------------------------------------------------------- */
 
-            vx:
-                (Math.random() - 0.5) * 6,
+function spawnBall(x = random(100, WIDTH - 100), y = 100) {
 
-            vy: 0,
-
-            rotation:
-                Math.random() * Math.PI,
-
-            vr:
-                (Math.random() - 0.5) * 0.16,
-
-            mass: 2
-
-        });
-
-    }
-
-
-    /*
-        ================================================
-        SPAWN BALL
-        ================================================
-    */
-
-    function spawnBall() {
-
-        objects.push({
-
+    const ball = new Body(
+        x,
+        y,
+        18,
+        {
+            width: 36,
+            height: 36,
+            mass: 0.7,
             type: "ball",
+            restitution: 0.72,
+            friction: 0.93
+        }
+    );
 
-            x: WIDTH / 2,
+    ball.vx = random(-3, 3);
+    ball.vy = random(-4, 1);
 
-            y: 70,
+    objects.push(ball);
+}
 
-            radius: 20,
+/* ---------------------------------------------------------
+   Cartoon bomb
+   --------------------------------------------------------- */
 
-            vx:
-                (Math.random() - 0.5) * 7,
+function spawnBomb(x = random(100, WIDTH - 100), y = 100) {
 
-            vy: 0,
-
-            rotation: 0,
-
-            mass: 1
-
-        });
-
-    }
-
-
-    /*
-        ================================================
-        SPAWN CARTOON BOMB
-        ================================================
-    */
-
-    function spawnBomb() {
-
-        objects.push({
-
+    const bomb = new Body(
+        x,
+        y,
+        20,
+        {
+            width: 40,
+            height: 40,
+            mass: 1.3,
             type: "bomb",
+            restitution: 0.35,
+            friction: 0.82
+        }
+    );
 
-            x: WIDTH / 2,
+    bomb.vx = random(-2, 2);
+    bomb.vy = random(-2, 1);
 
-            y: 70,
+    bomb.fuse = 170;
 
-            radius: 19,
+    objects.push(bomb);
+}
 
-            vx:
-                (Math.random() - 0.5) * 5,
+/* ---------------------------------------------------------
+   Explosion
+   --------------------------------------------------------- */
 
-            vy: 0,
+function explode(x, y, radius = 170) {
 
-            rotation: 0,
+    /*
+     * No sound.
+     * No gore.
+     * Pure cartoon physics.
+     */
 
-            mass: 1.5,
+    for (const body of getParts()) {
 
-            fuse: 0,
+        const dx = body.x - x;
+        const dy = body.y - y;
 
-            exploded: false
+        const dist = Math.sqrt(dx * dx + dy * dy);
 
+        if (dist < radius && dist > 0.01) {
+
+            const power =
+                (1 - dist / radius) * 15;
+
+            body.vx += (dx / dist) * power;
+            body.vy += (dy / dist) * power - 4;
+            body.angularVelocity += random(-0.25, 0.25);
+        }
+    }
+
+    for (const obj of objects) {
+
+        const dx = obj.x - x;
+        const dy = obj.y - y;
+
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < radius && dist > 0.01) {
+
+            const power =
+                (1 - dist / radius) * 18;
+
+            obj.vx += (dx / dist) * power;
+            obj.vy += (dy / dist) * power - 4;
+            obj.angularVelocity += random(-0.35, 0.35);
+        }
+    }
+
+    for (let i = 0; i < 32; i++) {
+
+        const angle =
+            Math.random() * Math.PI * 2;
+
+        const speed =
+            random(2, 8);
+
+        particles.push({
+            x,
+            y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            life: random(20, 40),
+            size: random(3, 8)
         });
+    }
+}
 
+/* ---------------------------------------------------------
+   Collision helper
+   --------------------------------------------------------- */
+
+function circleCollision(a, b) {
+
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+
+    const dist =
+        Math.sqrt(dx * dx + dy * dy);
+
+    const minimum =
+        (a.width + b.width) * 0.25;
+
+    if (dist >= minimum || dist === 0) {
+        return;
     }
 
+    const nx = dx / dist;
+    const ny = dy / dist;
 
-    /*
-        ================================================
-        EXPLOSION
-        ================================================
-    */
+    const overlap =
+        minimum - dist;
 
-    function explode(x, y) {
+    if (!a.grabbed) {
+        a.x -= nx * overlap * 0.5;
+        a.y -= ny * overlap * 0.5;
+    }
 
-        for (
-            let i = 0;
-            i < 48;
-            i++
+    if (!b.grabbed) {
+        b.x += nx * overlap * 0.5;
+        b.y += ny * overlap * 0.5;
+    }
+
+    const relativeVX = b.vx - a.vx;
+    const relativeVY = b.vy - a.vy;
+
+    const velocityAlongNormal =
+        relativeVX * nx +
+        relativeVY * ny;
+
+    if (velocityAlongNormal > 0) {
+        return;
+    }
+
+    const restitution = 0.25;
+
+    const impulse =
+        -(1 + restitution) *
+        velocityAlongNormal /
+        (1 / a.mass + 1 / b.mass);
+
+    if (!a.grabbed) {
+        a.vx -= nx * impulse / a.mass;
+        a.vy -= ny * impulse / a.mass;
+    }
+
+    if (!b.grabbed) {
+        b.vx += nx * impulse / b.mass;
+        b.vy += ny * impulse / b.mass;
+    }
+}
+
+/* ---------------------------------------------------------
+   Pointer / grabbing
+   --------------------------------------------------------- */
+
+let pointer = {
+    x: 0,
+    y: 0,
+    down: false
+};
+
+let grabbedBody = null;
+
+function pointerPosition(event) {
+
+    const rect = canvas.getBoundingClientRect();
+
+    let clientX;
+    let clientY;
+
+    if (event.touches && event.touches.length > 0) {
+        clientX = event.touches[0].clientX;
+        clientY = event.touches[0].clientY;
+    } else {
+        clientX = event.clientX;
+        clientY = event.clientY;
+    }
+
+    pointer.x =
+        (clientX - rect.left) *
+        (canvas.width / rect.width);
+
+    pointer.y =
+        (clientY - rect.top) *
+        (canvas.height / rect.height);
+}
+
+function allBodies() {
+    return [
+        ...getParts(),
+        ...objects
+    ];
+}
+
+function findBodyAtPointer() {
+
+    const bodies = allBodies();
+
+    let closest = null;
+    let closestDistance = Infinity;
+
+    for (const body of bodies) {
+
+        const dx =
+            pointer.x - body.x;
+
+        const dy =
+            pointer.y - body.y;
+
+        const dist =
+            Math.sqrt(dx * dx + dy * dy);
+
+        const hitRadius =
+            Math.max(body.width, body.height) * 0.65;
+
+        if (
+            dist < hitRadius &&
+            dist < closestDistance
         ) {
-
-            const angle =
-                Math.random() *
-                Math.PI *
-                2;
-
-
-            const speed =
-                Math.random() * 8 + 2;
-
-
-            particles.push({
-
-                x,
-
-                y,
-
-                vx:
-                    Math.cos(angle) * speed,
-
-                vy:
-                    Math.sin(angle) * speed,
-
-                life: 1,
-
-                size:
-                    Math.random() * 7 + 3
-
-            });
-
+            closest = body;
+            closestDistance = dist;
         }
-
-
-        /*
-            Push Noob
-        */
-
-        for (const body of bodies) {
-
-            const dx =
-                body.x - x;
-
-            const dy =
-                body.y - y;
-
-
-            const distance =
-                Math.sqrt(
-                    dx * dx +
-                    dy * dy
-                );
-
-
-            if (distance < 330) {
-
-                const strength =
-                    (1 - distance / 330) *
-                    26;
-
-
-                const angle =
-                    Math.atan2(dy, dx);
-
-
-                body.vx +=
-                    Math.cos(angle) *
-                    strength /
-                    body.mass;
-
-
-                body.vy +=
-                    Math.sin(angle) *
-                    strength /
-                    body.mass -
-                    7;
-
-
-                body.angularVelocity +=
-                    (Math.random() - 0.5) *
-                    2;
-
-            }
-
-        }
-
-
-        /*
-            Push spawned objects
-        */
-
-        for (const object of objects) {
-
-            const dx =
-                object.x - x;
-
-            const dy =
-                object.y - y;
-
-
-            const distance =
-                Math.sqrt(
-                    dx * dx +
-                    dy * dy
-                );
-
-
-            if (
-                distance < 330 &&
-                distance > 0
-            ) {
-
-                const strength =
-                    (1 - distance / 330) *
-                    25;
-
-
-                const angle =
-                    Math.atan2(dy, dx);
-
-
-                object.vx +=
-                    Math.cos(angle) *
-                    strength /
-                    object.mass;
-
-
-                object.vy +=
-                    Math.sin(angle) *
-                    strength /
-                    object.mass -
-                    5;
-
-            }
-
-        }
-
     }
 
+    return closest;
+}
 
-    function cartoonBoom() {
+function beginGrab(event) {
 
-        const torso =
-            bodies.find(
-                body =>
-                    body.name === "torso"
-            );
+    pointerPosition(event);
 
+    pointer.down = true;
 
-        if (!torso) {
-            return;
-        }
+    grabbedBody =
+        findBodyAtPointer();
 
+    if (grabbedBody) {
+        grabbedBody.grabbed = true;
+        canvas.classList.add("grabbing");
+    }
+}
 
-        explode(
+function moveGrab(event) {
 
-            torso.x +
-                (Math.random() - 0.5) * 100,
+    pointerPosition(event);
 
-            torso.y +
-                (Math.random() - 0.5) * 80
+    if (!grabbedBody) return;
 
-        );
+    const dx =
+        pointer.x - grabbedBody.x;
 
+    const dy =
+        pointer.y - grabbedBody.y;
+
+    grabbedBody.vx = dx * 0.55;
+    grabbedBody.vy = dy * 0.55;
+
+    grabbedBody.x += dx * 0.72;
+    grabbedBody.y += dy * 0.72;
+}
+
+function endGrab() {
+
+    pointer.down = false;
+
+    if (grabbedBody) {
+        grabbedBody.grabbed = false;
     }
 
+    grabbedBody = null;
+
+    canvas.classList.remove("grabbing");
+}
+
+/* ---------------------------------------------------------
+   Mouse
+   --------------------------------------------------------- */
+
+canvas.addEventListener(
+    "mousedown",
+    beginGrab
+);
+
+window.addEventListener(
+    "mousemove",
+    event => {
+        if (pointer.down) {
+            moveGrab(event);
+        }
+    }
+);
+
+window.addEventListener(
+    "mouseup",
+    endGrab
+);
+
+/* ---------------------------------------------------------
+   Touch
+   --------------------------------------------------------- */
+
+canvas.addEventListener(
+    "touchstart",
+    event => {
+        event.preventDefault();
+        beginGrab(event);
+    },
+    { passive: false }
+);
+
+canvas.addEventListener(
+    "touchmove",
+    event => {
+        event.preventDefault();
+
+        if (pointer.down) {
+            moveGrab(event);
+        }
+    },
+    { passive: false }
+);
+
+canvas.addEventListener(
+    "touchend",
+    event => {
+        event.preventDefault();
+        endGrab();
+    },
+    { passive: false }
+);
+
+/* ---------------------------------------------------------
+   Update ragdoll
+   --------------------------------------------------------- */
+
+function updateRagdoll() {
+
+    const parts = getParts();
 
     /*
-        ================================================
-        UPDATE JOINTS
-        ================================================
-    */
+     * Integrate FIRST.
+     * Gravity is positive, meaning downward.
+     */
 
-    function solveJoints() {
+    for (const body of parts) {
+        body.integrate();
+    }
+
+    /*
+     * Multiple joint passes make the ragdoll
+     * stay connected without shooting upward.
+     */
+
+    for (let i = 0; i < 5; i++) {
 
         for (const joint of joints) {
-
-            const a =
-                joint.a;
-
-            const b =
-                joint.b;
-
-
-            const targetX =
-                a.x +
-                joint.ax;
-
-
-            const targetY =
-                a.y +
-                joint.ay;
-
-
-            const bx =
-                b.x +
-                joint.bx;
-
-
-            const by =
-                b.y +
-                joint.by;
-
-
-            const dx =
-                targetX - bx;
-
-            const dy =
-                targetY - by;
-
-
-            b.x +=
-                dx *
-                joint.strength;
-
-            b.y +=
-                dy *
-                joint.strength;
-
-
-            a.vx +=
-                dx *
-                0.008;
-
-            a.vy +=
-                dy *
-                0.008;
-
-
-            b.vx +=
-                dx *
-                0.012;
-
-            b.vy +=
-                dy *
-                0.012;
-
+            solveJoint(joint);
         }
 
+        for (const body of parts) {
+            body.floorCollision();
+        }
+    }
+}
+
+/* ---------------------------------------------------------
+   Update objects
+   --------------------------------------------------------- */
+
+function updateObjects() {
+
+    for (const obj of objects) {
+
+        obj.integrate();
+        obj.floorCollision();
+
+        if (obj.type === "bomb") {
+
+            obj.fuse--;
+
+            if (obj.fuse <= 0) {
+
+                explode(
+                    obj.x,
+                    obj.y,
+                    180
+                );
+
+                const index =
+                    objects.indexOf(obj);
+
+                if (index !== -1) {
+                    objects.splice(index, 1);
+                }
+            }
+        }
     }
 
-
     /*
-        ================================================
-        BODY PHYSICS
-        ================================================
-    */
+     * Object-object collisions.
+     */
 
-    function updateBodies(dt) {
-
-        for (const body of bodies) {
-
-            body.vy +=
-                GRAVITY * dt;
-
-
-            body.x +=
-                body.vx * dt;
-
-            body.y +=
-                body.vy * dt;
-
-
-            body.angle +=
-                body.angularVelocity * dt;
-
-
-            body.vx *=
-                AIR_FRICTION;
-
-            body.angularVelocity *=
-                0.992;
-
-
-            /*
-                Ground collision
-            */
-
-            const bottom =
-                body.y +
-                body.height / 2;
-
-
-            if (bottom > GROUND_Y) {
-
-                body.y =
-                    GROUND_Y -
-                    body.height / 2;
-
-
-                body.vy *=
-                    -0.32;
-
-
-                body.vx *=
-                    GROUND_FRICTION;
-
-
-                body.angularVelocity *=
-                    0.82;
-
-            }
-
-
-            /*
-                Side walls
-            */
-
-            const halfWidth =
-                body.width / 2;
-
-
-            if (
-                body.x - halfWidth <
-                0
-            ) {
-
-                body.x =
-                    halfWidth;
-
-                body.vx *=
-                    -0.6;
-
-            }
-
-
-            if (
-                body.x + halfWidth >
-                WIDTH
-            ) {
-
-                body.x =
-                    WIDTH -
-                    halfWidth;
-
-                body.vx *=
-                    -0.6;
-
-            }
-
-        }
-
-
-        /*
-            Solve joints several times
-            to keep the ragdoll together.
-        */
+    for (let i = 0; i < objects.length; i++) {
 
         for (
-            let i = 0;
-            i < 3;
-            i++
+            let j = i + 1;
+            j < objects.length;
+            j++
         ) {
 
-            solveJoints();
-
+            circleCollision(
+                objects[i],
+                objects[j]
+            );
         }
-
     }
 
-
     /*
-        ================================================
-        OBJECT PHYSICS
-        ================================================
-    */
+     * Ragdoll-object collisions.
+     */
 
-    function updateObjects(dt) {
+    for (const part of getParts()) {
 
-        for (const object of objects) {
+        for (const obj of objects) {
 
-            object.vy +=
-                GRAVITY * dt;
-
-
-            object.x +=
-                object.vx * dt;
-
-            object.y +=
-                object.vy * dt;
-
-
-            object.vx *=
-                AIR_FRICTION;
-
-
-            /*
-                Crate
-            */
-
-            if (
-                object.type === "crate"
-            ) {
-
-                object.rotation +=
-                    object.vr * dt;
-
-
-                const half =
-                    object.size / 2;
-
-
-                if (
-                    object.y + half >
-                    GROUND_Y
-                ) {
-
-                    object.y =
-                        GROUND_Y - half;
-
-                    object.vy *=
-                        -0.38;
-
-                    object.vx *=
-                        GROUND_FRICTION;
-
-                    object.vr *=
-                        0.88;
-
-                }
-
-            }
-
-
-            /*
-                Ball
-            */
-
-            if (
-                object.type === "ball"
-            ) {
-
-                if (
-                    object.y +
-                    object.radius >
-                    GROUND_Y
-                ) {
-
-                    object.y =
-                        GROUND_Y -
-                        object.radius;
-
-                    object.vy *=
-                        -0.68;
-
-                    object.vx *=
-                        0.98;
-
-                }
-
-            }
-
-
-            /*
-                Bomb
-            */
-
-            if (
-                object.type === "bomb"
-            ) {
-
-                if (
-                    object.y +
-                    object.radius >
-                    GROUND_Y
-                ) {
-
-                    object.y =
-                        GROUND_Y -
-                        object.radius;
-
-                    object.vy *=
-                        -0.42;
-
-                    object.vx *=
-                        0.9;
-
-                }
-
-                /*
-                    Bombs automatically pop
-                    after being around for
-                    a while.
-                */
-
-                object.fuse +=
-                    dt;
-
-
-                if (
-                    object.fuse > 260 &&
-                    !object.exploded
-                ) {
-
-                    object.exploded = true;
-
-                    explode(
-                        object.x,
-                        object.y
-                    );
-
-                }
-
-            }
-
-
-            /*
-                Object / Noob collision
-            */
-
-            for (const body of bodies) {
-
-                const dx =
-                    body.x -
-                    object.x;
-
-                const dy =
-                    body.y -
-                    object.y;
-
-
-                const distance =
-                    Math.sqrt(
-                        dx * dx +
-                        dy * dy
-                    );
-
-
-                let collisionDistance;
-
-
-                if (
-                    object.type === "ball" ||
-                    object.type === "bomb"
-                ) {
-
-                    collisionDistance =
-                        object.radius +
-                        Math.max(
-                            body.width,
-                            body.height
-                        ) *
-                        0.42;
-
-                } else {
-
-                    collisionDistance =
-                        object.size / 2 +
-                        Math.max(
-                            body.width,
-                            body.height
-                        ) *
-                        0.42;
-
-                }
-
-
-                if (
-                    distance <
-                    collisionDistance &&
-                    distance > 0
-                ) {
-
-                    const angle =
-                        Math.atan2(
-                            dy,
-                            dx
-                        );
-
-
-                    const force =
-                        object.type === "bomb"
-                            ? 8
-                            : 5;
-
-
-                    body.vx +=
-                        Math.cos(angle) *
-                        force /
-                        body.mass;
-
-
-                    body.vy +=
-                        Math.sin(angle) *
-                        force /
-                        body.mass -
-                        2;
-
-
-                    body.angularVelocity +=
-                        (Math.random() - 0.5) *
-                        0.9;
-
-
-                    /*
-                        Bomb touching the Noob
-                        causes a cartoon explosion.
-                    */
-
-                    if (
-                        object.type === "bomb" &&
-                        !object.exploded
-                    ) {
-
-                        object.exploded = true;
-
-                        explode(
-                            object.x,
-                            object.y
-                        );
-
-                    }
-
-                }
-
-            }
-
+            circleCollision(
+                part,
+                obj
+            );
         }
-
-
-        /*
-            Remove exploded bombs
-        */
-
-        objects =
-            objects.filter(
-                object =>
-                    !(
-                        object.type === "bomb" &&
-                        object.exploded
-                    ) &&
-                    object.x > -180 &&
-                    object.x < WIDTH + 180 &&
-                    object.y < HEIGHT + 250
-            );
-
     }
+}
 
+/* ---------------------------------------------------------
+   Particles
+   --------------------------------------------------------- */
 
-    /*
-        ================================================
-        PARTICLES
-        ================================================
-    */
+function updateParticles() {
 
-    function updateParticles(dt) {
+    for (let i = particles.length - 1; i >= 0; i--) {
 
-        for (const particle of particles) {
+        const particle = particles[i];
 
-            particle.x +=
-                particle.vx * dt;
+        particle.vy += 0.18;
 
-            particle.y +=
-                particle.vy * dt;
+        particle.x += particle.vx;
+        particle.y += particle.vy;
 
+        particle.life--;
 
-            particle.vy +=
-                0.32 * dt;
-
-
-            particle.life -=
-                0.025 * dt;
-
+        if (particle.life <= 0) {
+            particles.splice(i, 1);
         }
-
-
-        particles =
-            particles.filter(
-                particle =>
-                    particle.life > 0
-            );
-
     }
+}
 
+/* ---------------------------------------------------------
+   Draw background
+   --------------------------------------------------------- */
 
-    /*
-        ================================================
-        UPDATE
-        ================================================
-    */
+function drawBackground() {
 
-    function update(delta) {
-
-        const dt =
-            Math.min(
-                delta / 16.67,
-                2
-            );
-
-
-        updateBodies(dt);
-
-        updateObjects(dt);
-
-        updateParticles(dt);
-
-    }
-
-
-    /*
-        ================================================
-        DRAW BACKGROUND
-        ================================================
-    */
-
-    function drawBackground() {
-
-        const gradient =
-            ctx.createLinearGradient(
-                0,
-                0,
-                0,
-                HEIGHT
-            );
-
-
-        gradient.addColorStop(
-            0,
-            "#151027"
-        );
-
-
-        gradient.addColorStop(
-            1,
-            "#08080D"
-        );
-
-
-        ctx.fillStyle =
-            gradient;
-
-
-        ctx.fillRect(
+    const gradient =
+        ctx.createLinearGradient(
             0,
             0,
-            WIDTH,
+            0,
             HEIGHT
         );
 
+    gradient.addColorStop(
+        0,
+        "#11101c"
+    );
 
-        /*
-            Purple decorative glow
-        */
+    gradient.addColorStop(
+        1,
+        "#08080d"
+    );
 
-        ctx.globalAlpha =
-            0.08;
+    ctx.fillStyle = gradient;
 
-
-        ctx.fillStyle =
-            "#9B6CFF";
-
-
-        ctx.beginPath();
-
-        ctx.arc(
-            150,
-            100,
-            100,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.fill();
-
-
-        ctx.beginPath();
-
-        ctx.arc(
-            820,
-            150,
-            150,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.fill();
-
-
-        ctx.globalAlpha =
-            1;
-
-
-        /*
-            Ground
-        */
-
-        ctx.fillStyle =
-            "#111019";
-
-
-        ctx.fillRect(
-            0,
-            GROUND_Y,
-            WIDTH,
-            HEIGHT - GROUND_Y
-        );
-
-
-        ctx.fillStyle =
-            "#292333";
-
-
-        ctx.fillRect(
-            0,
-            GROUND_Y,
-            WIDTH,
-            3
-        );
-
-    }
-
+    ctx.fillRect(
+        0,
+        0,
+        WIDTH,
+        HEIGHT
+    );
 
     /*
-        ================================================
-        DRAW BODY
-        ================================================
-    */
+     * Subtle grid.
+     */
 
-    function drawBody(body) {
+    ctx.strokeStyle =
+        "rgba(255,255,255,0.035)";
 
-        ctx.save();
+    ctx.lineWidth = 1;
 
+    for (let x = 0; x <= WIDTH; x += 40) {
 
-        ctx.translate(
-            body.x,
-            body.y
-        );
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, HEIGHT);
+        ctx.stroke();
+    }
 
+    for (let y = 0; y <= HEIGHT; y += 40) {
 
-        ctx.rotate(
-            body.angle
-        );
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(WIDTH, y);
+        ctx.stroke();
+    }
 
+    /*
+     * Floor.
+     */
+
+    ctx.fillStyle = "#191922";
+
+    ctx.fillRect(
+        0,
+        FLOOR_Y,
+        WIDTH,
+        HEIGHT - FLOOR_Y
+    );
+
+    ctx.strokeStyle =
+        "rgba(167,139,250,0.35)";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        0,
+        FLOOR_Y
+    );
+
+    ctx.lineTo(
+        WIDTH,
+        FLOOR_Y
+    );
+
+    ctx.stroke();
+}
+
+/* ---------------------------------------------------------
+   Draw ragdoll
+   --------------------------------------------------------- */
+
+function drawRagdoll() {
+
+    const head = ragdoll.head;
+    const torso = ragdoll.torso;
+    const leftArm = ragdoll.leftArm;
+    const rightArm = ragdoll.rightArm;
+    const leftLeg = ragdoll.leftLeg;
+    const rightLeg = ragdoll.rightLeg;
+
+    /*
+     * Draw limbs behind torso.
+     */
+
+    drawBodyPart(
+        leftArm,
+        "#F5CD30",
+        15
+    );
+
+    drawBodyPart(
+        rightArm,
+        "#F5CD30",
+        15
+    );
+
+    drawBodyPart(
+        leftLeg,
+        "#A4BD47",
+        16
+    );
+
+    drawBodyPart(
+        rightLeg,
+        "#A4BD47",
+        16
+    );
+
+    /*
+     * Torso.
+     */
+
+    drawBodyPart(
+        torso,
+        "#0D69AC",
+        16
+    );
+
+    /*
+     * Head.
+     */
+
+    drawHead(head);
+}
+
+/* ---------------------------------------------------------
+   Draw generic body part
+   --------------------------------------------------------- */
+
+function drawBodyPart(
+    body,
+    color,
+    radius
+) {
+
+    ctx.save();
+
+    ctx.translate(
+        body.x,
+        body.y
+    );
+
+    ctx.rotate(body.angle);
+
+    ctx.fillStyle = color;
+
+    ctx.strokeStyle =
+        "rgba(0,0,0,0.30)";
+
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+
+    ctx.roundRect(
+        -body.width / 2,
+        -body.height / 2,
+        body.width,
+        body.height,
+        radius
+    );
+
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+/* ---------------------------------------------------------
+   Draw Noob head
+   --------------------------------------------------------- */
+
+function drawHead(head) {
+
+    ctx.save();
+
+    ctx.translate(
+        head.x,
+        head.y
+    );
+
+    ctx.rotate(head.angle);
+
+    ctx.fillStyle =
+        "#F5CD30";
+
+    ctx.strokeStyle =
+        "rgba(0,0,0,0.30)";
+
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+
+    ctx.roundRect(
+        -25,
+        -25,
+        50,
+        50,
+        9
+    );
+
+    ctx.fill();
+    ctx.stroke();
+
+    /*
+     * Original goofy face.
+     * Not a Roblox asset.
+     */
+
+    ctx.fillStyle = "#171717";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        -9,
+        -4,
+        3,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+    ctx.beginPath();
+
+    ctx.arc(
+        9,
+        -4,
+        3,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+    ctx.strokeStyle =
+        "#171717";
+
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        4,
+        9,
+        0.15,
+        Math.PI - 0.15
+    );
+
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+/* ---------------------------------------------------------
+   Draw objects
+   --------------------------------------------------------- */
+
+function drawObjects() {
+
+    for (const obj of objects) {
+
+        if (obj.type === "crate") {
+            drawCrate(obj);
+        }
+
+        else if (obj.type === "ball") {
+            drawBall(obj);
+        }
+
+        else if (obj.type === "bomb") {
+            drawBomb(obj);
+        }
+    }
+}
+
+/* ---------------------------------------------------------
+   Crate
+   --------------------------------------------------------- */
+
+function drawCrate(obj) {
+
+    ctx.save();
+
+    ctx.translate(
+        obj.x,
+        obj.y
+    );
+
+    ctx.rotate(obj.angle);
+
+    ctx.fillStyle =
+        "#A66A35";
+
+    ctx.strokeStyle =
+        "#5B351A";
+
+    ctx.lineWidth = 3;
+
+    ctx.fillRect(
+        -22,
+        -22,
+        44,
+        44
+    );
+
+    ctx.strokeRect(
+        -22,
+        -22,
+        44,
+        44
+    );
+
+    ctx.strokeStyle =
+        "rgba(255,220,170,0.55)";
+
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+
+    ctx.moveTo(-16, -16);
+    ctx.lineTo(16, 16);
+
+    ctx.moveTo(16, -16);
+    ctx.lineTo(-16, 16);
+
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+/* ---------------------------------------------------------
+   Ball
+   --------------------------------------------------------- */
+
+function drawBall(obj) {
+
+    ctx.save();
+
+    ctx.translate(
+        obj.x,
+        obj.y
+    );
+
+    ctx.rotate(obj.angle);
+
+    ctx.fillStyle =
+        "#F4F4F5";
+
+    ctx.strokeStyle =
+        "rgba(0,0,0,0.4)";
+
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        0,
+        18,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.strokeStyle =
+        "#777";
+
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+
+    ctx.moveTo(-7, -15);
+    ctx.lineTo(0, -5);
+    ctx.lineTo(9, -12);
+
+    ctx.moveTo(-17, 1);
+    ctx.lineTo(-5, 4);
+    ctx.lineTo(-9, 15);
+
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+/* ---------------------------------------------------------
+   Bomb
+   --------------------------------------------------------- */
+
+function drawBomb(obj) {
+
+    ctx.save();
+
+    ctx.translate(
+        obj.x,
+        obj.y
+    );
+
+    ctx.rotate(obj.angle);
+
+    ctx.fillStyle =
+        "#25252D";
+
+    ctx.strokeStyle =
+        "#0A0A0D";
+
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        4,
+        18,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+    ctx.stroke();
+
+    /*
+     * Fuse.
+     */
+
+    ctx.strokeStyle =
+        "#C9C9D1";
+
+    ctx.lineWidth = 4;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        7,
+        -12
+    );
+
+    ctx.quadraticCurveTo(
+        14,
+        -23,
+        10,
+        -28
+    );
+
+    ctx.stroke();
+
+    /*
+     * Tiny fuse spark.
+     */
+
+    if (
+        Math.floor(obj.fuse / 5) % 2 === 0
+    ) {
 
         ctx.fillStyle =
-            body.color;
+            "#FFD43B";
 
+        ctx.beginPath();
 
-        ctx.fillRect(
-            -body.width / 2,
-            -body.height / 2,
-            body.width,
-            body.height
+        ctx.arc(
+            10,
+            -29,
+            4,
+            0,
+            Math.PI * 2
         );
 
+        ctx.fill();
+    }
 
-        /*
-            Head gets an original face.
-        */
+    ctx.restore();
+}
+
+/* ---------------------------------------------------------
+   Draw particles
+   --------------------------------------------------------- */
+
+function drawParticles() {
+
+    for (const particle of particles) {
+
+        ctx.globalAlpha =
+            clamp(
+                particle.life / 40,
+                0,
+                1
+            );
+
+        ctx.fillStyle =
+            "#A78BFA";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            particle.x,
+            particle.y,
+            particle.size,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+    }
+
+    ctx.globalAlpha = 1;
+}
+
+/* ---------------------------------------------------------
+   Main render
+   --------------------------------------------------------- */
+
+function render() {
+
+    drawBackground();
+
+    drawObjects();
+
+    drawRagdoll();
+
+    drawParticles();
+}
+
+/* ---------------------------------------------------------
+   Main loop
+   --------------------------------------------------------- */
+
+function gameLoop() {
+
+    updateRagdoll();
+
+    updateObjects();
+
+    updateParticles();
+
+    render();
+
+    requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
+
+/* ---------------------------------------------------------
+   Buttons
+   --------------------------------------------------------- */
+
+const spawnButton =
+    document.getElementById("spawnButton");
+
+const spawnMenu =
+    document.getElementById("spawnMenu");
+
+const crateButton =
+    document.getElementById("crateButton");
+
+const ballButton =
+    document.getElementById("ballButton");
+
+const bombButton =
+    document.getElementById("bombButton");
+
+const boomButton =
+    document.getElementById("boomButton");
+
+const resetButton =
+    document.getElementById("resetButton");
+
+const clearButton =
+    document.getElementById("clearButton");
+
+spawnButton.addEventListener(
+    "click",
+    () => {
+        spawnMenu.classList.toggle("open");
+    }
+);
+
+crateButton.addEventListener(
+    "click",
+    () => {
+        spawnCrate();
+    }
+);
+
+ballButton.addEventListener(
+    "click",
+    () => {
+        spawnBall();
+    }
+);
+
+bombButton.addEventListener(
+    "click",
+    () => {
+        spawnBomb();
+    }
+);
+
+boomButton.addEventListener(
+    "click",
+    () => {
+
+        explode(
+            ragdoll.torso.x,
+            ragdoll.torso.y,
+            180
+        );
+    }
+);
+
+resetButton.addEventListener(
+    "click",
+    () => {
+        createRagdoll();
+    }
+);
+
+clearButton.addEventListener(
+    "click",
+    () => {
+        objects = [];
+        particles = [];
+    }
+);
+
+/* ---------------------------------------------------------
+   Keyboard controls
+   --------------------------------------------------------- */
+
+window.addEventListener(
+    "keydown",
+    event => {
 
         if (
-            body.name === "head"
+            event.key === "r" ||
+            event.key === "R"
         ) {
-
-            ctx.fillStyle =
-                COLORS.black;
-
-
-            /*
-                Eyes
-            */
-
-            ctx.fillRect(
-                -13,
-                -5,
-                6,
-                6
-            );
-
-
-            ctx.fillRect(
-                7,
-                -5,
-                6,
-                6
-            );
-
-
-            /*
-                Simple original smile
-            */
-
-            ctx.strokeStyle =
-                COLORS.black;
-
-
-            ctx.lineWidth =
-                3;
-
-
-            ctx.beginPath();
-
-            ctx.arc(
-                0,
-                5,
-                8,
-                0.2,
-                Math.PI - 0.2
-            );
-
-            ctx.stroke();
-
+            createRagdoll();
         }
 
-
-        ctx.restore();
-
-    }
-
-
-    /*
-        ================================================
-        DRAW OBJECTS
-        ================================================
-    */
-
-    function drawObjects() {
-
-        for (const object of objects) {
-
-            ctx.save();
-
-
-            ctx.translate(
-                object.x,
-                object.y
-            );
-
-
-            /*
-                CRATE
-            */
-
-            if (
-                object.type === "crate"
-            ) {
-
-                ctx.rotate(
-                    object.rotation
-                );
-
-
-                ctx.fillStyle =
-                    COLORS.crate;
-
-
-                ctx.fillRect(
-                    -object.size / 2,
-                    -object.size / 2,
-                    object.size,
-                    object.size
-                );
-
-
-                ctx.strokeStyle =
-                    COLORS.crateLight;
-
-
-                ctx.lineWidth =
-                    4;
-
-
-                ctx.strokeRect(
-                    -object.size / 2,
-                    -object.size / 2,
-                    object.size,
-                    object.size
-                );
-
-
-                ctx.strokeStyle =
-                    COLORS.crateDark;
-
-
-                ctx.lineWidth =
-                    3;
-
-
-                ctx.beginPath();
-
-
-                ctx.moveTo(
-                    -object.size / 2,
-                    -object.size / 2
-                );
-
-
-                ctx.lineTo(
-                    object.size / 2,
-                    object.size / 2
-                );
-
-
-                ctx.moveTo(
-                    object.size / 2,
-                    -object.size / 2
-                );
-
-
-                ctx.lineTo(
-                    -object.size / 2,
-                    object.size / 2
-                );
-
-
-                ctx.stroke();
-
-            }
-
-
-            /*
-                BALL
-            */
-
-            if (
-                object.type === "ball"
-            ) {
-
-                const gradient =
-                    ctx.createRadialGradient(
-                        -7,
-                        -7,
-                        2,
-                        0,
-                        0,
-                        object.radius
-                    );
-
-
-                gradient.addColorStop(
-                    0,
-                    "#FFFFFF"
-                );
-
-
-                gradient.addColorStop(
-                    1,
-                    "#725CFF"
-                );
-
-
-                ctx.fillStyle =
-                    gradient;
-
-
-                ctx.beginPath();
-
-
-                ctx.arc(
-                    0,
-                    0,
-                    object.radius,
-                    0,
-                    Math.PI * 2
-                );
-
-
-                ctx.fill();
-
-            }
-
-
-            /*
-                CARTOON BOMB
-            */
-
-            if (
-                object.type === "bomb"
-            ) {
-
-                /*
-                    Bomb body
-                */
-
-                ctx.fillStyle =
-                    "#17171D";
-
-
-                ctx.beginPath();
-
-
-                ctx.arc(
-                    0,
-                    3,
-                    object.radius,
-                    0,
-                    Math.PI * 2
-                );
-
-
-                ctx.fill();
-
-
-                /*
-                    Highlight
-                */
-
-                ctx.fillStyle =
-                    "#363642";
-
-
-                ctx.beginPath();
-
-
-                ctx.arc(
-                    -6,
-                    -4,
-                    5,
-                    0,
-                    Math.PI * 2
-                );
-
-
-                ctx.fill();
-
-
-                /*
-                    Fuse
-                */
-
-                ctx.strokeStyle =
-                    "#B98248";
-
-
-                ctx.lineWidth =
-                    4;
-
-
-                ctx.beginPath();
-
-
-                ctx.moveTo(
-                    4,
-                    -15
-                );
-
-
-                ctx.quadraticCurveTo(
-                    8,
-                    -28,
-                    17,
-                    -25
-                );
-
-
-                ctx.stroke();
-
-
-                /*
-                    Tiny spark
-                */
-
-                ctx.fillStyle =
-                    "#FFBD4A";
-
-
-                ctx.beginPath();
-
-
-                ctx.arc(
-                    17,
-                    -25,
-                    4,
-                    0,
-                    Math.PI * 2
-                );
-
-
-                ctx.fill();
-
-            }
-
-
-            ctx.restore();
-
-        }
-
-    }
-
-
-    /*
-        ================================================
-        DRAW PARTICLES
-        ================================================
-    */
-
-    function drawParticles() {
-
-        for (const particle of particles) {
-
-            ctx.globalAlpha =
-                particle.life;
-
-
-            ctx.fillStyle =
-                "#FFBD4A";
-
-
-            ctx.beginPath();
-
-
-            ctx.arc(
-                particle.x,
-                particle.y,
-                particle.size,
-                0,
-                Math.PI * 2
-            );
-
-
-            ctx.fill();
-
-        }
-
-
-        ctx.globalAlpha =
-            1;
-
-    }
-
-
-    /*
-        ================================================
-        DRAW
-        ================================================
-    */
-
-    function draw() {
-
-        drawBackground();
-
-        drawObjects();
-
-
-        /*
-            Draw Noob
-        */
-
-        for (const body of bodies) {
-
-            drawBody(body);
-
-        }
-
-
-        drawParticles();
-
-
-        /*
-            Canvas title
-        */
-
-        ctx.fillStyle =
-            "rgba(255,255,255,0.55)";
-
-
-        ctx.font =
-            "bold 15px Arial";
-
-
-        ctx.fillText(
-            "RAGDOLL NOOB",
-            20,
-            30
-        );
-
-    }
-
-
-    /*
-        ================================================
-        POINTER POSITION
-        ================================================
-    */
-
-    function pointerPosition(event) {
-
-        const rect =
-            canvas.getBoundingClientRect();
-
-
-        return {
-
-            x:
-                (event.clientX - rect.left) *
-                (WIDTH / rect.width),
-
-            y:
-                (event.clientY - rect.top) *
-                (HEIGHT / rect.height)
-
-        };
-
-    }
-
-
-    /*
-        ================================================
-        FIND OBJECT UNDER POINTER
-        ================================================
-    */
-
-    function findThingAt(x, y) {
-
-        /*
-            Check Noob parts first
-        */
-
-        for (
-            let i = bodies.length - 1;
-            i >= 0;
-            i--
+        if (
+            event.key === "c" ||
+            event.key === "C"
         ) {
-
-            const body =
-                bodies[i];
-
-
-            if (
-                x >
-                body.x -
-                body.width / 2 - 8 &&
-
-                x <
-                body.x +
-                body.width / 2 + 8 &&
-
-                y >
-                body.y -
-                body.height / 2 - 8 &&
-
-                y <
-                body.y +
-                body.height / 2 + 8
-            ) {
-
-                return body;
-
-            }
-
+            spawnCrate();
         }
 
-
-        /*
-            Then spawned objects
-        */
-
-        for (
-            let i = objects.length - 1;
-            i >= 0;
-            i--
+        if (
+            event.key === "b" ||
+            event.key === "B"
         ) {
-
-            const object =
-                objects[i];
-
-
-            const radius =
-                object.type === "crate"
-                    ? object.size / 2
-                    : object.radius;
-
-
-            const dx =
-                x - object.x;
-
-            const dy =
-                y - object.y;
-
-
-            if (
-                Math.sqrt(
-                    dx * dx +
-                    dy * dy
-                ) < radius + 8
-            ) {
-
-                return object;
-
-            }
-
+            spawnBall();
         }
 
+        if (
+            event.key === "x" ||
+            event.key === "X"
+        ) {
+            spawnBomb();
+        }
 
-        return null;
+        if (event.code === "Space") {
 
+            event.preventDefault();
+
+            explode(
+                ragdoll.torso.x,
+                ragdoll.torso.y,
+                180
+            );
+        }
     }
-
-
-    /*
-        ================================================
-        GRAB
-        ================================================
-    */
-
-    canvas.addEventListener(
-        "pointerdown",
-        event => {
-
-            const position =
-                pointerPosition(event);
-
-
-            const thing =
-                findThingAt(
-                    position.x,
-                    position.y
-                );
-
-
-            if (!thing) {
-                return;
-            }
-
-
-            grabbed =
-                thing;
-
-
-            grabOffsetX =
-                position.x -
-                thing.x;
-
-
-            grabOffsetY =
-                position.y -
-                thing.y;
-
-
-            lastPointer = {
-                x: position.x,
-                y: position.y
-            };
-
-
-            canvas.setPointerCapture(
-                event.pointerId
-            );
-
-        }
-    );
-
-
-    /*
-        ================================================
-        DRAG
-        ================================================
-    */
-
-    canvas.addEventListener(
-        "pointermove",
-        event => {
-
-            if (!grabbed) {
-                return;
-            }
-
-
-            const position =
-                pointerPosition(event);
-
-
-            const velocityX =
-                position.x -
-                lastPointer.x;
-
-
-            const velocityY =
-                position.y -
-                lastPointer.y;
-
-
-            grabbed.x =
-                position.x -
-                grabOffsetX;
-
-
-            grabbed.y =
-                position.y -
-                grabOffsetY;
-
-
-            grabbed.vx =
-                velocityX;
-
-
-            grabbed.vy =
-                velocityY;
-
-
-            lastPointer = {
-                x: position.x,
-                y: position.y
-            };
-
-        }
-    );
-
-
-    /*
-        ================================================
-        RELEASE
-        ================================================
-    */
-
-    canvas.addEventListener(
-        "pointerup",
-        event => {
-
-            if (!grabbed) {
-                return;
-            }
-
-
-            grabbed.vx *=
-                1.8;
-
-
-            grabbed.vy *=
-                1.8;
-
-
-            grabbed =
-                null;
-
-
-            lastPointer =
-                null;
-
-
-            try {
-
-                canvas.releasePointerCapture(
-                    event.pointerId
-                );
-
-            } catch {}
-
-        }
-    );
-
-
-    canvas.addEventListener(
-        "pointercancel",
-        () => {
-
-            grabbed =
-                null;
-
-            lastPointer =
-                null;
-
-        }
-    );
-
-
-    /*
-        ================================================
-        SPAWN MENU
-        ================================================
-    */
-
-    const spawnButton =
-        document.getElementById(
-            "spawnButton"
-        );
-
-
-    const spawnMenu =
-        document.getElementById(
-            "spawnMenu"
-        );
-
-
-    spawnButton.addEventListener(
-        "click",
-        event => {
-
-            event.stopPropagation();
-
-            spawnMenu.classList.toggle(
-                "open"
-            );
-
-        }
-    );
-
-
-    document.addEventListener(
-        "click",
-        event => {
-
-            if (
-                !event.target.closest(
-                    ".spawn-area"
-                )
-            ) {
-
-                spawnMenu.classList.remove(
-                    "open"
-                );
-
-            }
-
-        }
-    );
-
-
-    /*
-        Spawn options
-    */
-
-    document.querySelectorAll(
-        ".spawn-option"
-    ).forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    const type =
-                        button.dataset.spawn;
-
-
-                    if (
-                        type === "crate"
-                    ) {
-
-                        spawnCrate();
-
-                    }
-
-
-                    if (
-                        type === "ball"
-                    ) {
-
-                        spawnBall();
-
-                    }
-
-
-                    if (
-                        type === "bomb"
-                    ) {
-
-                        spawnBomb();
-
-                    }
-
-
-                    spawnMenu.classList.remove(
-                        "open"
-                    );
-
-                }
-            );
-
-        }
-    );
-
-
-    /*
-        ================================================
-        BUTTONS
-        ================================================
-    */
-
-    document
-        .getElementById("boomButton")
-        .addEventListener(
-            "click",
-            cartoonBoom
-        );
-
-
-    document
-        .getElementById("resetButton")
-        .addEventListener(
-            "click",
-            resetNoob
-        );
-
-
-    document
-        .getElementById("clearButton")
-        .addEventListener(
-            "click",
-            () => {
-
-                objects = [];
-
-                particles = [];
-
-            }
-        );
-
-
-    /*
-        ================================================
-        KEYBOARD
-        ================================================
-    */
-
-    document.addEventListener(
-        "keydown",
-        event => {
-
-            if (
-                event.target.tagName === "INPUT" ||
-                event.target.tagName === "TEXTAREA"
-            ) {
-
-                return;
-
-            }
-
-
-            const key =
-                event.key.toLowerCase();
-
-
-            if (key === "r") {
-
-                resetNoob();
-
-            }
-
-
-            if (key === "c") {
-
-                spawnCrate();
-
-            }
-
-
-            if (key === "b") {
-
-                spawnBall();
-
-            }
-
-
-            if (key === "x") {
-
-                spawnBomb();
-
-            }
-
-
-            if (event.key === " ") {
-
-                event.preventDefault();
-
-                cartoonBoom();
-
-            }
-
-        }
-    );
-
-
-    /*
-        ================================================
-        GAME LOOP
-        ================================================
-    */
-
-    function gameLoop(time) {
-
-        const delta =
-            time - lastTime;
-
-
-        lastTime =
-            time;
-
-
-        update(delta);
-
-        draw();
-
-
-        requestAnimationFrame(
-            gameLoop
-        );
-
-    }
-
-
-    /*
-        START
-        ================================================
-    */
-
-    resetNoob();
-
-    requestAnimationFrame(
-        gameLoop
-    );
-
-})();
+);
 </script>
 
 </body>
