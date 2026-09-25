@@ -240,7 +240,7 @@
         }
 
         /* =========================
-           SMALL LABEL
+           LABEL
         ========================= */
 
         .label {
@@ -300,6 +300,30 @@
         .thanks {
             font-size: 14px;
             color: rgba(255, 255, 255, 0.40);
+        }
+
+        /* =========================
+           DISCLAIMER
+        ========================= */
+
+        .disclaimer {
+            position: fixed;
+
+            bottom: 38px;
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            width: 90%;
+
+            text-align: center;
+
+            font-size: 11px;
+            line-height: 1.5;
+
+            color: rgba(255, 255, 255, 0.22);
+
+            white-space: nowrap;
         }
 
         /* =========================
@@ -384,6 +408,11 @@
                 line-height: 1.65;
             }
 
+            .disclaimer {
+                bottom: 38px;
+                font-size: 10px;
+            }
+
             footer {
                 bottom: 12px;
             }
@@ -394,6 +423,7 @@
 <body>
 
     <!-- TOP BAR -->
+
     <header class="topbar">
 
         <div class="brand">
@@ -414,6 +444,7 @@
 
 
     <!-- MAIN CONTENT -->
+
     <main>
 
         <section class="card">
@@ -450,7 +481,15 @@
     </main>
 
 
+    <!-- DISCLAIMER -->
+
+    <div class="disclaimer">
+        Astra is not affiliated with or endorsed by Roblox Corporation.
+    </div>
+
+
     <!-- FOOTER -->
+
     <footer>
         Astra © 2026
     </footer>
