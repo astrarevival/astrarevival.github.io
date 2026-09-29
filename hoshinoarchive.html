@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hoshino Archive</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #111;
+            color: white;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin: 60px auto;
+        }
+
+        .name {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 35px;
+        }
+
+        .category {
+            margin-bottom: 20px;
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            width: 100%;
+            padding: 15px 18px;
+
+            background: #1c1c1c;
+            border: 1px solid #333;
+            color: white;
+
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+
+            transition: background 0.15s ease;
+        }
+
+        .category-header:hover {
+            background: #242424;
+        }
+
+        .arrow {
+            font-size: 16px;
+            transition: transform 0.2s ease;
+        }
+
+        .category.open .arrow {
+            transform: rotate(180deg);
+        }
+
+        .sites {
+            display: none;
+            padding: 10px 0 0;
+        }
+
+        .category.open .sites {
+            display: block;
+        }
+
+        .site-button {
+            display: block;
+
+            width: 100%;
+            padding: 14px 18px;
+            margin-bottom: 8px;
+
+            background: #181818;
+            border: 1px solid #303030;
+
+            color: white;
+            text-decoration: none;
+
+            font-size: 15px;
+
+            transition:
+                background 0.15s ease,
+                transform 0.15s ease;
+        }
+
+        .site-button:hover {
+            background: #252525;
+            transform: translateX(3px);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                width: 92%;
+                margin: 35px auto;
+            }
+
+            .name {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="name">
+            Hoshino Archive
+        </div>
+
+        <!-- SITES -->
+        <div class="category open">
+
+            <button class="category-header" onclick="toggleCategory(this)">
+                <span>SITES</span>
+                <span class="arrow">▼</span>
+            </button>
+
+            <div class="sites">
+
+               <a class="site-button" href="hoshinorevival.html">
+    Hoshino Revival
+</a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        function toggleCategory(button) {
+            button.parentElement.classList.toggle("open");
+        }
+    </script>
+
+</body>
+</html>
