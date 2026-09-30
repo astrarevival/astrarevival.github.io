@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Noob Sandbox</title>
-<link rel="icon" href="images/astraicontransparent.ico">
+<link rel="icon" href="images/noobsandboxsmallicon.ico">
 
 <style>
 * {
@@ -18,7 +18,7 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #08060e;
+  background: #171304;
   color: white;
   font-family: Arial, Helvetica, sans-serif;
   user-select: none;
@@ -87,8 +87,8 @@ canvas {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #a855f7;
-  box-shadow: 0 0 12px #a855f7;
+  background: #c59a16;
+  box-shadow: 0 0 12px #c59a16;
 }
 
 /* =========================
@@ -213,7 +213,7 @@ canvas {
 
 .rename-button:hover,
 .rename-button:active {
-  background: rgba(168,85,247,.25);
+  background: rgba(197,154,22,.25);
 }
 
 .leader-empty {
@@ -308,13 +308,13 @@ canvas {
 }
 
 .setting-value {
-  color: #c084fc;
+  color: #e0b72b;
   font-weight: 800;
 }
 
 input[type="range"] {
   width: 100%;
-  accent-color: #a855f7;
+  accent-color: #c59a16;
 }
 
 input[type="color"] {
@@ -350,7 +350,7 @@ input[type="color"] {
 }
 
 .ui-button.primary {
-  background: linear-gradient(135deg,#7c3aed,#a855f7);
+  background: linear-gradient(135deg,#8f6f0b,#c59a16);
 }
 
 /* =========================
@@ -428,9 +428,33 @@ input[type="color"] {
 }
 
 .spawn-option:hover {
-  background: rgba(168,85,247,.15);
+  background: rgba(197,154,22,.15);
 }
 
+/* =========================
+   0.5.0 ALPHA UI
+========================= */
+.alpha-badge {
+  display: inline-block;
+  margin: 0 0 15px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  background: rgba(197,154,22,.14);
+  border: 1px solid rgba(197,154,22,.28);
+  color: #e0b72b;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .3px;
+}
+.major-section {
+  margin-top: 18px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+.major-title { font-size: 14px; font-weight: 800; margin-bottom: 10px; }
+.two-buttons { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-bottom:7px; }
+.two-buttons .ui-button { padding:9px 7px; font-size:11px; }
+.ui-button.selected { background: rgba(197,154,22,.28); border-color: rgba(224,183,43,.5); }
 /* =========================
    MOBILE CONTROLS
 ========================= */
@@ -464,7 +488,7 @@ input[type="color"] {
   height: 48px;
   border-radius: 50%;
   transform: translate(-50%,-50%);
-  background: rgba(168,85,247,.72);
+  background: rgba(197,154,22,.72);
   border: 1px solid rgba(255,255,255,.2);
 }
 
@@ -488,7 +512,7 @@ input[type="color"] {
 }
 
 .mobile-action.active {
-  background: rgba(168,85,247,.72);
+  background: rgba(197,154,22,.72);
 }
 
 @media (pointer: coarse) {
@@ -563,6 +587,34 @@ input[type="color"] {
     bottom: 76px;
   }
 }
+
+/* CHARACTER / NPC EDITOR */
+.editor-panel { position:fixed; z-index:120; left:50%; top:50%; transform:translate(-50%,-50%) scale(.96); width:330px; max-width:calc(100vw - 28px); max-height:calc(100vh - 40px); overflow:auto; padding:16px; border:1px solid rgba(255,255,255,.14); border-radius:18px; background:rgba(20,16,4,.96); backdrop-filter:blur(22px); box-shadow:0 25px 70px rgba(0,0,0,.55); opacity:0; pointer-events:none; transition:.18s ease; }
+.editor-panel.open { opacity:1; transform:translate(-50%,-50%) scale(1); pointer-events:auto; }
+.editor-title { font-size:18px; font-weight:800; margin-bottom:4px; }
+.editor-subtitle { color:rgba(255,255,255,.62); font-size:12px; margin-bottom:14px; }
+.editor-close { position:absolute; top:10px; right:10px; width:30px; height:30px; border:0; border-radius:9px; color:white; background:rgba(255,255,255,.08); cursor:pointer; }
+.editor-row { display:flex; gap:8px; margin:7px 0; }
+.editor-row > * { flex:1; }
+.editor-input { width:100%; padding:10px; border:1px solid rgba(255,255,255,.1); border-radius:9px; color:white; background:rgba(255,255,255,.06); outline:none; }
+.editor-section { margin-top:13px; padding-top:12px; border-top:1px solid rgba(255,255,255,.08); }
+.editor-label { display:block; margin-bottom:6px; font-size:12px; color:rgba(255,255,255,.68); }
+
+
+.spawn-category {
+  padding: 10px 10px 5px;
+  color: rgba(255,255,255,.42);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+.controls-panel { position:fixed; z-index:125; left:50%; top:50%; transform:translate(-50%,-50%) scale(.96); width:340px; max-width:calc(100vw - 28px); padding:18px; border:1px solid rgba(255,255,255,.14); border-radius:18px; background:rgba(20,16,4,.97); backdrop-filter:blur(22px); box-shadow:0 25px 70px rgba(0,0,0,.55); opacity:0; pointer-events:none; transition:.18s ease; }
+.controls-panel.open { opacity:1; transform:translate(-50%,-50%) scale(1); pointer-events:auto; }
+.controls-list { display:grid; gap:8px; }
+.controls-list div { display:flex; justify-content:space-between; gap:12px; padding:10px; border-radius:10px; background:rgba(255,255,255,.045); }
+.controls-list b { color:#e0b72b; font-size:11px; white-space:nowrap; }
+.controls-list span { color:rgba(255,255,255,.68); font-size:11px; text-align:right; }
+
 </style>
 </head>
 
@@ -572,7 +624,7 @@ input[type="color"] {
 
 <div class="topbar">
   <div class="brand">
-    <img src="images/astraicontransparent.ico" alt="Astra">
+    <img src="images/noobsandboxsmallicon.ico" alt="Noob Sandbox">
     <span>Noob Sandbox</span>
   </div>
 
@@ -588,16 +640,18 @@ input[type="color"] {
 </div>
 
 <button class="astra-button" id="astraButton" aria-label="Astra menu">
-  <img src="images/astraicontransparent.ico" alt="Astra">
+  <img src="images/noobsandboxsmallicon.ico" alt="Noob Sandbox">
 </button>
 
 <div class="astra-panel" id="astraPanel">
 
-  <div class="panel-title">Astra Menu</div>
+  <div class="panel-title">Menu</div>
 
   <div class="panel-subtitle">
     Character and sandbox settings
   </div>
+
+  <div class="alpha-badge">v0.5.0 Alpha • Part 2</div>
 
   <div class="setting">
     <div class="setting-label">
@@ -685,6 +739,36 @@ input[type="color"] {
     Delete Character
   </button>
 
+  <div class="major-section">
+    <div class="major-title">Controls</div>
+    <button class="ui-button primary" id="controlsButton">🎮 Open Controls</button>
+  </div>
+
+  <div class="major-section">
+    <div class="major-title">NPC Controls</div>
+    <div class="setting-label"><span>Selected NPC</span><span class="setting-value" id="selectedNpcLabel">None</span></div>
+    <div class="two-buttons">
+      <button class="ui-button" id="npcPassive">Passive</button>
+      <button class="ui-button" id="npcFollow">Follow</button>
+      <button class="ui-button" id="npcAttack">Attack</button>
+      <button class="ui-button" id="npcDuplicate">Duplicate</button>
+    </div>
+    <button class="ui-button" id="npcDelete">Delete Selected</button>
+    <button class="ui-button" id="npcMovement">NPC Movement: ON</button>
+    <button class="ui-button" id="npcAttacks">NPC Attacks: ON</button>
+    <button class="ui-button" id="npcGod">Selected NPC God Mode: OFF</button>
+  </div>
+
+  <div class="major-section">
+    <div class="major-title">Sandbox</div>
+    <div class="two-buttons">
+      <button class="ui-button" id="toggleGrid">Grid: ON</button>
+      <button class="ui-button" id="toggleShader">Glow: ON</button>
+      <button class="ui-button" id="freezeAll">Freeze All</button>
+      <button class="ui-button" id="unfreezeAll">Unfreeze All</button>
+    </div>
+  </div>
+
 </div>
 
 <button class="spawn-button" id="spawnButton">+</button>
@@ -697,6 +781,7 @@ input[type="color"] {
 
   <div class="spawn-options">
 
+    <div class="spawn-category">CHARACTERS</div>
     <button class="spawn-option" id="spawnMe">
       🧍 My Character
     </button>
@@ -705,6 +790,11 @@ input[type="color"] {
       🟨 Noob
     </button>
 
+    <button class="spawn-option" id="customNpc">
+      🤖 Custom NPC
+    </button>
+
+    <div class="spawn-category">BLOCKS & OBJECTS</div>
     <button class="spawn-option" id="spawnCrate">
       📦 Crate
     </button>
@@ -713,14 +803,70 @@ input[type="color"] {
       💣 Bomb
     </button>
 
+    <button class="spawn-option" id="spawnBall">
+      ⚽ Ball
+    </button>
+
+    <div class="spawn-category">TOOLS</div>
+    <button class="spawn-option" id="sparkTool">
+      ⚡ Igniter
+    </button>
+
+    <button class="spawn-option" id="boomBlock">
+      💥 Boom Block
+    </button>
+
+    <button class="spawn-option" id="rocketLauncher">
+      🚀 Rocket Launcher
+    </button>
+
+    <button class="spawn-option" id="noobLauncher">
+      🟨 Noob Launcher
+    </button>
+
     <button class="spawn-option" id="partRemover">
       ✂️ Part Remover
     </button>
 
+    <div class="spawn-category">SANDBOX</div>
     <button class="spawn-option" id="resetSandbox">
       ♻ Reset Sandbox
     </button>
 
+  </div>
+</div>
+
+<div class="editor-panel" id="editorPanel">
+  <button class="editor-close" id="editorClose">×</button>
+  <div class="editor-title">Character Editor</div>
+  <div class="editor-subtitle" id="editorSubtitle">Edit the character or create a custom NPC.</div>
+  <div class="editor-section">
+    <label class="editor-label">Name</label>
+    <input class="editor-input" id="editorName" maxlength="24" placeholder="Character name">
+  </div>
+  <div class="editor-section">
+    <div class="editor-label">Body Colors</div>
+    <div class="editor-row"><input id="editorHead" type="color"><input id="editorTorso" type="color"></div>
+    <div class="editor-row"><input id="editorLeftArm" type="color"><input id="editorRightArm" type="color"></div>
+    <div class="editor-row"><input id="editorLeftLeg" type="color"><input id="editorRightLeg" type="color"></div>
+  </div>
+  <div class="editor-section">
+    <button class="ui-button primary" id="editorApply">Apply Changes</button>
+  </div>
+</div>
+
+
+<div class="controls-panel" id="controlsPanel">
+  <button class="editor-close" id="controlsClose">×</button>
+  <div class="editor-title">Controls</div>
+  <div class="editor-subtitle">Desktop controls for Noob Sandbox</div>
+  <div class="controls-list">
+    <div><b>W A S D</b><span>Move the player</span></div>
+    <div><b>SPACE</b><span>Jump</span></div>
+    <div><b>SHIFT</b><span>Run</span></div>
+    <div><b>LEFT CLICK</b><span>Grab, drag, use tools, or select objects</span></div>
+    <div><b>DRAG + RELEASE</b><span>Throw grabbed objects</span></div>
+    <div><b>CLICK HELD TOOL</b><span>Unequip the equipped tool</span></div>
   </div>
 </div>
 
@@ -960,6 +1106,10 @@ function createPlayer(x, y) {
 
     health: 100,
     maxHealth: 100,
+    behavior: "passive",
+    npcGod: false,
+    npcMovement: true,
+    npcAttackCooldown: 0,
 
     respawning: false,
     name: "You",
@@ -973,9 +1123,10 @@ function createPlayer(x, y) {
       rightLeg: false
     },
 
-    colors: {
-      ...SETTINGS.colors
-    }
+    colors: { ...SETTINGS.colors },
+    behavior: "passive",
+    npcMovement: true,
+    npcGod: false
   };
 }
 
@@ -987,6 +1138,8 @@ function spawnPlayer() {
   }
 
   playerRespawnToken++;
+
+  unequipTools();
 
   player =
     createPlayer(
@@ -1010,6 +1163,7 @@ function deletePlayer() {
   playerRespawnToken++;
 
   player = null;
+  unequipTools();
 
   updateStatus();
   updateLeaderboard();
@@ -1043,6 +1197,7 @@ function resetPlayer() {
 ========================= */
 
 const objects = [];
+const explosionEffects = [];
 
 function createNoobObject(x, y) {
 
@@ -1058,6 +1213,9 @@ function createNoobObject(x, y) {
     height: 76,
     grabbed: false,
     name: "Noob",
+    npcMovement: false,
+    npcSpeed: 720,
+    npcAttackCooldown: 0,
     health: 100,
     maxHealth: 100,
 
@@ -1106,7 +1264,7 @@ function spawnObject(type, x, y) {
       height: 34,
       grabbed: false,
       name: "Bomb",
-      fuse: 3,
+      igniteTimer: 0,
       explosionTimer: 0,
       exploded: false
     });
@@ -1115,21 +1273,32 @@ function spawnObject(type, x, y) {
     return;
   }
 
-  objects.push({
-    type: "crate",
-    x,
-    y,
-    vx: 0,
-    vy: 0,
-    rotation: 0,
-    vr: 0,
-    width: 58,
-    height: 58,
-    grabbed: false,
-    name: "Crate"
-  });
+  if (type === "ball") {
+    objects.push({ type:"ball", x, y, vx:0, vy:0, rotation:0, vr:0, width:32, height:32, grabbed:false, name:"Ball" });
+    updateLeaderboard(); return;
+  }
 
-  updateLeaderboard();
+  if (type === "rocket") {
+    objects.push({ type:"rocket", x, y, vx:720, vy:-120, rotation:0, vr:0, width:18, height:38, grabbed:false, name:"Rocket", life:6 });
+    updateLeaderboard(); return;
+  }
+
+  if (type === "boom") {
+    objects.push({ type:"boom", x, y, vx:0, vy:0, rotation:0, vr:0, width:54, height:54, grabbed:false, name:"Boom Block", explosionTimer:0, exploded:false });
+    updateLeaderboard(); return;
+  }
+
+  if (type === "crate") {
+    objects.push({
+      type: "crate",
+      x, y: y - 4, vx: 0, vy: 0, rotation: 0, vr: 0,
+      width: 58, height: 58, grabbed: false,
+      name: "Crate",
+      density: 1
+    });
+    updateLeaderboard();
+    return;
+  }
 }
 
 function spawnNoob() {
@@ -1147,6 +1316,32 @@ function spawnBomb() {
   showToast("Bomb spawned!");
 }
 
+function spawnBall() { spawnObject("ball", W / 2, 120); showToast("Ball spawned!"); }
+function spawnRocket() {
+  if (toolMode === "rocket" && heldTool === "rocket") {
+    unequipTools();
+    
+    return;
+  }
+  toolMode = "rocket";
+  heldTool = "rocket";
+}
+function spawnBoom() {
+  if (toolMode === "boom-tool" && heldTool === "boom") {
+    unequipTools();
+    
+    return;
+  }
+  heldTool = "boom";
+  toolMode = "boom-tool";
+  showToast("Boom Block equipped!");
+}
+
+function unequipTools() {
+  toolMode = null;
+  heldTool = null;
+}
+
 function resetSandbox() {
 
   playerRespawnToken++;
@@ -1154,7 +1349,7 @@ function resetSandbox() {
   player = null;
   objects.length = 0;
 
-  toolMode = null;
+  unequipTools();
 
   partRemoverButton.textContent =
     "✂️ Part Remover";
@@ -1249,6 +1444,7 @@ function getNoobParts(noob) {
 ========================= */
 
 let toolMode = null;
+let heldTool = null;
 
 const partRemoverButton =
   document.getElementById("partRemover");
@@ -1553,7 +1749,7 @@ function damageNoob(
   forceY = 0
 ) {
 
-  if (!noob || noob.health <= 0) {
+  if (!noob || noob.health <= 0 || noob.npcGod) {
     return;
   }
 
@@ -1680,11 +1876,17 @@ function updateBomb(bomb, dt) {
     return;
   }
 
-  bomb.fuse -= dt;
-
-  if (bomb.fuse <= 0) {
-    explodeBomb(bomb);
+  if (bomb.igniteTimer > 0) {
+    bomb.igniteTimer -= dt;
+    if (bomb.igniteTimer <= 0) explodeBomb(bomb);
   }
+}
+
+function igniteBomb(bomb) {
+  if (!bomb || bomb.exploded) return false;
+  if (bomb.igniteTimer > 0) return true;
+  bomb.igniteTimer = 2;
+  return true;
 }
 
 function damagePlayer(
@@ -1937,7 +2139,175 @@ function updatePlayer(dt) {
    OBJECT PHYSICS
 ========================= */
 
+function createExplosionEffect(x, y, radius=120, kind="explosion") {
+  explosionEffects.push({
+    x, y, radius, kind, age: 0, duration: .34,
+    particles: Array.from({length: 22}, () => {
+      const a = Math.random() * Math.PI * 2;
+      const speed = 180 + Math.random() * 520;
+      return {
+        x, y,
+        vx: Math.cos(a) * speed,
+        vy: Math.sin(a) * speed,
+        size: 2 + Math.random() * 5,
+        life: .22 + Math.random() * .28
+      };
+    })
+  });
+}
+
+function updateExplosionEffects(dt) {
+  for (let i = explosionEffects.length - 1; i >= 0; i--) {
+    const fx = explosionEffects[i];
+    fx.age += dt;
+    for (const p of fx.particles) {
+      p.life -= dt;
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.vx *= Math.pow(.08, dt);
+      p.vy = p.vy * Math.pow(.08, dt) + 620 * dt;
+    }
+    if (fx.age >= fx.duration) explosionEffects.splice(i, 1);
+  }
+}
+
+function drawExplosionEffects() {
+  for (const fx of explosionEffects) {
+    const t = clamp(fx.age / fx.duration, 0, 1);
+    const alpha = 1 - t;
+    const isMuzzle = fx.kind === "muzzle";
+    const ring = isMuzzle ? 8 + t * 30 : 18 + t * fx.radius;
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+
+    ctx.fillStyle = isMuzzle
+      ? "rgba(255,235,120,.65)"
+      : "rgba(255,190,35,.22)";
+    ctx.beginPath();
+    ctx.arc(fx.x, fx.y, ring * (isMuzzle ? .7 : .55), 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.strokeStyle = isMuzzle
+      ? "rgba(255,245,170,.95)"
+      : "rgba(255,220,90,.95)";
+    ctx.lineWidth = isMuzzle ? 5 - t * 3 : 7 - t * 4;
+    ctx.beginPath();
+    ctx.arc(fx.x, fx.y, ring, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.fillStyle = "rgba(255,245,170,.95)";
+    for (const p of fx.particles) {
+      if (p.life <= 0) continue;
+      ctx.globalAlpha = Math.min(alpha, p.life / .18);
+      ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+    }
+    ctx.restore();
+  }
+}
+
+function explodeToolObject(obj, radius=120, damage=35) {
+  if (!obj) return;
+  if (obj.type === "boom") {
+    if (obj.explosionTimer > 0) return;
+  } else if (obj.exploded) {
+    return;
+  }
+
+  if (obj.type !== "boom") obj.exploded = true;
+  obj.explosionTimer = .34;
+  obj.vx = 0;
+  obj.vy = 0;
+  obj.vr = 0;
+
+  const cx = obj.x;
+  const cy = obj.y;
+  createExplosionEffect(cx, cy, radius);
+
+  if (player && !player.respawning) {
+    const dx = player.x - cx;
+    const dy = player.y - cy;
+    const d = Math.hypot(dx, dy);
+    if (d < radius) {
+      const f = 1 - d / radius;
+      const safe = Math.max(d, 1);
+      damagePlayer(
+        damage * f,
+        dx / safe * 900 * f,
+        dy / safe * 900 * f - 300 * f
+      );
+    }
+  }
+
+  for (const o of [...objects]) {
+    if (o === obj || o.type === "brokenPart" || o.exploded || (o.type === "boom" && o.explosionTimer > 0)) continue;
+
+    const dx = o.x - cx;
+    const dy = o.y - cy;
+    const d = Math.hypot(dx, dy);
+    if (d >= radius) continue;
+
+    const f = 1 - d / radius;
+    const safe = Math.max(d, 1);
+    const force = 1100 * f;
+
+    if (o.type === "noob") {
+      damageNoob(o, damage * f, dx / safe * force, dy / safe * force - 320 * f);
+    } else {
+      o.vx += dx / safe * force;
+      o.vy += dy / safe * force - 320 * f;
+      o.vr += (Math.random() - .5) * 28;
+    }
+  }
+
+  if (obj.type === "rocket") {
+    const index = objects.indexOf(obj);
+    if (index !== -1) objects.splice(index, 1);
+  }
+}
+
+
 function updateObject(obj, dt) {
+
+  if (sandboxFrozen) return;
+
+  if (obj.type === "noob" && npcMovementEnabled && obj.npcMovement && !obj.grabbed) {
+    const target = player && !player.respawning ? player : null;
+    if (target && obj.behavior !== "passive") {
+      const dx = target.x - obj.x;
+      const distance = Math.abs(dx);
+      if (obj.behavior === "follow" || (obj.behavior === "attack" && distance > 62)) {
+        const npcSpeed = obj.npcSpeed || 720;
+        obj.vx += Math.sign(dx) * 1500 * dt;
+        obj.vx = clamp(obj.vx, -npcSpeed, npcSpeed);
+      }
+      if (obj.behavior === "attack" && npcAttacksEnabled && distance < 78) {
+        obj.npcAttackCooldown -= dt;
+        if (obj.npcAttackCooldown <= 0 && !obj.npcGod) {
+          damagePlayer(10, Math.sign(dx) * 180, -140);
+          obj.npcAttackCooldown = 0.65;
+        }
+      }
+    }
+  }
+
+  if (obj.type === "rocket") {
+    obj.life -= dt;
+    obj.rotation = Math.atan2(obj.vy, obj.vx) + Math.PI / 2;
+    if (obj.life <= 0) {
+      explodeToolObject(obj, 145, 60);
+      return;
+    }
+  }
+
+  if (obj.type === "boom" && obj.explosionTimer > 0) {
+    obj.explosionTimer -= dt;
+    if (obj.explosionTimer <= 0) {
+      obj.explosionTimer = 0;
+      obj.exploded = false;
+    }
+    return;
+  }
 
   if (obj.type === "bomb") {
     updateBomb(obj, dt);
@@ -2010,6 +2380,11 @@ function updateObject(obj, dt) {
     obj.y =
       floor - halfH;
 
+    if (obj.type === "rocket") {
+      explodeToolObject(obj, 145, 60);
+      return;
+    }
+
     if (obj.vy > 0) {
       obj.vy *=
         -WORLD.objectBounce;
@@ -2074,6 +2449,11 @@ function overlap(a, b) {
 }
 
 function collidePlayerObject(p, o) {
+
+  if (o.type === "rocket" && !o.exploded && o.explosionTimer <= 0 && overlap(p, o)) {
+    explodeToolObject(o, 145, 60);
+    return;
+  }
 
   if (
     o.grabbed ||
@@ -2165,6 +2545,15 @@ function collidePlayerObject(p, o) {
 }
 
 function collideObjects(a, b) {
+
+  if (a.type === "rocket" && !a.exploded && overlap(a, b) && b.type !== "brokenPart") {
+    explodeToolObject(a, 145, 60);
+    return;
+  }
+  if (b.type === "rocket" && !b.exploded && overlap(a, b) && a.type !== "brokenPart") {
+    explodeToolObject(b, 145, 60);
+    return;
+  }
 
   if (
     a.grabbed ||
@@ -2587,7 +2976,7 @@ function drawName(
 
     ctx.fillStyle =
       godMode
-        ? "#a855f7"
+        ? "#c59a16"
         : percent > .5
           ? "#65d66f"
           : percent > .25
@@ -2805,7 +3194,7 @@ function drawNoob(
   ) {
 
     ctx.globalAlpha = .45;
-    ctx.strokeStyle = "#c084fc";
+    ctx.strokeStyle = "#e0b72b";
     ctx.lineWidth = 2;
 
     ctx.beginPath();
@@ -3108,21 +3497,19 @@ function drawBomb(bomb) {
   ctx.textBaseline =
     "middle";
 
-  ctx.fillText(
-    Math.max(
-      0,
-      bomb.fuse
-    ).toFixed(1),
-    0,
-    5
-  );
-
   ctx.restore();
 }
 
 /* =========================
    BACKGROUND
 ========================= */
+
+let gridEnabled = true;
+let glowEnabled = true;
+let npcMovementEnabled = true;
+let npcAttacksEnabled = true;
+let selectedEntity = null;
+let sandboxFrozen = false;
 
 function drawBackground() {
 
@@ -3136,17 +3523,17 @@ function drawBackground() {
 
   gradient.addColorStop(
     0,
-    "#090613"
+    "#171304"
   );
 
   gradient.addColorStop(
     .5,
-    "#130b24"
+    "#2b2407"
   );
 
   gradient.addColorStop(
     1,
-    "#08050f"
+    "#100d03"
   );
 
   ctx.fillStyle =
@@ -3171,12 +3558,12 @@ function drawBackground() {
 
   glow.addColorStop(
     0,
-    "rgba(130,70,255,.12)"
+    `rgba(210,170,35,${glowEnabled ? ".10" : "0"})`
   );
 
   glow.addColorStop(
     1,
-    "rgba(130,70,255,0)"
+    "rgba(210,170,35,0)"
   );
 
   ctx.fillStyle =
@@ -3193,7 +3580,7 @@ function drawBackground() {
 function drawGround() {
 
   ctx.fillStyle =
-    "rgba(255,255,255,.055)";
+    "rgba(125,96,18,.72)";
 
   ctx.fillRect(
     0,
@@ -3203,7 +3590,7 @@ function drawGround() {
   );
 
   ctx.fillStyle =
-    "rgba(168,85,247,.18)";
+    "rgba(224,183,43,.48)";
 
   ctx.fillRect(
     0,
@@ -3213,7 +3600,7 @@ function drawGround() {
   );
 
   ctx.fillStyle =
-    "rgba(255,255,255,.025)";
+    "rgba(255,220,80,.08)";
 
   for (
     let x = 0;
@@ -3230,10 +3617,69 @@ function drawGround() {
   }
 }
 
+
+function drawWorldGrid() {
+  if (!gridEnabled) return;
+  ctx.save(); ctx.globalAlpha=.16; ctx.strokeStyle="#d8b72b"; ctx.lineWidth=1;
+  for(let x=0;x<W;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H-WORLD.floorHeight);ctx.stroke();}
+  for(let y=40;y<H-WORLD.floorHeight;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  ctx.restore();
+}
+
+function drawAimReticle() {
+  if (!heldTool || !player || player.respawning) return;
+  ctx.save();
+  ctx.translate(mouseX, mouseY);
+  ctx.strokeStyle = "rgba(255,238,120,.9)";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(0, 0, 8, 0, Math.PI * 2);
+  ctx.moveTo(-14, 0); ctx.lineTo(-5, 0);
+  ctx.moveTo(5, 0); ctx.lineTo(14, 0);
+  ctx.moveTo(0, -14); ctx.lineTo(0, -5);
+  ctx.moveTo(0, 5); ctx.lineTo(0, 14);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawHeldTool() {
+  if (!player || player.respawning) {
+    heldTool = null;
+    if (toolMode !== "part-remover") toolMode = null;
+    return;
+  }
+  if (!heldTool) return;
+  drawAimReticle();
+  if (heldTool === "rocket") { drawHeldRocketLauncher(); return; }
+  const angle = Math.atan2(mouseY-(player.y-8), mouseX-player.x);
+  ctx.save(); ctx.translate(player.x+Math.cos(angle)*24,player.y-8+Math.sin(angle)*24); ctx.rotate(angle);
+  if (heldTool === "noob-launcher") { ctx.fillStyle="#6f5708"; ctx.fillRect(-8,-7,34,14); ctx.fillStyle="#e0b72b"; ctx.fillRect(15,-11,13,22); }
+  else if (heldTool === "boom") { ctx.fillStyle="#6f5708"; ctx.fillRect(-7,-7,22,18); ctx.fillStyle="#e0b72b"; ctx.fillRect(11,-9,9,22); }
+  else if (heldTool === "spark") { ctx.strokeStyle="#ffe36a"; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(-4,8); ctx.lineTo(12,-10); ctx.stroke(); ctx.fillStyle="#fff3a0"; ctx.beginPath(); ctx.arc(14,-12,5,0,Math.PI*2); ctx.fill(); }
+  ctx.restore();
+}
+
+function drawHeldRocketLauncher() {
+  const angle = Math.atan2(mouseY - (player.y - 8), mouseX - player.x);
+  ctx.save();
+  ctx.translate(player.x + Math.cos(angle) * 24, player.y - 8 + Math.sin(angle) * 24);
+  ctx.rotate(angle);
+  ctx.fillStyle = "#5b4708";
+  ctx.fillRect(-5, -7, 38, 14);
+  ctx.fillStyle = "#d8b72b";
+  ctx.fillRect(18, -10, 14, 20);
+  ctx.fillStyle = "#8f6f0b";
+  ctx.fillRect(-12, -5, 12, 10);
+  ctx.fillStyle = "#f2d45a";
+  ctx.fillRect(4, 7, 9, 16);
+  ctx.restore();
+}
+
 function draw() {
 
   drawBackground();
   drawGround();
+  drawWorldGrid();
 
   for (const obj of objects) {
 
@@ -3249,6 +3695,23 @@ function draw() {
     ) {
 
       drawBomb(obj);
+
+    } else if (obj.type === "ball") {
+      ctx.save(); ctx.translate(obj.x,obj.y); ctx.rotate(obj.rotation);
+      ctx.fillStyle = "#d8b72b"; ctx.beginPath(); ctx.arc(0,0,16,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle = "rgba(255,255,255,.35)"; ctx.stroke(); ctx.restore();
+
+    } else if (obj.type === "rocket") {
+      ctx.save(); ctx.translate(obj.x,obj.y); ctx.rotate(obj.rotation);
+      ctx.fillStyle="#8f6f0b"; ctx.fillRect(-7,-16,14,28);
+      ctx.fillStyle="#e0b72b"; ctx.beginPath(); ctx.moveTo(0,-23); ctx.lineTo(8,-10); ctx.lineTo(-8,-10); ctx.closePath(); ctx.fill();
+      ctx.fillStyle="#ef5350"; ctx.fillRect(-5,12,10,10); ctx.restore();
+
+    } else if (obj.type === "boom") {
+      ctx.save(); ctx.translate(obj.x,obj.y); ctx.rotate(obj.rotation);
+      ctx.fillStyle="#6f5708"; ctx.fillRect(-27,-27,54,54);
+      ctx.strokeStyle="#e0b72b"; ctx.lineWidth=3; ctx.strokeRect(-27,-27,54,54);
+      ctx.fillStyle="#fff3a0"; ctx.font="bold 18px Arial"; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText("BOOM",0,0); ctx.restore();
 
     } else if (
       obj.type === "brokenPart"
@@ -3267,7 +3730,13 @@ function draw() {
       player,
       true
     );
+
+    if (heldTool && !player.respawning) {
+      drawHeldTool();
+    }
   }
+
+  drawExplosionEffects();
 }
 
 /* =========================
@@ -3325,32 +3794,7 @@ leaderboardList.addEventListener(
       return;
     }
 
-    const currentName =
-      person.name || "";
-
-    const newName =
-      window.prompt(
-        "Rename character:",
-        currentName
-      );
-
-    if (newName === null) {
-      return;
-    }
-
-    const cleaned =
-      newName
-        .trim()
-        .slice(0, 24);
-
-    if (cleaned.length === 0) {
-      return;
-    }
-
-    person.name =
-      cleaned;
-
-    updateLeaderboard();
+    openCharacterEditor(person);
   }
 );
 
@@ -3472,10 +3916,13 @@ function updateLeaderboard() {
       bar.style.width =
         `${percent * 100}%`;
 
+      const isGod =
+        (person.type === "player" && SETTINGS.godMode) ||
+        (person.type === "noob" && person.npcGod);
+
       bar.style.background =
-        person.type === "player" &&
-        SETTINGS.godMode
-          ? "#a855f7"
+        isGod
+          ? "#e0b72b"
           : percent > .5
             ? "#65d66f"
             : percent > .25
@@ -3496,8 +3943,7 @@ function updateLeaderboard() {
         `${Math.ceil(
           health
         )} / ${maxHealth}${
-          person.type === "player" &&
-          SETTINGS.godMode
+          isGod
             ? " • GOD"
             : ""
         }`;
@@ -3521,7 +3967,7 @@ function updateLeaderboard() {
         "✎";
 
       rename.title =
-        "Rename";
+        "Edit character / NPC";
 
       rename.dataset.index =
         index;
@@ -3540,6 +3986,8 @@ function updateLeaderboard() {
 
 let grabbed = null;
 let grabPointer = null;
+let mouseX = W / 2;
+let mouseY = H / 2;
 
 let grabOffsetX = 0;
 let grabOffsetY = 0;
@@ -3739,6 +4187,107 @@ function pointerDown(e) {
     e.clientY -
     rect.top;
 
+  mouseX = x;
+  mouseY = y;
+
+  if (heldTool && player && !player.respawning) {
+    const heldX = player.x + Math.cos(Math.atan2(mouseY - (player.y - 8), mouseX - player.x)) * 24;
+    const heldY = player.y - 8 + Math.sin(Math.atan2(mouseY - (player.y - 8), mouseX - player.x)) * 24;
+    if (Math.hypot(x - heldX, y - heldY) < 32) {
+      unequipTools();
+      
+      return;
+    }
+  }
+
+  if (toolMode === "spark") {
+    let ignited = false;
+    for (const obj of [...objects]) {
+      if ((obj.type !== "boom" && obj.type !== "bomb") || obj.exploded) continue;
+      if (Math.hypot(obj.x - x, obj.y - y) <= Math.max(obj.width, obj.height) * .85) {
+        if (obj.type === "bomb") {
+          igniteBomb(obj);
+        } else {
+          explodeToolObject(obj, 150, 65);
+        }
+        ignited = true;
+        break;
+      }
+    }
+
+    for (let i = 0; i < 12; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const speed = 180 + Math.random() * 420;
+      objects.push({
+        type: "brokenPart",
+        x: x + (Math.random() - .5) * 25,
+        y: y + (Math.random() - .5) * 25,
+        vx: Math.cos(a) * speed,
+        vy: Math.sin(a) * speed,
+        width: 4, height: 4, rotation: 0, vr: 0, life: .28
+      });
+    }
+    if (ignited) {
+      showToast("Ignited!");
+      return;
+    }
+    // No ignition target: continue into normal grabbing.
+  }
+
+  if (toolMode === "rocket" && heldTool === "rocket" && player && !player.respawning && !findTarget(x, y)) {
+    const dx = x - player.x;
+    const dy = y - (player.y - 4);
+    const distance = Math.max(1, Math.hypot(dx, dy));
+    const speed = 1350;
+    createExplosionEffect(
+      player.x + dx / distance * 44,
+      player.y - 4 + dy / distance * 44,
+      30,
+      "muzzle"
+    );
+
+    objects.push({
+      type: "rocket",
+      x: player.x + dx / distance * 48,
+      y: player.y - 4 + dy / distance * 48,
+      vx: dx / distance * speed,
+      vy: dy / distance * speed,
+      rotation: Math.atan2(dy, dx) + Math.PI / 2,
+      vr: 0,
+      width: 18,
+      height: 38,
+      grabbed: false,
+      name: "Rocket",
+      life: 3
+    });
+    return;
+  }
+  if (toolMode === "noob-launcher" && heldTool === "noob-launcher" && player && !player.respawning) {
+    const dx = x - player.x;
+    const dy = y - (player.y - 4);
+    const distance = Math.max(1, Math.hypot(dx, dy));
+    const speed = 1050;
+    const n = createNoobObject(
+      player.x + dx / distance * 58,
+      player.y - 4 + dy / distance * 58
+    );
+    n.vx = dx / distance * speed;
+    n.vy = dy / distance * speed;
+    n.rotation = Math.atan2(dy, dx);
+    n.name = "Noob";
+    objects.push(n);
+    createExplosionEffect(n.x, n.y, 24, "muzzle");
+    updateLeaderboard();
+    return;
+  }
+  if (toolMode === "boom-tool") {
+    const existing = findTarget(x, y);
+    if (!existing) {
+      spawnObject("boom",x,y);
+      return;
+    }
+  }
+
   /*
     Part Remover gets priority over
     normal grabbing.
@@ -3800,6 +4349,9 @@ function pointerDown(e) {
       y
     );
 
+  selectedEntity = target;
+  updateSelectedNpcUI();
+
   if (!target) {
     return;
   }
@@ -3848,14 +4400,6 @@ function pointerDown(e) {
 
 function pointerMove(e) {
 
-  if (
-    !grabbed ||
-    e.pointerId !==
-      grabPointer
-  ) {
-    return;
-  }
-
   const rect =
     canvas.getBoundingClientRect();
 
@@ -3866,6 +4410,19 @@ function pointerMove(e) {
   const y =
     e.clientY -
     rect.top;
+
+  // Always track the cursor so held tools follow the mouse
+  // even when nothing is being grabbed.
+  mouseX = x;
+  mouseY = y;
+
+  if (
+    !grabbed ||
+    e.pointerId !==
+      grabPointer
+  ) {
+    return;
+  }
 
   recordDrag(
     x,
@@ -4550,6 +5107,122 @@ function updateStatus() {
 }
 
 /* =========================
+   CHARACTER / NPC EDITOR
+========================= */
+const editorPanel = document.getElementById("editorPanel");
+const editorName = document.getElementById("editorName");
+const editorSubtitle = document.getElementById("editorSubtitle");
+const editorColors = {
+  head: document.getElementById("editorHead"), torso: document.getElementById("editorTorso"),
+  leftArm: document.getElementById("editorLeftArm"), rightArm: document.getElementById("editorRightArm"),
+  leftLeg: document.getElementById("editorLeftLeg"), rightLeg: document.getElementById("editorRightLeg")
+};
+let editingEntity = null;
+function openCharacterEditor(entity) {
+  editingEntity = entity;
+  editorName.value = entity.name || "Noob";
+  const c = entity.colors || SETTINGS.colors;
+  Object.keys(editorColors).forEach(k => editorColors[k].value = c[k] || SETTINGS.colors[k]);
+  editorSubtitle.textContent = entity === player ? "Edit the player character." : "Edit this NPC.";
+  editorPanel.classList.add("open");
+}
+function closeCharacterEditor() { editingEntity=null; editorPanel.classList.remove("open"); }
+function applyCharacterEditor() {
+  if (!editingEntity) return;
+  editingEntity.name = editorName.value.trim().slice(0,24) || (editingEntity === player ? "Player" : "Noob");
+  editingEntity.colors = {};
+  Object.keys(editorColors).forEach(k => editingEntity.colors[k] = editorColors[k].value);
+  updateLeaderboard(); updateSelectedNpcUI(); showToast("Character updated!");
+}
+document.getElementById("editorClose").onclick = closeCharacterEditor;
+document.getElementById("editorApply").onclick = applyCharacterEditor;
+document.getElementById("customNpc").onclick = () => {
+  const n = createNoobObject(W/2,120); n.name = "Custom NPC"; n.behavior="follow"; n.npcGod=false; n.npcMovement=true; n.npcSpeed=720;
+  objects.push(n); selectedEntity=n; updateSelectedNpcUI(); updateLeaderboard(); openCharacterEditor(n); showToast("Custom NPC spawned!");
+};
+
+/* =========================
+   0.5.0 ALPHA SYSTEMS
+========================= */
+function updateSelectedNpcUI() {
+  const label=document.getElementById("selectedNpcLabel");
+  const n=selectedEntity && selectedEntity.type==="noob" ? selectedEntity : null;
+  if(label) label.textContent=n ? (n.name||"Noob") : "None";
+  ["npcPassive","npcFollow","npcAttack"].forEach(id=>document.getElementById(id)?.classList.remove("selected"));
+  const godButton=document.getElementById("npcGod");
+  if(godButton) godButton.textContent="Selected NPC God Mode: "+(n && n.npcGod ? "ON" : "OFF");
+  if(n && n.behavior) document.getElementById("npc"+(n.behavior.charAt(0).toUpperCase()+n.behavior.slice(1)))?.classList.add("selected");
+}
+function selectedNpc(){ return selectedEntity && selectedEntity.type==="noob" ? selectedEntity : null; }
+function setNpcBehavior(mode){ const n=selectedNpc(); if(!n){showToast("Select a Noob first");return;} n.behavior=mode; updateSelectedNpcUI(); showToast("NPC: "+mode); }
+function duplicateSelected(){
+  const n=selectedNpc(); if(!n){showToast("Select a Noob first");return;}
+  const copy=JSON.parse(JSON.stringify(n)); copy.x+=55; copy.y-=30; copy.name=(n.name||"Noob")+" Copy"; copy.grabbed=false; objects.push(copy); selectedEntity=copy; updateSelectedNpcUI(); updateLeaderboard(); showToast("NPC duplicated!");
+}
+function deleteSelected(){
+  const n=selectedNpc(); if(!n){showToast("Select a Noob first");return;}
+  const i=objects.indexOf(n); if(i>=0) objects.splice(i,1); selectedEntity=null; updateSelectedNpcUI(); updateLeaderboard(); showToast("NPC deleted!");
+}
+document.getElementById("npcPassive").onclick=()=>setNpcBehavior("passive");
+document.getElementById("npcFollow").onclick=()=>setNpcBehavior("follow");
+document.getElementById("npcAttack").onclick=()=>setNpcBehavior("attack");
+document.getElementById("npcDuplicate").onclick=duplicateSelected;
+document.getElementById("npcDelete").onclick=deleteSelected;
+document.getElementById("npcMovement").onclick=e=>{npcMovementEnabled=!npcMovementEnabled;e.target.textContent="NPC Movement: "+(npcMovementEnabled?"ON":"OFF");};
+document.getElementById("npcAttacks").onclick=e=>{npcAttacksEnabled=!npcAttacksEnabled;e.target.textContent="NPC Attacks: "+(npcAttacksEnabled?"ON":"OFF");};
+document.getElementById("npcGod").onclick=e=>{const n=selectedNpc();if(!n){showToast("Select a Noob first");return;}n.npcGod=!n.npcGod;e.target.textContent="Selected NPC God Mode: "+(n.npcGod?"ON":"OFF");};
+document.getElementById("toggleGrid").onclick=e=>{gridEnabled=!gridEnabled;e.target.textContent="Grid: "+(gridEnabled?"ON":"OFF");};
+document.getElementById("toggleShader").onclick=e=>{glowEnabled=!glowEnabled;e.target.textContent="Glow: "+(glowEnabled?"ON":"OFF");};
+document.getElementById("freezeAll").onclick=()=>{sandboxFrozen=true;showToast("Sandbox frozen!");};
+document.getElementById("unfreezeAll").onclick=()=>{sandboxFrozen=false;showToast("Sandbox unfrozen!");};
+document.getElementById("spawnBall").onclick=spawnBall;
+function requirePlayerForTool() {
+  if (!player || player.respawning) {
+    showToast("Spawn a character first");
+    return false;
+  }
+  return true;
+}
+
+document.getElementById("sparkTool").onclick=()=>{
+  if (!requirePlayerForTool()) return;
+  toolMode=toolMode==="spark"?null:"spark";
+  heldTool=toolMode?"spark":null;
+  
+};
+document.getElementById("boomBlock").onclick=()=>{
+  if (!requirePlayerForTool()) return;
+  spawnBoom();
+};
+document.getElementById("rocketLauncher").onclick=()=>{
+  if (!requirePlayerForTool()) return;
+  if (toolMode === "rocket" && heldTool === "rocket") {
+    unequipTools();
+    
+    return;
+  }
+  toolMode="rocket";
+  heldTool="rocket";
+  
+};
+document.getElementById("noobLauncher").onclick=()=>{
+  if (!requirePlayerForTool()) return;
+  if (toolMode === "noob-launcher" && heldTool === "noob-launcher") {
+    unequipTools();
+    
+    return;
+  }
+  toolMode="noob-launcher";
+  heldTool="noob-launcher";
+  
+};
+
+
+const controlsPanel = document.getElementById("controlsPanel");
+document.getElementById("controlsButton").onclick = () => controlsPanel.classList.add("open");
+document.getElementById("controlsClose").onclick = () => controlsPanel.classList.remove("open");
+
+/* =========================
    GAME LOOP
 ========================= */
 
@@ -4583,6 +5256,8 @@ function gameLoop(now) {
     );
   }
 
+  updateExplosionEffects(dt);
+
   for (
     let i =
       objects.length - 1;
@@ -4593,11 +5268,7 @@ function gameLoop(now) {
     const obj =
       objects[i];
 
-    if (
-      obj.type === "bomb" &&
-      obj.exploded &&
-      obj.explosionTimer <= 0
-    ) {
+    if (obj.type === "bomb" && obj.exploded && obj.explosionTimer <= 0) {
 
       objects.splice(
         i,
